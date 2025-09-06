@@ -565,20 +565,20 @@
     };
 
     // --- Firestore Data Handling ---
-    const setupListeners = (userId, role) => {
-        detachListeners(); // Clear previous listeners
+    const setupListeners = (role) => {
+        detachListeners();
 
-        const dataPath = (role === 'admin') ? `users/${userId}` : `users/${userId}`;
-        
-        const inventoryRef = collection(db, `${dataPath}/inventory`);
+        // Listen to the shared inventory
+        const inventoryRef = collection(db, "inventory");
         inventoryUnsubscribe = onSnapshot(inventoryRef, (snapshot) => {
             inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
 
+        // Listen to today's shared sales
         const today = new Date();
-        today.setHours(0,0,0,0);
-        const salesQuery = query(collection(db, `${dataPath}/sales`), where("soldAt", ">=", today));
+        today.setHours(0, 0, 0, 0);
+        const salesQuery = query(collection(db, "sales"), where("soldAt", ">=", today));
         salesUnsubscribe = onSnapshot(salesQuery, (snapshot) => {
             sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
@@ -623,6 +623,7 @@
                     <select class="form-select p-2 border rounded-md" data-userid="${user.id}">
                         <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
                         <option value="editor" ${user.role === 'editor' ? 'selected' : ''}>Editor</option>
+                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
                     </select>
                     ` : 'Cannot change own role'}
                 </td>
@@ -659,13 +660,11 @@
                 appContainer.classList.remove('hidden');
                 document.getElementById('user-email').textContent = user.email;
                 updateUIAfterLogin(currentUserRole);
-                setupListeners(user.uid, currentUserRole);
+                setupListeners(currentUserRole);
             } else {
-                // This case handles if a user exists in Auth but not in Firestore. Should be rare.
                 signOut(auth);
             }
         } else {
-            // User is signed out
             authContainer.classList.remove('hidden');
             appContainer.classList.add('hidden');
             detachListeners();
@@ -730,7 +729,7 @@
 
     signinBtn.addEventListener('click', async () => {
         const email = document.getElementById('signin-email').value;
-        const password = document.getElementById('signin-password').value;
+        const password = document.getElementById('signup-password').value;
         authError.style.display = 'none';
 
         try {
@@ -743,6 +742,82 @@
 
     signoutBtn.addEventListener('click', () => {
         signOut(auth);
+    });
+
+    // --- FORM SUBMISSIONS ---
+    document.getElementById('delivery-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('del-imei').value.trim();
+        
+        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
+            showToast('IMEI must be 15 digits.', 'error');
+            return;
+        }
+        
+        const inventoryRef = collection(db, 'inventory');
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const existing = await getDocs(q);
+        if(!existing.empty){
+            showToast('This IMEI already exists in stock.', 'error');
+            return;
+        }
+
+        const newItem = {
+            imei: imei,
+            brand: document.getElementById('del-brand').value.trim(),
+            model: document.getElementById('del-model').value.trim(),
+            variant: document.getElementById('del-variant').value.trim(),
+            color: document.getElementById('del-color').value.trim(),
+            price: parseFloat(document.getElementById('del-price').value),
+            notes: document.getElementById('del-notes').value.trim(),
+            addedAt: serverTimestamp()
+        };
+        
+        try {
+            await addDoc(inventoryRef, newItem);
+            e.target.reset();
+            showToast('Item added to stock successfully!');
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            showToast('Failed to add item.', 'error');
+        }
+    });
+    
+    document.getElementById('sales-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('sale-imei').value.trim();
+        
+        const inventoryRef = collection(db, `inventory`);
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            showToast('Item with this IMEI not found in stock.', 'error');
+            return;
+        }
+        
+        const stockDoc = snapshot.docs[0];
+        const soldItemData = stockDoc.data();
+        
+        const newSale = {
+            ...soldItemData,
+            incentive: parseFloat(document.getElementById('sale-incentive').value) || 0,
+            notes: document.getElementById('sale-notes').value.trim(),
+            soldAt: serverTimestamp()
+        };
+
+        try {
+            await runTransaction(db, async (transaction) => {
+                const salesRef = collection(db, 'sales');
+                transaction.delete(stockDoc.ref);
+                transaction.set(doc(salesRef), newSale);
+            });
+            e.target.reset();
+            showToast('Sale recorded successfully!');
+        } catch (error) {
+            console.error("Transaction failed: ", error);
+            showToast('Failed to record sale.', 'error');
+        }
     });
 
     // --- UI TOGGLES ---
