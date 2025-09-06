@@ -142,7 +142,8 @@
                 margin-right: 1rem;
                 color: var(--text-primary);
             }
-            .responsive-table td[data-label="Actions"] {
+            .responsive-table td[data-label="Actions"],
+            .responsive-table td[data-label="Manage"] {
                  justify-content: flex-end;
                  padding-top: 0.75rem;
             }
@@ -385,7 +386,7 @@
                     </div>
                     <div class="table-container">
                         <table class="min-w-full responsive-table">
-                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                            <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
@@ -424,6 +425,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">User Email</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Current Role</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Change Role</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Manage</th>
                                 </tr>
                             </thead>
                             <tbody id="user-management-table-body">
@@ -451,6 +453,15 @@
                 <button id="confirm-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-24" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
                 <button id="confirm-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-24">Confirm</button>
             </div>
+        </div>
+    </div>
+
+     <!-- Kicked Modal -->
+    <div id="kicked-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--destructive);">Access Denied</h3>
+            <p style="color: var(--text-secondary);" class="mb-6">Your account has been kicked by an administrator. Please contact support for more information.</p>
+            <button id="kicked-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-full" style="background-color: var(--accent-primary);">OK</button>
         </div>
     </div>
 
@@ -567,6 +578,9 @@
     const confirmModalTitle = document.getElementById('confirm-modal-title');
     const confirmModalMessage = document.getElementById('confirm-modal-message');
 
+    const kickedModal = document.getElementById('kicked-modal');
+    const kickedOkBtn = document.getElementById('kicked-ok-btn');
+
     const editItemModal = document.getElementById('edit-item-modal');
     const editItemForm = document.getElementById('edit-item-form');
     const editModalCloseBtn = document.getElementById('edit-modal-close-btn');
@@ -642,6 +656,10 @@
     confirmCancelBtn.addEventListener('click', () => {
         confirmModal.classList.add('hidden');
         confirmCallback = null;
+    });
+
+    kickedOkBtn.addEventListener('click', () => {
+        kickedModal.classList.add('hidden');
     });
 
     const formatCurrency = (amount) => {
@@ -1023,6 +1041,14 @@
                     </select>
                     ` : 'Cannot change own role'}
                 </td>
+                <td data-label="Manage" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">
+                     ${!isCurrentUser ? `
+                        ${user.kicked 
+                            ? `<button data-userid="${user.id}" class="unkick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--success); color: white;">Un-kick</button>`
+                            : `<button data-userid="${user.id}" class="kick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--destructive); color: white;">Kick</button>`
+                        }
+                    ` : ''}
+                </td>
             `;
             tableBody.appendChild(row);
         });
@@ -1035,10 +1061,38 @@
                 try {
                     const userDocRef = doc(db, 'users', userIdToUpdate);
                     await updateDoc(userDocRef, { role: newRole });
-                    showToast(`User role updated to ${newRole}`, 'success');
+                    showToast(`User role updated to ${newRole}.`, 'success');
                 } catch (error) {
                     console.error("Error updating role: ", error);
                     showToast('Failed to update role.', 'error');
+                }
+            });
+        });
+
+        tableBody.querySelectorAll('.kick-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const userIdToKick = e.target.dataset.userid;
+                showConfirm('Are you sure you want to kick this user? They will be logged out and unable to sign in.', async () => {
+                    try {
+                        const userDocRef = doc(db, 'users', userIdToKick);
+                        await updateDoc(userDocRef, { kicked: true });
+                        showToast('User has been kicked.', 'success');
+                    } catch(error) {
+                        showToast('Failed to kick user.', 'error');
+                    }
+                }, { title: 'Confirm Kick', okText: 'Kick'});
+            });
+        });
+
+         tableBody.querySelectorAll('.unkick-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const userIdToUnkick = e.target.dataset.userid;
+                 try {
+                    const userDocRef = doc(db, 'users', userIdToUnkick);
+                    await updateDoc(userDocRef, { kicked: false, showWelcomeBack: true });
+                    showToast('User has been un-kicked.', 'success');
+                } catch(error) {
+                    showToast('Failed to un-kick user.', 'error');
                 }
             });
         });
@@ -1077,6 +1131,17 @@
 
             if (userDoc.exists()) {
                 const userData = userDoc.data();
+                if(userData.kicked) {
+                    kickedModal.classList.remove('hidden');
+                    signOut(auth);
+                    return;
+                }
+
+                if(userData.showWelcomeBack) {
+                    showToast('Welcome back! Your account has been reinstated.', 'success');
+                    await updateDoc(userDocRef, { showWelcomeBack: false });
+                }
+
                 initializeUserSession(userData.role, userData.email);
             } else {
                 const usersRef = collection(db, 'users');
@@ -1089,7 +1154,9 @@
                     await setDoc(userDocRef, {
                         email: user.email,
                         role: newUserRole,
-                        createdAt: serverTimestamp()
+                        createdAt: serverTimestamp(),
+                        kicked: false,
+                        showWelcomeBack: false
                     });
                     initializeUserSession(newUserRole, user.email);
                 } catch (error) {
