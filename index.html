@@ -119,7 +119,7 @@
             <div id="signin-form">
                 <input type="email" id="signin-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
                 <input type="password" id="signin-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
-                <button id="signin-btn" style="background-color: var(--accent-primary);" class="w-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Sign In</button>
+                <button id="signin-btn" style="background-color: var(--accent-primary);" class="w-full text-white font-semibold py-2 px-4 rounded-md transition-colors disabled:opacity-50">Sign In</button>
                 <p class="mt-4 text-center text-sm" style="color: var(--text-secondary);">
                     No account? <button id="show-signup-btn" class="font-medium hover:underline" style="color: var(--accent-primary);">Sign up</button>
                 </p>
@@ -698,25 +698,57 @@
     };
     
     // --- AUTHENTICATION & ROLE MANAGEMENT ---
+    
+    const initializeUserSession = (role, email) => {
+        currentUserRole = role;
+        authContainer.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        document.getElementById('user-email').textContent = email;
+        updateUIAfterLogin(role);
+        setupListeners(role);
+    };
+
+    const cleanupSession = () => {
+        authContainer.classList.remove('hidden');
+        appContainer.classList.add('hidden');
+        detachListeners();
+    };
+
     onAuthStateChanged(auth, async (user) => {
         if(user) {
             const userDocRef = doc(db, 'users', user.uid);
             const userDoc = await getDoc(userDocRef);
 
             if (userDoc.exists()) {
-                currentUserRole = userDoc.data().role;
-                authContainer.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-                document.getElementById('user-email').textContent = user.email;
-                updateUIAfterLogin(currentUserRole);
-                setupListeners(currentUserRole);
+                // This is a returning user, or a new user whose doc was just created.
+                const userData = userDoc.data();
+                initializeUserSession(userData.role, userData.email);
             } else {
-                signOut(auth);
+                // This is a brand new user who just signed up.
+                // We need to create their document in Firestore.
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, limit(1));
+                const existingUsers = await getDocs(q);
+                const isFirstUser = existingUsers.empty;
+                const newUserRole = isFirstUser ? 'admin' : 'viewer';
+
+                try {
+                    await setDoc(userDocRef, {
+                        email: user.email,
+                        role: newUserRole,
+                        createdAt: serverTimestamp()
+                    });
+                    // Now that the doc is created, initialize their session.
+                    initializeUserSession(newUserRole, user.email);
+                } catch (error) {
+                    console.error("Error creating user document:", error);
+                    authError.textContent = "Could not create user profile. Please try again.";
+                    authError.style.display = 'block';
+                    signOut(auth);
+                }
             }
         } else {
-            authContainer.classList.remove('hidden');
-            appContainer.classList.add('hidden');
-            detachListeners();
+            cleanupSession();
         }
     });
 
@@ -753,28 +785,9 @@
         authError.style.display = 'none';
 
         try {
-            // Step 1: Create user in Auth. This makes them authenticated for the next step.
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Step 2: Check if any other user documents exist in Firestore.
-            // This needs to be done *after* sign up, but before setting the doc
-            const usersRef = collection(db, 'users');
-            // We check for any doc other than the one we are about to create
-            const q = query(usersRef, where('__name__', '!=', user.uid), limit(1));
-            const existingUsers = await getDocs(q);
-            const isFirstUser = existingUsers.empty;
-            
-            // Step 3: Create the user document in Firestore with the correct role.
-            const userDocRef = doc(db, 'users', user.uid);
-            await setDoc(userDocRef, {
-                email: user.email,
-                role: isFirstUser ? 'admin' : 'viewer',
-                createdAt: serverTimestamp()
-            });
-
+            // The onAuthStateChanged observer will handle document creation.
+            await createUserWithEmailAndPassword(auth, email, password);
             showToast('Account created successfully!', 'success');
-
         } catch (error) {
             authError.textContent = error.message;
             authError.style.display = 'block';
@@ -792,6 +805,10 @@
         const password = document.getElementById('signin-password').value;
         authError.style.display = 'none';
 
+        // Add loading state to button
+        signinBtn.disabled = true;
+        signinBtn.textContent = 'Signing In...';
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
@@ -799,6 +816,10 @@
             console.error('Sign-in error:', error);
             authError.textContent = error.message;
             authError.style.display = 'block';
+        } finally {
+            // Always restore button state
+            signinBtn.disabled = false;
+            signinBtn.textContent = 'Sign In';
         }
     });
 
@@ -923,5 +944,4 @@
 
 </body>
 </html>
-
 
