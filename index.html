@@ -265,8 +265,15 @@
                         <input type="text" id="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Stock</button>
                     </form>
-                    <div class="flex justify-between items-center mt-8 mb-4">
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="deliveries-title">Today's Deliveries</h3>
+                        <div class="flex items-center gap-2">
+                             <label for="deliveries-sort" class="text-sm font-medium">Sort by:</label>
+                             <select id="deliveries-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="deliveries">
+                                <option value="latest">Latest First</option>
+                                <option value="alphabetical">Brand (A-Z)</option>
+                             </select>
+                        </div>
                     </div>
                      <div class="table-container">
                         <table class="min-w-full responsive-table">
@@ -286,9 +293,18 @@
                 
                 <!-- Stocks -->
                 <div id="stocks" class="tab-pane hidden">
-                     <div class="flex justify-between items-center mb-4">
+                     <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
                         <h2 class="text-xl font-semibold">Current Stock</h2>
-                        <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="inventory" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <label for="stocks-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="stocks-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="inventory">
+                                    <option value="latest">Latest First</option>
+                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="inventory" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
                     </div>
                     <div class="table-container">
                         <table class="min-w-full responsive-table">
@@ -318,9 +334,18 @@
                         <input type="text" id="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--success);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sale</button>
                     </form>
-                    <div class="flex justify-between items-center mt-8 mb-4">
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="sales-title">Today's Sales</h3>
-                        <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="sales" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <label for="sales-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="sales-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="sales">
+                                    <option value="latest">Latest First</option>
+                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="sales" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
                     </div>
                      <div class="table-container">
                         <table class="min-w-full responsive-table">
@@ -347,9 +372,18 @@
                         <input type="text" id="tout-notes" placeholder="Notes (e.g., Destination)" class="form-input w-full p-2 border rounded-md md:col-span-2 lg:col-span-2">
                         <button type="submit" style="background-color: var(--destructive);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer Out</button>
                     </form>
-                    <div class="flex justify-between items-center mt-8 mb-4">
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="transfer-out-title">Today's Transfers Out</h3>
-                        <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <label for="tout-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="tout-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersOut">
+                                    <option value="latest">Latest First</option>
+                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
                     </div>
                     <div class="table-container">
                         <table class="min-w-full responsive-table">
@@ -380,9 +414,18 @@
                         <input type="text" id="tin-notes" placeholder="Notes (e.g., Origin)" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--special);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer In</button>
                     </form>
-                    <div class="flex justify-between items-center mt-8 mb-4">
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="transfer-in-title">Today's Transfers In</h3>
-                        <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersIn" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <label for="tin-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="tin-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersIn">
+                                    <option value="latest">Latest First</option>
+                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersIn" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
                     </div>
                     <div class="table-container">
                         <table class="min-w-full responsive-table">
@@ -554,6 +597,7 @@
     let transfersOut = [];
     let deliveries = [];
     let selectedDate = new Date();
+    let currentSort = 'latest';
     
     // --- UI Elements ---
     const authContainer = document.getElementById('auth-container');
@@ -716,11 +760,19 @@
     const renderStockTable = () => {
         const tableBody = document.getElementById('stock-table-body');
         tableBody.innerHTML = '';
-        if (inventory.length === 0) {
+
+        let sortedData = [...inventory];
+        if(currentSort === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => b.addedAt.toMillis() - a.addedAt.toMillis());
+        }
+
+        if (sortedData.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No items in stock.</td></tr>`;
             return;
         }
-        inventory.forEach(item => {
+        sortedData.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
             const isAdmin = currentUserRole === 'admin';
             
@@ -761,11 +813,19 @@
         document.getElementById('sales-title').textContent = `Sales for ${formatDate(selectedDate)}`;
         const tableBody = document.getElementById('sales-table-body');
         tableBody.innerHTML = '';
-        if (sales.length === 0) {
+        
+        let sortedData = [...sales];
+        if(currentSort === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => b.soldAt.toMillis() - a.soldAt.toMillis());
+        }
+
+        if (sortedData.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
             return;
         }
-        sales.forEach(item => {
+        sortedData.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
             const isAdmin = currentUserRole === 'admin';
             let actionsHtml = '';
@@ -803,11 +863,19 @@
         document.getElementById('deliveries-title').textContent = `Deliveries for ${formatDate(selectedDate)}`;
         const tableBody = document.getElementById('deliveries-table-body');
         tableBody.innerHTML = '';
-        if (deliveries.length === 0) {
+        
+        let sortedData = [...deliveries];
+        if(currentSort === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => b.addedAt.toMillis() - a.addedAt.toMillis());
+        }
+
+        if (sortedData.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
             return;
         }
-        deliveries.forEach(item => {
+        sortedData.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
             const isAdmin = currentUserRole === 'admin';
             let actionsHtml = '';
@@ -838,11 +906,19 @@
         document.getElementById('transfer-in-title').textContent = `Transfers In for ${formatDate(selectedDate)}`;
         const tableBody = document.getElementById('transfer-in-table-body');
         tableBody.innerHTML = '';
-        if (transfersIn.length === 0) {
+
+        let sortedData = [...transfersIn];
+        if(currentSort === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => b.transferredAt.toMillis() - a.transferredAt.toMillis());
+        }
+
+        if (sortedData.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
             return;
         }
-        transfersIn.forEach(item => {
+        sortedData.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
             const isAdmin = currentUserRole === 'admin';
             let actionsHtml = '';
@@ -879,11 +955,19 @@
         document.getElementById('transfer-out-title').textContent = `Transfers Out for ${formatDate(selectedDate)}`;
         const tableBody = document.getElementById('transfer-out-table-body');
         tableBody.innerHTML = '';
-        if (transfersOut.length === 0) {
+
+        let sortedData = [...transfersOut];
+        if(currentSort === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => b.transferredAt.toMillis() - a.transferredAt.toMillis());
+        }
+
+        if (sortedData.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
             return;
         }
-        transfersOut.forEach(item => {
+        sortedData.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
             const isAdmin = currentUserRole === 'admin';
             let actionsHtml = '';
@@ -1586,6 +1670,13 @@
                     }
                 }, { title: 'Confirm Deletion', okText: 'Delete' });
             }
+        });
+
+        document.querySelectorAll('.sort-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                renderAll();
+            });
         });
     });
 </script>
