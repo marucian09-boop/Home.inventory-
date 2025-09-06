@@ -75,12 +75,12 @@
             max-height: 60vh;
             overflow-y: auto;
         }
-        .form-input {
+        .form-input, .form-select {
             transition: all 0.3s ease;
             background-color: var(--bg-primary);
             border-color: var(--border-primary);
         }
-        .form-input:focus {
+        .form-input:focus, .form-select:focus {
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 20%, transparent);
             outline: none;
@@ -143,6 +143,7 @@
                 <h1 class="text-3xl font-bold" style="color: var(--text-primary);">Inventory Dashboard</h1>
                 <div id="user-info" class="flex items-center gap-4">
                     <p style="color: var(--text-secondary);" id="user-email"></p>
+                    <span id="user-role-badge" class="text-xs font-semibold px-2 py-1 rounded-full"></span>
                     <button id="signout-btn" style="background-color: var(--destructive);" class="text-white text-xs font-semibold py-1 px-3 rounded-md transition-colors">Sign Out</button>
                 </div>
             </div>
@@ -154,12 +155,16 @@
                 </label>
             </div>
         </header>
+        
+        <div id="view-only-banner" class="hidden mb-4 p-4 rounded-md text-center" style="background-color: var(--warning-bg); color: var(--warning-text);">
+            You have view-only access.
+        </div>
 
         <!-- Main Content -->
         <div style="background-color: var(--bg-secondary); box-shadow: var(--shadow-lg);" class="rounded-xl p-4 sm:p-6">
             <!-- Tabs -->
             <div style="border-color: var(--border-primary);" class="border-b mb-6">
-                <nav class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+                <nav id="tabs-nav" class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
                     <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard" style="color: var(--text-secondary);">Dashboard</button>
                     <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries" style="color: var(--text-secondary);">Deliveries</button>
                     <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks" style="color: var(--text-secondary);">Stocks</button>
@@ -167,6 +172,7 @@
                     <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut" style="color: var(--text-secondary);">Stock Transfer Out</button>
                     <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn" style="color: var(--text-secondary);">Stock Transfer In</button>
                     <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel" style="color: var(--text-secondary);">Stock Level</button>
+                    <button id="admin-tab-btn" onclick="changeTab('admin')" class="tab hidden whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="admin" style="color: var(--text-secondary);">Admin Tools</button>
                 </nav>
             </div>
 
@@ -293,6 +299,25 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Admin Tools -->
+                <div id="admin" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Manage User Roles</h2>
+                    <div class="table-container">
+                        <table class="min-w-full">
+                             <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">User Email</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Current Role</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Change Role</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-management-table-body">
+                                <!-- User list will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -317,6 +342,7 @@
         getFirestore, 
         doc, 
         setDoc,
+        updateDoc,
         getDoc,
         getDocs,
         addDoc, 
@@ -347,6 +373,8 @@
     const db = getFirestore(app);
 
     // --- Global State ---
+    let currentUserRole = null;
+    let usersUnsubscribe = null;
     let inventoryUnsubscribe = null;
     let salesUnsubscribe = null;
     let inventory = [];
@@ -412,7 +440,7 @@
     };
     
     // --- TAB MANAGEMENT ---
-    const changeTab = (tabName) => {
+    window.changeTab = (tabName) => {
         document.querySelectorAll('.tab-pane').forEach(pane => {
             pane.classList.add('hidden');
         });
@@ -537,124 +565,105 @@
     };
 
     // --- Firestore Data Handling ---
-    const setupListeners = (userId) => {
-        // Detach old listeners if they exist
-        if (inventoryUnsubscribe) inventoryUnsubscribe();
-        if (salesUnsubscribe) salesUnsubscribe();
+    const setupListeners = (userId, role) => {
+        detachListeners(); // Clear previous listeners
 
-        const inventoryRef = collection(db, `users/${userId}/inventory`);
+        const dataPath = (role === 'admin') ? `users/${userId}` : `users/${userId}`;
+        
+        const inventoryRef = collection(db, `${dataPath}/inventory`);
         inventoryUnsubscribe = onSnapshot(inventoryRef, (snapshot) => {
             inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
 
-        // Only show today's sales
         const today = new Date();
         today.setHours(0,0,0,0);
-        const salesQuery = query(collection(db, `users/${userId}/sales`), where("soldAt", ">=", today));
+        const salesQuery = query(collection(db, `${dataPath}/sales`), where("soldAt", ">=", today));
         salesUnsubscribe = onSnapshot(salesQuery, (snapshot) => {
             sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
+
+        if (role === 'admin') {
+            setupAdminListeners();
+        }
     }
+    
+    const setupAdminListeners = () => {
+        const usersRef = collection(db, 'users');
+        usersUnsubscribe = onSnapshot(usersRef, (snapshot) => {
+            const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderUserManagementTable(users);
+        });
+    };
 
     const detachListeners = () => {
         if (inventoryUnsubscribe) inventoryUnsubscribe();
         if (salesUnsubscribe) salesUnsubscribe();
+        if (usersUnsubscribe) usersUnsubscribe();
         inventory = [];
         sales = [];
+        currentUserRole = null;
         renderAll();
     }
-    
-    // --- EVENT HANDLERS (Forms) ---
-    document.getElementById('delivery-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const imei = document.getElementById('del-imei').value.trim();
-        const user = auth.currentUser;
-        if (!user) return;
 
-        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
-            showToast('IMEI must be 15 digits.', 'error');
-            return;
-        }
-        
-        const inventoryRef = collection(db, `users/${user.uid}/inventory`);
-        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
-        const existing = await getDocs(q);
-        if(!existing.empty){
-            showToast('This IMEI already exists in stock.', 'error');
-            return;
-        }
+    const renderUserManagementTable = (users) => {
+        const tableBody = document.getElementById('user-management-table-body');
+        tableBody.innerHTML = '';
+        const currentUserId = auth.currentUser.uid;
 
-        const newItem = {
-            imei: imei,
-            brand: document.getElementById('del-brand').value.trim(),
-            model: document.getElementById('del-model').value.trim(),
-            variant: document.getElementById('del-variant').value.trim(),
-            color: document.getElementById('del-color').value.trim(),
-            price: parseFloat(document.getElementById('del-price').value),
-            notes: document.getElementById('del-notes').value.trim(),
-            addedAt: serverTimestamp()
-        };
-        
-        try {
-            await addDoc(inventoryRef, newItem);
-            e.target.reset();
-            showToast('Item added to stock successfully!');
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            showToast('Failed to add item.', 'error');
-        }
-    });
-    
-    document.getElementById('sales-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const imei = document.getElementById('sale-imei').value.trim();
-        const user = auth.currentUser;
-        if (!user) return;
-        
-        const inventoryRef = collection(db, `users/${user.uid}/inventory`);
-        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
-        const snapshot = await getDocs(q);
+        users.forEach(user => {
+            const isCurrentUser = user.id === currentUserId;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.email}</td>
+                <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.role}</td>
+                <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">
+                    ${!isCurrentUser ? `
+                    <select class="form-select p-2 border rounded-md" data-userid="${user.id}">
+                        <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
+                        <option value="editor" ${user.role === 'editor' ? 'selected' : ''}>Editor</option>
+                    </select>
+                    ` : 'Cannot change own role'}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
 
-        if (snapshot.empty) {
-            showToast('Item with this IMEI not found in stock.', 'error');
-            return;
-        }
-        
-        const stockDoc = snapshot.docs[0];
-        const soldItemData = stockDoc.data();
-        
-        const newSale = {
-            ...soldItemData,
-            incentive: parseFloat(document.getElementById('sale-incentive').value) || 0,
-            notes: document.getElementById('sale-notes').value.trim(),
-            soldAt: serverTimestamp()
-        };
-
-        try {
-            // Use a transaction to ensure we add to sales and remove from stock atomically
-            await runTransaction(db, async (transaction) => {
-                const salesRef = collection(db, `users/${user.uid}/sales`);
-                transaction.delete(stockDoc.ref);
-                transaction.set(doc(salesRef), newSale);
+        // Add event listeners after rendering
+        tableBody.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', async (e) => {
+                const newRole = e.target.value;
+                const userIdToUpdate = e.target.dataset.userid;
+                try {
+                    const userDocRef = doc(db, 'users', userIdToUpdate);
+                    await updateDoc(userDocRef, { role: newRole });
+                    showToast(`User role updated to ${newRole}`, 'success');
+                } catch (error) {
+                    console.error("Error updating role: ", error);
+                    showToast('Failed to update role.', 'error');
+                }
             });
-            e.target.reset();
-            showToast('Sale recorded successfully!');
-        } catch (error) {
-            console.error("Transaction failed: ", error);
-            showToast('Failed to record sale.', 'error');
-        }
-    });
-
-    // --- AUTHENTICATION ---
-    onAuthStateChanged(auth, (user) => {
+        });
+    };
+    
+    // --- AUTHENTICATION & ROLE MANAGEMENT ---
+    onAuthStateChanged(auth, async (user) => {
         if(user) {
-            // User is signed in
-            authContainer.classList.add('hidden');
-            appContainer.classList.remove('hidden');
-            document.getElementById('user-email').textContent = user.email;
-            setupListeners(user.uid);
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                currentUserRole = userDoc.data().role;
+                authContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                document.getElementById('user-email').textContent = user.email;
+                updateUIAfterLogin(currentUserRole);
+                setupListeners(user.uid, currentUserRole);
+            } else {
+                // This case handles if a user exists in Auth but not in Firestore. Should be rare.
+                signOut(auth);
+            }
         } else {
             // User is signed out
             authContainer.classList.remove('hidden');
@@ -663,27 +672,51 @@
         }
     });
 
+    const updateUIAfterLogin = (role) => {
+        const roleBadge = document.getElementById('user-role-badge');
+        roleBadge.textContent = role;
+        roleBadge.className = 'text-xs font-semibold px-2 py-1 rounded-full'; // reset classes
+        
+        const adminTab = document.getElementById('admin-tab-btn');
+        const viewOnlyBanner = document.getElementById('view-only-banner');
+        const forms = document.querySelectorAll('form');
+
+        if (role === 'admin') {
+            roleBadge.classList.add('bg-purple-200', 'text-purple-800');
+            adminTab.classList.remove('hidden');
+            viewOnlyBanner.classList.add('hidden');
+            forms.forEach(f => f.querySelectorAll('input, button').forEach(el => el.disabled = false));
+        } else if (role === 'editor') {
+            roleBadge.classList.add('bg-blue-200', 'text-blue-800');
+            adminTab.classList.add('hidden');
+            viewOnlyBanner.classList.add('hidden');
+            forms.forEach(f => f.querySelectorAll('input, button').forEach(el => el.disabled = false));
+        } else { // viewer
+            roleBadge.classList.add('bg-gray-200', 'text-gray-800');
+            adminTab.classList.add('hidden');
+            viewOnlyBanner.classList.remove('hidden');
+            forms.forEach(f => f.querySelectorAll('input, button').forEach(el => el.disabled = true));
+        }
+    };
+    
     signupBtn.addEventListener('click', async () => {
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
         authError.style.display = 'none';
 
         try {
-            // 1. Check if any users exist to determine admin status
             const usersRef = collection(db, 'users');
             const q = query(usersRef, limit(1));
             const existingUsers = await getDocs(q);
             const isFirstUser = existingUsers.empty;
 
-            // 2. Create the user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 3. Create a corresponding user document in Firestore
             const userDocRef = doc(db, 'users', user.uid);
             await setDoc(userDocRef, {
                 email: user.email,
-                role: isFirstUser ? 'admin' : 'user',
+                role: isFirstUser ? 'admin' : 'viewer',
                 createdAt: serverTimestamp()
             });
 
