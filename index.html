@@ -7,13 +7,68 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --font-sans: 'Inter', sans-serif;
+            /* Light Theme Colors */
+            --bg-primary: #f3f4f6; /* gray-100 */
+            --bg-secondary: #ffffff; /* white */
+            --bg-tertiary: #f9fafb; /* gray-50 */
+            --border-primary: #e5e7eb; /* gray-200 */
+            --text-primary: #111827; /* gray-900 */
+            --text-secondary: #6b7280; /* gray-500 */
+            --accent-primary: #3b82f6; /* blue-500 */
+            --accent-primary-hover: #2563eb; /* blue-600 */
+            --destructive: #ef4444; /* red-500 */
+            --destructive-hover: #dc2626; /* red-600 */
+            --success: #22c55e; /* green-500 */
+            --success-hover: #16a34a; /* green-600 */
+            --special: #a855f7; /* purple-500 */
+            --special-hover: #9333ea; /* purple-600 */
+            
+            --info-bg: #eff6ff; /* blue-50 */
+            --info-text: #1e3a8a; /* blue-900 */
+            --success-card-bg: #f0fdf4; /* green-50 */
+            --success-card-text: #14532d; /* green-900 */
+            --warning-bg: #fefce8; /* yellow-50 */
+            --warning-text: #713f12; /* yellow-900 */
+
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .dark {
+            /* Dark Theme Colors */
+            --bg-primary: #111827; /* gray-900 */
+            --bg-secondary: #1f2937; /* gray-800 */
+            --bg-tertiary: #374151; /* gray-700 */
+            --border-primary: #4b5563; /* gray-600 */
+            --text-primary: #f9fafb; /* gray-50 */
+            --text-secondary: #9ca3af; /* gray-400 */
+            --accent-primary: #60a5fa; /* blue-400 */
+            --accent-primary-hover: #3b82f6; /* blue-500 */
+            --destructive: #f87171; /* red-400 */
+            --destructive-hover: #ef4444; /* red-500 */
+            --success: #4ade80; /* green-400 */
+            --success-hover: #22c55e; /* green-500 */
+            --special: #c084fc; /* purple-400 */
+            --special-hover: #a855f7; /* purple-500 */
+
+            --info-bg: #1e2937; 
+            --info-text: #93c5fd; 
+            --success-card-bg: #1e2937; 
+            --success-card-text: #86efac;
+            --warning-bg: #1e2937;
+            --warning-text: #fde047;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .tab-active {
-            border-bottom-color: #3b82f6;
-            color: #3b82f6;
+            border-bottom-color: var(--accent-primary);
+            color: var(--accent-primary);
             font-weight: 600;
         }
         .table-container {
@@ -22,47 +77,62 @@
         }
         .form-input {
             transition: all 0.3s ease;
+            background-color: var(--bg-primary);
+            border-color: var(--border-primary);
         }
         .form-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 20%, transparent);
+            outline: none;
         }
-        /* For Webkit browsers like Chrome, Safari */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .form-input::placeholder {
+            color: var(--text-secondary);
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-tertiary); transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 </head>
-<body class="antialiased text-gray-800">
+<body class="antialiased">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Inventory Dashboard</h1>
-            <p class="text-gray-500" id="currentDate"></p>
+        <header class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold" style="color: var(--text-primary);">Inventory Dashboard</h1>
+                <p style="color: var(--text-secondary);" id="currentDate"></p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </header>
 
         <!-- Main Content -->
-        <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+        <div style="background-color: var(--bg-secondary); box-shadow: var(--shadow-lg);" class="rounded-xl p-4 sm:p-6">
             <!-- Tabs -->
-            <div class="border-b border-gray-200 mb-6">
+            <div style="border-color: var(--border-primary);" class="border-b mb-6">
                 <nav class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
-                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard">Dashboard</button>
-                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
-                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
-                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales Today</button>
-                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Stock Transfer Out</button>
-                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500" data-tab="transferIn">Stock Transfer In</button>
-                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel">Stock Level</button>
+                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard" style="color: var(--text-secondary);">Dashboard</button>
+                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries" style="color: var(--text-secondary);">Deliveries</button>
+                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks" style="color: var(--text-secondary);">Stocks</button>
+                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales" style="color: var(--text-secondary);">Sales Today</button>
+                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut" style="color: var(--text-secondary);">Stock Transfer Out</button>
+                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn" style="color: var(--text-secondary);">Stock Transfer In</button>
+                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel" style="color: var(--text-secondary);">Stock Level</button>
                 </nav>
             </div>
 
@@ -71,15 +141,15 @@
                 <!-- Dashboard -->
                 <div id="dashboard" class="tab-pane">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-blue-50 p-6 rounded-lg text-blue-900">
+                        <div style="background-color: var(--info-bg); color: var(--info-text);" class="p-6 rounded-lg">
                             <h3 class="font-semibold text-lg">Daily Sales</h3>
                             <p class="text-3xl font-bold mt-2" id="dashboard-sales">₱0.00</p>
                         </div>
-                        <div class="bg-green-50 p-6 rounded-lg text-green-900">
+                        <div style="background-color: var(--success-card-bg); color: var(--success-card-text);" class="p-6 rounded-lg">
                             <h3 class="font-semibold text-lg">Total Stock Items</h3>
                             <p class="text-3xl font-bold mt-2" id="dashboard-stock">0</p>
                         </div>
-                        <div class="bg-yellow-50 p-6 rounded-lg text-yellow-900">
+                        <div style="background-color: var(--warning-bg); color: var(--warning-text);" class="p-6 rounded-lg">
                             <h3 class="font-semibold text-lg">Running Incentives</h3>
                             <p class="text-3xl font-bold mt-2" id="dashboard-incentives">₱0.00</p>
                         </div>
@@ -97,7 +167,7 @@
                         <input type="text" id="del-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                         <input type="number" id="del-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
-                        <button type="submit" class="md:col-span-2 lg:col-span-3 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">Add to Stock</button>
+                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Stock</button>
                     </form>
                 </div>
                 
@@ -105,16 +175,16 @@
                 <div id="stocks" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Current Stock</h2>
                     <div class="table-container">
-                        <table class="min-w-full bg-white">
-                            <thead class="bg-gray-100 sticky top-0">
+                        <table class="min-w-full">
+                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
                                 <tr>
-                                    <th class="py-2 px-4 border-b text-left">IMEI</th>
-                                    <th class="py-2 px-4 border-b text-left">Brand</th>
-                                    <th class="py-2 px-4 border-b text-left">Model</th>
-                                    <th class="py-2 px-4 border-b text-left">Variant</th>
-                                    <th class="py-2 px-4 border-b text-left">Color</th>
-                                    <th class="py-2 px-4 border-b text-left">Price</th>
-                                    <th class="py-2 px-4 border-b text-left">Notes</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Color</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Notes</th>
                                 </tr>
                             </thead>
                             <tbody id="stock-table-body"></tbody>
@@ -129,19 +199,19 @@
                         <input type="text" id="sale-imei" placeholder="15-Digit IMEI of sold item" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
                         <input type="number" id="sale-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
-                        <button type="submit" class="md:col-span-2 lg:col-span-3 bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600 transition-colors">Record Sale</button>
+                        <button type="submit" style="background-color: var(--success);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sale</button>
                     </form>
                     <h3 class="text-lg font-semibold mt-8 mb-4">Today's Sales</h3>
                      <div class="table-container">
-                        <table class="min-w-full bg-white">
-                            <thead class="bg-gray-100 sticky top-0">
+                        <table class="min-w-full">
+                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
                                 <tr>
-                                    <th class="py-2 px-4 border-b text-left">IMEI</th>
-                                    <th class="py-2 px-4 border-b text-left">Brand</th>
-                                    <th class="py-2 px-4 border-b text-left">Model</th>
-                                    <th class="py-2 px-4 border-b text-left">Price</th>
-                                    <th class="py-2 px-4 border-b text-left">Incentive</th>
-                                    <th class="py-2 px-4 border-b text-left">Notes</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Incentive</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Notes</th>
                                 </tr>
                             </thead>
                             <tbody id="sales-table-body"></tbody>
@@ -155,7 +225,7 @@
                     <form id="transfer-out-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <input type="text" id="tout-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
                         <input type="text" id="tout-notes" placeholder="Notes (e.g., Destination)" class="form-input w-full p-2 border rounded-md md:col-span-2 lg:col-span-2">
-                        <button type="submit" class="md:col-span-2 lg:col-span-3 bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-600 transition-colors">Transfer Out</button>
+                        <button type="submit" style="background-color: var(--destructive);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer Out</button>
                     </form>
                 </div>
                 
@@ -170,7 +240,7 @@
                         <input type="text" id="tin-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                         <input type="number" id="tin-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="tin-notes" placeholder="Notes (e.g., Origin)" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
-                        <button type="submit" class="md:col-span-2 lg:col-span-3 bg-purple-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-purple-600 transition-colors">Transfer In</button>
+                        <button type="submit" style="background-color: var(--special);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer In</button>
                     </form>
                 </div>
 
@@ -179,11 +249,11 @@
                     <h2 class="text-xl font-semibold mb-4">Stock Level Check</h2>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
-                            <h3 class="font-semibold text-lg text-green-700 mb-2">High Stock Products</h3>
+                            <h3 class="font-semibold text-lg mb-2" style="color: var(--success);">High Stock Products</h3>
                             <div id="high-stock-list" class="space-y-2"></div>
                         </div>
                          <div>
-                            <h3 class="font-semibold text-lg text-red-700 mb-2">Low Stock Products</h3>
+                            <h3 class="font-semibold text-lg mb-2" style="color: var(--destructive);">Low Stock Products</h3>
                             <div id="low-stock-list" class="space-y-2"></div>
                         </div>
                     </div>
@@ -193,12 +263,27 @@
         </div>
         
         <!-- Toast Notification -->
-        <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
+        <div id="toast" class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
             <span id="toast-message"></span>
         </div>
     </div>
 
 <script>
+    // --- DARK MODE ---
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    
+    function applyDarkMode(isDark) { 
+        document.documentElement.classList.toggle('dark', isDark);
+        localStorage.setItem("darkMode", isDark);
+    }
+    
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedMode = localStorage.getItem("darkMode");
+    const initialDarkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+    darkModeToggle.checked = initialDarkMode;
+    applyDarkMode(initialDarkMode);
+
+
     // --- STATE MANAGEMENT ---
     let state = {
         inventory: [],
@@ -213,11 +298,13 @@
         const toastMessage = document.getElementById('toast-message');
         toastMessage.textContent = message;
 
-        toast.classList.remove('bg-gray-800', 'bg-red-500', 'bg-green-500');
+        toast.classList.remove('bg-red-500', 'bg-green-500');
+        toast.style.backgroundColor = '';
+
         if (type === 'error') {
-            toast.classList.add('bg-red-500');
+            toast.style.backgroundColor = 'var(--destructive)';
         } else {
-            toast.classList.add('bg-green-500');
+            toast.style.backgroundColor = 'var(--success)';
         }
 
         toast.classList.remove('opacity-0');
@@ -258,8 +345,14 @@
 
         document.querySelectorAll('.tab').forEach(tab => {
             tab.classList.remove('tab-active');
+            tab.style.color = 'var(--text-secondary)';
+            tab.style.borderColor = 'transparent';
         });
-        document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('tab-active');
+        const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+        activeTab.classList.add('tab-active');
+        activeTab.style.color = 'var(--accent-primary)';
+        activeTab.style.borderColor = 'var(--accent-primary)';
+
     };
 
     // --- RENDERING FUNCTIONS ---
@@ -283,19 +376,19 @@
         const tableBody = document.getElementById('stock-table-body');
         tableBody.innerHTML = '';
         if (state.inventory.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-gray-500">No items in stock.</td></tr>';
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No items in stock.</td></tr>`;
             return;
         }
         state.inventory.forEach(item => {
             const row = `
-                <tr class="hover:bg-gray-50">
-                    <td class="py-2 px-4 border-b">${item.imei}</td>
-                    <td class="py-2 px-4 border-b">${item.brand}</td>
-                    <td class="py-2 px-4 border-b">${item.model}</td>
-                    <td class="py-2 px-4 border-b">${item.variant}</td>
-                    <td class="py-2 px-4 border-b">${item.color}</td>
-                    <td class="py-2 px-4 border-b">${formatCurrency(item.price)}</td>
-                    <td class="py-2 px-4 border-b">${item.notes}</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.notes}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -306,18 +399,18 @@
         const tableBody = document.getElementById('sales-table-body');
         tableBody.innerHTML = '';
         if (state.sales.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">No sales recorded today.</td></tr>';
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded today.</td></tr>`;
             return;
         }
         state.sales.forEach(item => {
             const row = `
-                <tr class="hover:bg-gray-50">
-                    <td class="py-2 px-4 border-b">${item.imei}</td>
-                    <td class="py-2 px-4 border-b">${item.brand}</td>
-                    <td class="py-2 px-4 border-b">${item.model}</td>
-                    <td class="py-2 px-4 border-b">${formatCurrency(item.price)}</td>
-                    <td class="py-2 px-4 border-b">${formatCurrency(item.incentive)}</td>
-                    <td class="py-2 px-4 border-b">${item.notes}</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.notes}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -339,8 +432,8 @@
         const sortedStock = Object.entries(stockCounts).sort(([,a],[,b]) => b - a);
         
         if(sortedStock.length === 0) {
-            highStockList.innerHTML = '<p class="text-gray-500">No stock to analyze.</p>';
-            lowStockList.innerHTML = '<p class="text-gray-500">No stock to analyze.</p>';
+            highStockList.innerHTML = `<p style="color: var(--text-secondary);">No stock to analyze.</p>`;
+            lowStockList.innerHTML = `<p style="color: var(--text-secondary);">No stock to analyze.</p>`;
             return;
         }
 
@@ -348,9 +441,9 @@
         
         sortedStock.forEach(([name, count]) => {
             const itemHtml = `
-                <div class="flex justify-between items-center bg-gray-100 p-2 rounded-md">
+                <div class="flex justify-between items-center p-2 rounded-md" style="background-color: var(--bg-tertiary);">
                     <span class="text-sm">${name}</span>
-                    <span class="font-bold text-sm px-2 py-1 rounded-full ${count > LOW_STOCK_THRESHOLD ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">${count}</span>
+                    <span class="font-bold text-sm px-2 py-1 rounded-full ${count > LOW_STOCK_THRESHOLD ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'}">${count}</span>
                 </div>`;
 
             if (count > LOW_STOCK_THRESHOLD) {
@@ -361,10 +454,10 @@
         });
 
         if (highStockList.innerHTML === '') {
-            highStockList.innerHTML = '<p class="text-gray-500">No items with high stock levels.</p>';
+            highStockList.innerHTML = `<p style="color: var(--text-secondary);">No items with high stock levels.</p>`;
         }
         if (lowStockList.innerHTML === '') {
-            lowStockList.innerHTML = '<p class="text-gray-500">No items with low stock levels.</p>';
+            lowStockList.innerHTML = `<p style="color: var(--text-secondary);">No items with low stock levels.</p>`;
         }
     };
     
@@ -477,11 +570,16 @@
 
     // --- INITIALIZATION ---
     document.addEventListener('DOMContentLoaded', () => {
+        darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         loadState();
         renderAll();
+        // Set initial active tab styles
+        changeTab('dashboard');
     });
 </script>
 
 </body>
 </html>
+
+
