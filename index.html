@@ -1112,10 +1112,12 @@
         const adminTab = document.getElementById('admin-tab-btn');
         const viewOnlyBanner = document.getElementById('view-only-banner');
         const forms = document.querySelectorAll('form');
+        const downloadButtons = document.querySelectorAll('.download-btn');
 
         if (role === 'admin' || role === 'editor') {
             viewOnlyBanner.classList.add('hidden');
             forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = false));
+            downloadButtons.forEach(btn => btn.style.display = 'block');
             if (role === 'admin') {
                 roleBadge.classList.add('bg-purple-200', 'text-purple-800');
                 adminTab.classList.remove('hidden');
@@ -1128,6 +1130,7 @@
             adminTab.classList.add('hidden');
             viewOnlyBanner.classList.remove('hidden');
             forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = true));
+            downloadButtons.forEach(btn => btn.style.display = 'none');
         }
     };
     
