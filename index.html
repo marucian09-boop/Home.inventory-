@@ -103,6 +103,15 @@
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
+        .row-highlight {
+            animation: highlight-animation 2s ease-out;
+        }
+
+        @keyframes highlight-animation {
+            0% { background-color: color-mix(in srgb, var(--accent-primary) 30%, transparent); }
+            100% { background-color: transparent; }
+        }
+
         /* Responsive Table Styles */
         @media screen and (max-width: 768px) {
             .responsive-table thead {
@@ -233,18 +242,32 @@
             <div id="tab-content">
                 <!-- Dashboard -->
                 <div id="dashboard" class="tab-pane">
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div style="background-color: var(--info-bg); color: var(--info-text);" class="p-6 rounded-lg">
-                            <h3 class="font-semibold text-lg" id="dashboard-sales-title">Sales for Today</h3>
-                            <p class="text-3xl font-bold mt-2" id="dashboard-sales">₱0.00</p>
+                    <!-- Search Section -->
+                    <div id="search-section" class="mb-6">
+                        <h2 class="text-xl font-semibold mb-4">System-Wide Search</h2>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="search-input" placeholder="Search by IMEI..." class="form-input flex-grow" maxlength="15">
+                            <button id="search-btn" style="background-color: var(--accent-primary);" class="text-white font-semibold py-2 px-6 rounded-md transition-colors">Search</button>
                         </div>
-                        <div style="background-color: var(--success-card-bg); color: var(--success-card-text);" class="p-6 rounded-lg">
-                            <h3 class="font-semibold text-lg">Total Stock Items</h3>
-                            <p class="text-3xl font-bold mt-2" id="dashboard-stock">0</p>
+                        <div id="search-results-container" class="mt-4">
+                            <!-- Search results will be injected here -->
                         </div>
-                        <div style="background-color: var(--warning-bg); color: var(--warning-text);" class="p-6 rounded-lg">
-                            <h3 class="font-semibold text-lg" id="dashboard-incentives-title">Incentives for Today</h3>
-                            <p class="text-3xl font-bold mt-2" id="dashboard-incentives">₱0.00</p>
+                    </div>
+                    
+                    <div class="border-t pt-6" style="border-color: var(--border-primary);">
+                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div style="background-color: var(--info-bg); color: var(--info-text);" class="p-6 rounded-lg">
+                                <h3 class="font-semibold text-lg" id="dashboard-sales-title">Sales for Today</h3>
+                                <p class="text-3xl font-bold mt-2" id="dashboard-sales">₱0.00</p>
+                            </div>
+                            <div style="background-color: var(--success-card-bg); color: var(--success-card-text);" class="p-6 rounded-lg">
+                                <h3 class="font-semibold text-lg">Total Stock Items</h3>
+                                <p class="text-3xl font-bold mt-2" id="dashboard-stock">0</p>
+                            </div>
+                            <div style="background-color: var(--warning-bg); color: var(--warning-text);" class="p-6 rounded-lg">
+                                <h3 class="font-semibold text-lg" id="dashboard-incentives-title">Incentives for Today</h3>
+                                <p class="text-3xl font-bold mt-2" id="dashboard-incentives">₱0.00</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -645,6 +668,9 @@
     const editModalCloseBtn = document.getElementById('edit-modal-close-btn');
     const editModalCancelBtn = document.getElementById('edit-modal-cancel-btn');
     const editModalTitle = document.getElementById('edit-modal-title');
+    const searchBtn = document.getElementById('search-btn');
+    const searchInput = document.getElementById('search-input');
+    const searchResultsContainer = document.getElementById('search-results-container');
 
     // --- DARK MODE ---
     const darkModeToggle = document.getElementById("darkModeToggle");
@@ -726,7 +752,8 @@
     };
 
     const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        if (!date || !date.toDate) return 'N/A';
+        return date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     }
     
     // --- TAB MANAGEMENT ---
@@ -813,19 +840,20 @@
                     </button>`;
             }
 
-            const row = `
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                    <td data-label="Color" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color || ''}</td>
-                    <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
-                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-                </tr>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-inventory-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Color" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color || ''}</td>
+                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
-            tableBody.innerHTML += row;
+            tableBody.appendChild(row);
         });
     };
 
@@ -865,18 +893,19 @@
                     </button>`;
             }
 
-            const row = `
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
-                    <td data-label="Incentive" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
-                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-                </tr>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-sales-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
+                <td data-label="Incentive" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
-            tableBody.innerHTML += row;
+            tableBody.appendChild(row);
         });
     };
 
@@ -910,16 +939,17 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
                     </button>`;
             }
-            const row = `
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-                </tr>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-deliveries-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
-            tableBody.innerHTML += row;
+            tableBody.appendChild(row);
         });
     };
     
@@ -959,16 +989,17 @@
                     </button>`;
             }
 
-            const row = `
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-                </tr>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-transfersIn-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
-            tableBody.innerHTML += row;
+            tableBody.appendChild(row);
         });
     };
 
@@ -1008,16 +1039,17 @@
                     </button>`;
             }
             
-            const row = `
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-                </tr>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-transfersOut-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
-            tableBody.innerHTML += row;
+            tableBody.appendChild(row);
         });
     };
 
@@ -1663,6 +1695,95 @@
             }
         }
 
+        searchBtn.addEventListener('click', async () => {
+            const searchTerm = searchInput.value.trim();
+            if(!searchTerm) {
+                searchResultsContainer.innerHTML = '';
+                return;
+            }
+
+            searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
+            
+            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut'];
+            const results = [];
+
+            for (const collectionName of collectionsToSearch) {
+                const q = query(collection(db, collectionName), where("imei", "==", searchTerm));
+                const snapshot = await getDocs(q);
+                snapshot.forEach(doc => {
+                    results.push({ id: doc.id, type: collectionName, ...doc.data() });
+                });
+            }
+
+            renderSearchResults(results);
+        });
+
+        function renderSearchResults(results) {
+            searchResultsContainer.innerHTML = '';
+            if (results.length === 0) {
+                searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">No records found for that IMEI.</p>`;
+                return;
+            }
+
+            const resultsHtml = results.map(item => {
+                let status = '';
+                let date = '';
+                let tab = '';
+
+                switch(item.type) {
+                    case 'inventory': status = 'In Stock'; tab = 'stocks'; date = item.addedAt; break;
+                    case 'sales': status = 'Sold'; tab = 'sales'; date = item.soldAt; break;
+                    case 'deliveries': status = 'Delivered'; tab = 'deliveries'; date = item.addedAt; break;
+                    case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
+                    case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
+                }
+                
+                return `
+                    <button class="search-result-item w-full text-left p-3 my-1 rounded-md flex justify-between items-center" 
+                            style="background-color: var(--bg-tertiary);"
+                            data-doc-id="${item.id}" 
+                            data-doc-type="${tab}" 
+                            data-doc-date="${date.toDate().toISOString().split('T')[0]}">
+                        <div>
+                            <p class="font-semibold">${item.brand} ${item.model}</p>
+                            <p class="text-sm" style="color: var(--text-secondary);">${item.imei}</p>
+                        </div>
+                        <div class="text-right">
+                             <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background-color: var(--info-bg); color: var(--info-text);">${status}</span>
+                             <p class="text-xs mt-1" style="color: var(--text-secondary);">${formatDate(date)}</p>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+            searchResultsContainer.innerHTML = `
+                <h3 class="text-lg font-semibold mb-2">Search Results</h3>
+                ${resultsHtml}
+            `;
+        }
+        
+        searchResultsContainer.addEventListener('click', (e) => {
+            const resultItem = e.target.closest('.search-result-item');
+            if (resultItem) {
+                const { docId, docType, docDate } = resultItem.dataset;
+                
+                selectedDate = new Date(docDate);
+                dateFilter.value = docDate;
+                
+                changeTab(docType);
+
+                setTimeout(() => {
+                    const rowId = `row-${docType}-${docId}`;
+                    const row = document.getElementById(rowId);
+                    if (row) {
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        row.classList.add('row-highlight');
+                        setTimeout(() => row.classList.remove('row-highlight'), 2000);
+                    }
+                }, 500);
+            }
+        });
+
+
         // Generic event listener for action buttons
         document.getElementById('tab-content').addEventListener('click', async (e) => {
             const editBtn = e.target.closest('.edit-item-btn');
@@ -1701,7 +1822,6 @@
 
         document.querySelectorAll('.sort-select').forEach(select => {
             select.addEventListener('change', (e) => {
-                const sortType = e.target.value;
                 renderAll();
             });
         });
