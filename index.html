@@ -225,7 +225,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Color</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Notes</th>
-                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Actions</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="stock-table-body"></tbody>
@@ -331,14 +331,41 @@
     <!-- Confirmation Modal -->
     <div id="confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
-            <h3 class="text-lg font-bold mb-4" id="confirm-modal-title">Confirm Deletion</h3>
+            <h3 class="text-lg font-bold mb-4" id="confirm-modal-title">Confirm Action</h3>
             <p style="color: var(--text-secondary);" class="mb-6" id="confirm-modal-message"></p>
             <div class="flex justify-center gap-4">
                 <button id="confirm-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-24" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
-                <button id="confirm-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-24" style="background-color: var(--destructive);">Delete</button>
+                <button id="confirm-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-24" style="background-color: var(--destructive);">Confirm</button>
             </div>
         </div>
     </div>
+
+    <!-- Edit Item Modal -->
+    <div id="edit-item-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Edit Stock Item</h3>
+                <button id="edit-modal-close-btn">&times;</button>
+            </div>
+            <form id="edit-item-form">
+                <input type="hidden" id="edit-item-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="edit-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
+                    <input type="text" id="edit-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                    <input type="text" id="edit-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                    <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
+                    <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                    <input type="number" id="edit-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                    <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-2" rows="2"></textarea>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                     <button type="button" id="edit-modal-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-32" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
+                     <button type="submit" class="py-2 px-4 rounded-md font-semibold text-white w-32" style="background-color: var(--success);">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 <script type="module">
     // --- Firebase SDKs ---
@@ -412,6 +439,11 @@
     const confirmOkBtn = document.getElementById('confirm-ok-btn');
     const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
     const confirmModalMessage = document.getElementById('confirm-modal-message');
+
+    const editItemModal = document.getElementById('edit-item-modal');
+    const editItemForm = document.getElementById('edit-item-form');
+    const editModalCloseBtn = document.getElementById('edit-modal-close-btn');
+    const editModalCancelBtn = document.getElementById('edit-modal-cancel-btn');
 
     // --- DARK MODE ---
     const darkModeToggle = document.getElementById("darkModeToggle");
@@ -513,6 +545,9 @@
     };
     
     const renderStockTable = () => {
+        // Diagnostic log to confirm role status during render
+        console.log('Rendering stock table with role:', currentUserRole); 
+        
         const tableBody = document.getElementById('stock-table-body');
         tableBody.innerHTML = '';
         if (inventory.length === 0) {
@@ -521,15 +556,24 @@
         }
         inventory.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const deleteButtonHtml = canEdit ? `
-                <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">
-                    <button data-itemid="${item.id}" class="delete-stock-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50" title="Delete Item">
+            const isAdmin = currentUserRole === 'admin';
+            
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" class="edit-stock-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+             if (isAdmin) {
+                 actionsHtml += `<button data-itemid="${item.id}" class="delete-stock-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                         </svg>
-                    </button>
-                </td>
-            ` : `<td class="py-2 px-4 border-b" style="border-color: var(--border-primary);"></td>`;
+                    </button>`;
+            }
 
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
@@ -540,7 +584,7 @@
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color}</td>
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.notes}</td>
-                    ${deleteButtonHtml}
+                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -650,10 +694,6 @@
         if (inventoryUnsubscribe) inventoryUnsubscribe();
         if (salesUnsubscribe) salesUnsubscribe();
         if (usersUnsubscribe) usersUnsubscribe();
-        inventory = [];
-        sales = [];
-        currentUserRole = null;
-        renderAll();
     }
 
     const renderUserManagementTable = (users) => {
@@ -700,18 +740,22 @@
     // --- AUTHENTICATION & ROLE MANAGEMENT ---
     
     const initializeUserSession = (role, email) => {
-        currentUserRole = role;
+        currentUserRole = role; // Set the role first
         authContainer.classList.add('hidden');
         appContainer.classList.remove('hidden');
         document.getElementById('user-email').textContent = email;
-        updateUIAfterLogin(role);
-        setupListeners(role);
+        updateUIAfterLogin(role); // Update UI elements like badges
+        setupListeners(role);    // THEN set up data listeners
     };
 
     const cleanupSession = () => {
         authContainer.classList.remove('hidden');
         appContainer.classList.add('hidden');
         detachListeners();
+        // Explicitly clear data and role to prevent state leakage
+        inventory = [];
+        sales = [];
+        currentUserRole = null;
     };
 
     onAuthStateChanged(auth, async (user) => {
@@ -765,17 +809,17 @@
             roleBadge.classList.add('bg-purple-200', 'text-purple-800');
             adminTab.classList.remove('hidden');
             viewOnlyBanner.classList.add('hidden');
-            forms.forEach(f => f.querySelectorAll('input, button').forEach(el => el.disabled = false));
+            forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = false));
         } else if (role === 'editor') {
             roleBadge.classList.add('bg-blue-200', 'text-blue-800');
             adminTab.classList.add('hidden');
             viewOnlyBanner.classList.add('hidden');
-            forms.forEach(f => f.querySelectorAll('input, button').forEach(el => el.disabled = false));
+            forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = false));
         } else { // viewer
             roleBadge.classList.add('bg-gray-200', 'text-gray-800');
             adminTab.classList.add('hidden');
             viewOnlyBanner.classList.remove('hidden');
-            forms.forEach(f => f.querySelectorAll('input, button').forEach(el => el.disabled = true));
+            forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = true));
         }
     };
     
@@ -794,13 +838,7 @@
         }
     });
 
-    // --- Debugging Step 3: Confirm Auth Instance ---
-    console.log('Auth instance:', auth); 
-
     signinBtn.addEventListener('click', async () => {
-        // --- Debugging Step 1: Verify Click Handler ---
-        console.log('🔑 Sign-in button clicked');
-        
         const email = document.getElementById('signin-email').value;
         const password = document.getElementById('signin-password').value;
         authError.style.display = 'none';
@@ -812,9 +850,13 @@
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
-            // --- Debugging Step 2: Look for Errors ---
             console.error('Sign-in error:', error);
-            authError.textContent = error.message;
+            // Provide a more user-friendly message for invalid credentials.
+            if (error.code === 'auth/invalid-credential') {
+                authError.textContent = 'Incorrect email or password. Please try again.';
+            } else {
+                authError.textContent = error.message;
+            }
             authError.style.display = 'block';
         } finally {
             // Always restore button state
@@ -903,7 +945,7 @@
         }
     });
 
-    // --- UI TOGGLES ---
+    // --- UI TOGGLES AND MODALS ---
     showSignupBtn.addEventListener('click', () => {
         signinForm.classList.add('hidden');
         signupForm.classList.remove('hidden');
@@ -916,15 +958,67 @@
         authError.style.display = 'none';
     });
 
+    const openEditModal = (item) => {
+        editItemForm.elements['edit-item-id'].value = item.id;
+        editItemForm.elements['edit-imei'].value = item.imei;
+        editItemForm.elements['edit-brand'].value = item.brand;
+        editItemForm.elements['edit-model'].value = item.model;
+        editItemForm.elements['edit-variant'].value = item.variant;
+        editItemForm.elements['edit-color'].value = item.color;
+        editItemForm.elements['edit-price'].value = item.price;
+        editItemForm.elements['edit-notes'].value = item.notes;
+        editItemModal.classList.remove('hidden');
+    };
+
+    const closeEditModal = () => {
+        editItemModal.classList.add('hidden');
+        editItemForm.reset();
+    };
+
+    editModalCloseBtn.addEventListener('click', closeEditModal);
+    editModalCancelBtn.addEventListener('click', closeEditModal);
+
+    editItemForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const itemId = e.target.elements['edit-item-id'].value;
+        const updatedData = {
+            brand: e.target.elements['edit-brand'].value.trim(),
+            model: e.target.elements['edit-model'].value.trim(),
+            variant: e.target.elements['edit-variant'].value.trim(),
+            color: e.target.elements['edit-color'].value.trim(),
+            price: parseFloat(e.target.elements['edit-price'].value),
+            notes: e.target.elements['edit-notes'].value.trim()
+        };
+
+        try {
+            const itemRef = doc(db, 'inventory', itemId);
+            await updateDoc(itemRef, updatedData);
+            showToast('Item updated successfully.', 'success');
+            closeEditModal();
+        } catch (error) {
+            console.error("Error updating item:", error);
+            showToast('Failed to update item.', 'error');
+        }
+    });
 
     // --- INITIALIZATION ---
     document.addEventListener('DOMContentLoaded', () => {
         darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
         changeTab('dashboard');
 
-        // Add event listener for stock deletion
+        // Add event listener for stock actions
         document.getElementById('stock-table-body').addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.edit-stock-item-btn');
             const deleteBtn = e.target.closest('.delete-stock-item-btn');
+
+            if (editBtn) {
+                const itemId = editBtn.dataset.itemid;
+                const item = inventory.find(i => i.id === itemId);
+                if (item) {
+                    openEditModal(item);
+                }
+            }
+            
             if (deleteBtn) {
                 const itemId = deleteBtn.dataset.itemid;
                 showConfirm('Are you sure you want to permanently delete this item from stock?', async () => {
