@@ -253,6 +253,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Incentive</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Notes</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="sales-table-body"></tbody>
@@ -387,6 +388,7 @@
                     <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
                     <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                     <input type="number" id="edit-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                    <input type="number" id="edit-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md">
                     <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-2" rows="2"></textarea>
                 </div>
                 <div class="flex justify-end gap-4 mt-6">
@@ -596,8 +598,6 @@
     };
     
     const renderStockTable = () => {
-        console.log('Rendering stock table with role:', currentUserRole); 
-        
         const tableBody = document.getElementById('stock-table-body');
         tableBody.innerHTML = '';
         if (inventory.length === 0) {
@@ -645,10 +645,29 @@
         const tableBody = document.getElementById('sales-table-body');
         tableBody.innerHTML = '';
         if (sales.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded today.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded today.</td></tr>`;
             return;
         }
         sales.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="sales" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+             if (isAdmin) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="sales" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
@@ -657,6 +676,7 @@
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
                     <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.notes}</td>
+                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -1183,7 +1203,20 @@
         editItemForm.elements['edit-variant'].value = item.variant || '';
         editItemForm.elements['edit-color'].value = item.color || '';
         editItemForm.elements['edit-price'].value = item.price;
+        editItemForm.elements['edit-incentive'].value = item.incentive || '';
         editItemForm.elements['edit-notes'].value = item.notes;
+
+        // Show/hide fields based on type
+        const incentiveField = editItemForm.elements['edit-incentive'];
+        const priceField = editItemForm.elements['edit-price'];
+        if (type === 'sales') {
+            incentiveField.parentElement.style.display = 'block';
+            priceField.disabled = true;
+        } else {
+            incentiveField.parentElement.style.display = 'none';
+            priceField.disabled = false;
+        }
+
         editItemModal.classList.remove('hidden');
     };
 
@@ -1200,14 +1233,19 @@
         const itemId = e.target.elements['edit-item-id'].value;
         const itemType = e.target.elements['edit-item-type'].value;
 
-        const updatedData = {
+        let updatedData = {
             brand: e.target.elements['edit-brand'].value.trim(),
             model: e.target.elements['edit-model'].value.trim(),
             variant: e.target.elements['edit-variant'].value.trim(),
             color: e.target.elements['edit-color'].value.trim(),
-            price: parseFloat(e.target.elements['edit-price'].value),
             notes: e.target.elements['edit-notes'].value.trim()
         };
+
+        if(itemType === 'sales') {
+            updatedData.incentive = parseFloat(e.target.elements['edit-incentive'].value) || 0;
+        } else {
+            updatedData.price = parseFloat(e.target.elements['edit-price'].value);
+        }
 
         try {
             const itemRef = doc(db, itemType, itemId);
@@ -1237,6 +1275,7 @@
                 if(itemType === 'inventory') item = inventory.find(i => i.id === itemId);
                 if(itemType === 'transfersIn') item = transfersIn.find(i => i.id === itemId);
                 if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
+                if(itemType === 'sales') item = sales.find(i => i.id === itemId);
                 
                 if (item) {
                     openEditModal(item, itemType);
