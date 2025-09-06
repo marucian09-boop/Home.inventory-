@@ -102,13 +102,58 @@
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Responsive Table Styles */
+        @media screen and (max-width: 768px) {
+            .responsive-table thead {
+                display: none;
+            }
+            .responsive-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid var(--border-primary);
+                border-radius: 0.5rem;
+                padding: 1rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .dark .responsive-table tr {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid var(--border-primary);
+                text-align: right;
+                font-size: 0.875rem;
+            }
+            .responsive-table td:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+             .responsive-table td:first-child {
+                padding-top: 0;
+            }
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                text-align: left;
+                margin-right: 1rem;
+                color: var(--text-primary);
+            }
+            .responsive-table td[data-label="Actions"] {
+                 justify-content: flex-end;
+                 padding-top: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- Auth Container -->
-    <div id="auth-container" class="min-h-screen flex items-center justify-center">
-        <div class="max-w-md w-full space-y-8 p-10 rounded-xl shadow-lg" style="background-color: var(--bg-secondary);">
+    <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full space-y-8 p-8 sm:p-10 rounded-xl shadow-lg" style="background-color: var(--bg-secondary);">
             <div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold" style="color: var(--text-primary);">
                     Sign in or create an account
@@ -137,12 +182,12 @@
 
 
     <!-- App Container -->
-    <div id="app-container" class="hidden container mx-auto p-4 sm:p-6 lg:p-8">
+    <div id="app-container" class="hidden container mx-auto p-2 sm:p-6 lg:p-8">
         <header class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-3xl font-bold" style="color: var(--text-primary);">Inventory Dashboard</h1>
-                <div id="user-info" class="flex items-center gap-4 mt-2">
-                    <p style="color: var(--text-secondary);" id="user-email"></p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-center sm:text-left" style="color: var(--text-primary);">Inventory Dashboard</h1>
+                <div id="user-info" class="flex items-center justify-center sm:justify-start gap-4 mt-2">
+                    <p style="color: var(--text-secondary);" id="user-email" class="text-sm"></p>
                     <span id="user-role-badge" class="text-xs font-semibold px-2 py-1 rounded-full"></span>
                     <button id="signout-btn" style="background-color: var(--destructive);" class="text-white text-xs font-semibold py-1 px-3 rounded-md transition-colors">Sign Out</button>
                 </div>
@@ -161,9 +206,9 @@
         </div>
 
         <!-- Main Content -->
-        <div style="background-color: var(--bg-secondary); box-shadow: var(--shadow-lg);" class="rounded-xl p-4 sm:p-6">
+        <div style="background-color: var(--bg-secondary); box-shadow: var(--shadow-lg);" class="rounded-xl p-2 sm:p-6">
             <!-- Date Filter -->
-            <div class="flex items-center gap-4 mb-4 pb-4 border-b" style="border-color: var(--border-primary);">
+            <div class="flex flex-wrap items-center gap-4 mb-4 pb-4 border-b" style="border-color: var(--border-primary);">
                  <label for="date-filter" class="font-semibold text-sm">Showing data for:</label>
                  <input type="date" id="date-filter" class="form-input p-2 border rounded-md">
                  <button id="goto-today-btn" class="text-sm font-semibold py-2 px-4 rounded-md" style="background-color: var(--bg-tertiary);">Today</button>
@@ -223,8 +268,8 @@
                         <h3 class="text-lg font-semibold" id="deliveries-title">Today's Deliveries</h3>
                     </div>
                      <div class="table-container">
-                        <table class="min-w-full">
-                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                        <table class="min-w-full responsive-table">
+                            <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
@@ -245,8 +290,8 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="inventory" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <div class="table-container">
-                        <table class="min-w-full">
-                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                        <table class="min-w-full responsive-table">
+                            <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
@@ -277,8 +322,8 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="sales" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                      <div class="table-container">
-                        <table class="min-w-full">
-                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                        <table class="min-w-full responsive-table">
+                            <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
@@ -306,8 +351,8 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <div class="table-container">
-                        <table class="min-w-full">
-                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                        <table class="min-w-full responsive-table">
+                            <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
@@ -339,7 +384,7 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersIn" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <div class="table-container">
-                        <table class="min-w-full">
+                        <table class="min-w-full responsive-table">
                             <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
@@ -373,8 +418,8 @@
                 <div id="admin" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Manage User Roles</h2>
                     <div class="table-container">
-                        <table class="min-w-full">
-                             <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                        <table class="min-w-full responsive-table">
+                             <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">User Email</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Current Role</th>
@@ -680,14 +725,14 @@
 
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color || ''}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                    <td data-label="Color" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color || ''}</td>
+                    <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -724,12 +769,12 @@
 
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td data-label="Incentive" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
+                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -760,11 +805,11 @@
             }
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -801,11 +846,11 @@
 
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -842,11 +887,11 @@
             
             const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                    <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                    <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -967,9 +1012,9 @@
             const isCurrentUser = user.id === currentUserId;
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.email}</td>
-                <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.role}</td>
-                <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">
+                <td data-label="Email" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.email}</td>
+                <td data-label="Role" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.role}</td>
+                <td data-label="Change Role" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">
                     ${!isCurrentUser ? `
                     <select class="form-select p-2 border rounded-md" data-userid="${user.id}">
                         <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
