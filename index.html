@@ -268,6 +268,21 @@
                         <input type="text" id="tout-notes" placeholder="Notes (e.g., Destination)" class="form-input w-full p-2 border rounded-md md:col-span-2 lg:col-span-2">
                         <button type="submit" style="background-color: var(--destructive);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer Out</button>
                     </form>
+                    <h3 class="text-lg font-semibold mt-8 mb-4">Today's Transfers Out</h3>
+                    <div class="table-container">
+                        <table class="min-w-full">
+                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Notes</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transfer-out-table-body"></tbody>
+                        </table>
+                    </div>
                 </div>
                 
                 <!-- Stock Transfer In -->
@@ -283,6 +298,21 @@
                         <input type="text" id="tin-notes" placeholder="Notes (e.g., Origin)" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--special);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer In</button>
                     </form>
+                    <h3 class="text-lg font-semibold mt-8 mb-4">Today's Transfers In</h3>
+                    <div class="table-container">
+                        <table class="min-w-full">
+                            <thead style="background-color: var(--bg-tertiary);" class="sticky top-0">
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Notes</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transfer-in-table-body"></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Stock Level -->
@@ -335,7 +365,7 @@
             <p style="color: var(--text-secondary);" class="mb-6" id="confirm-modal-message"></p>
             <div class="flex justify-center gap-4">
                 <button id="confirm-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-24" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
-                <button id="confirm-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-24" style="background-color: var(--destructive);">Confirm</button>
+                <button id="confirm-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-24">Confirm</button>
             </div>
         </div>
     </div>
@@ -344,11 +374,12 @@
     <div id="edit-item-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Edit Stock Item</h3>
+                <h3 class="text-xl font-bold" id="edit-modal-title">Edit Stock Item</h3>
                 <button id="edit-modal-close-btn">&times;</button>
             </div>
             <form id="edit-item-form">
                 <input type="hidden" id="edit-item-id">
+                <input type="hidden" id="edit-item-type">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" id="edit-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
                     <input type="text" id="edit-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
@@ -417,8 +448,12 @@
     let usersUnsubscribe = null;
     let inventoryUnsubscribe = null;
     let salesUnsubscribe = null;
+    let transfersInUnsubscribe = null;
+    let transfersOutUnsubscribe = null;
     let inventory = [];
     let sales = [];
+    let transfersIn = [];
+    let transfersOut = [];
     
     // --- UI Elements ---
     const authContainer = document.getElementById('auth-container');
@@ -438,12 +473,14 @@
     const confirmModal = document.getElementById('confirm-modal');
     const confirmOkBtn = document.getElementById('confirm-ok-btn');
     const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+    const confirmModalTitle = document.getElementById('confirm-modal-title');
     const confirmModalMessage = document.getElementById('confirm-modal-message');
 
     const editItemModal = document.getElementById('edit-item-modal');
     const editItemForm = document.getElementById('edit-item-form');
     const editModalCloseBtn = document.getElementById('edit-modal-close-btn');
     const editModalCancelBtn = document.getElementById('edit-modal-cancel-btn');
+    const editModalTitle = document.getElementById('edit-modal-title');
 
     // --- DARK MODE ---
     const darkModeToggle = document.getElementById("darkModeToggle");
@@ -485,8 +522,20 @@
     };
     
     let confirmCallback = null;
-    const showConfirm = (message, onConfirm) => {
+    const showConfirm = (message, onConfirm, options = {}) => {
+        const { title = 'Confirm Action', okText = 'Confirm', okClass = 'destructive' } = options;
+        
+        confirmModalTitle.textContent = title;
         confirmModalMessage.textContent = message;
+        confirmOkBtn.textContent = okText;
+
+        confirmOkBtn.style.backgroundColor = ''; // Reset
+        if(okClass === 'destructive') {
+            confirmOkBtn.style.backgroundColor = 'var(--destructive)';
+        } else {
+            confirmOkBtn.style.backgroundColor = 'var(--success)';
+        }
+
         confirmModal.classList.remove('hidden');
         confirmCallback = onConfirm;
     };
@@ -533,6 +582,8 @@
         renderStockTable();
         renderSalesTable();
         renderStockLevels();
+        renderTransfersInTable();
+        renderTransfersOutTable();
     };
 
     const renderDashboard = () => {
@@ -545,7 +596,6 @@
     };
     
     const renderStockTable = () => {
-        // Diagnostic log to confirm role status during render
         console.log('Rendering stock table with role:', currentUserRole); 
         
         const tableBody = document.getElementById('stock-table-body');
@@ -560,7 +610,7 @@
             
             let actionsHtml = '';
             if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" class="edit-stock-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="inventory" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
@@ -568,7 +618,7 @@
                     </button>`;
             }
              if (isAdmin) {
-                 actionsHtml += `<button data-itemid="${item.id}" class="delete-stock-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="inventory" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                         </svg>
@@ -613,6 +663,58 @@
         });
     };
     
+    const renderTransfersInTable = () => {
+        const tableBody = document.getElementById('transfer-in-table-body');
+        tableBody.innerHTML = '';
+        if (transfersIn.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded today.</td></tr>`;
+            return;
+        }
+        transfersIn.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = canEdit ? `<button data-itemid="${item.id}" data-type="transfersIn" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">...</button>` : '';
+            if (isAdmin) actionsHtml += `<button data-itemid="${item.id}" data-type="transfersIn" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">...</button>`;
+
+            const row = `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.notes}</td>
+                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    };
+
+    const renderTransfersOutTable = () => {
+        const tableBody = document.getElementById('transfer-out-table-body');
+        tableBody.innerHTML = '';
+        if (transfersOut.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded today.</td></tr>`;
+            return;
+        }
+        transfersOut.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = canEdit ? `<button data-itemid="${item.id}" data-type="transfersOut" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">...</button>` : '';
+            if (isAdmin) actionsHtml += `<button data-itemid="${item.id}" data-type="transfersOut" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">...</button>`;
+            
+            const row = `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                    <td class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.notes}</td>
+                    <td class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    };
+
     const renderStockLevels = () => {
         const highStockList = document.getElementById('high-stock-list');
         const lowStockList = document.getElementById('low-stock-list');
@@ -660,20 +762,30 @@
     // --- Firestore Data Handling ---
     const setupListeners = (role) => {
         detachListeners();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        // Listen to the shared inventory
         const inventoryRef = collection(db, "inventory");
         inventoryUnsubscribe = onSnapshot(inventoryRef, (snapshot) => {
             inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
 
-        // Listen to today's shared sales
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
         const salesQuery = query(collection(db, "sales"), where("soldAt", ">=", today));
         salesUnsubscribe = onSnapshot(salesQuery, (snapshot) => {
             sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        const transfersInQuery = query(collection(db, "transfersIn"), where("transferredAt", ">=", today));
+        transfersInUnsubscribe = onSnapshot(transfersInQuery, (snapshot) => {
+            transfersIn = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        const transfersOutQuery = query(collection(db, "transfersOut"), where("transferredAt", ">=", today));
+        transfersOutUnsubscribe = onSnapshot(transfersOutQuery, (snapshot) => {
+            transfersOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
 
@@ -693,6 +805,8 @@
     const detachListeners = () => {
         if (inventoryUnsubscribe) inventoryUnsubscribe();
         if (salesUnsubscribe) salesUnsubscribe();
+        if (transfersInUnsubscribe) transfersInUnsubscribe();
+        if (transfersOutUnsubscribe) transfersOutUnsubscribe();
         if (usersUnsubscribe) usersUnsubscribe();
     }
 
@@ -755,6 +869,8 @@
         // Explicitly clear data and role to prevent state leakage
         inventory = [];
         sales = [];
+        transfersIn = [];
+        transfersOut = [];
         currentUserRole = null;
     };
 
@@ -764,12 +880,9 @@
             const userDoc = await getDoc(userDocRef);
 
             if (userDoc.exists()) {
-                // This is a returning user, or a new user whose doc was just created.
                 const userData = userDoc.data();
                 initializeUserSession(userData.role, userData.email);
             } else {
-                // This is a brand new user who just signed up.
-                // We need to create their document in Firestore.
                 const usersRef = collection(db, 'users');
                 const q = query(usersRef, limit(1));
                 const existingUsers = await getDocs(q);
@@ -782,7 +895,6 @@
                         role: newUserRole,
                         createdAt: serverTimestamp()
                     });
-                    // Now that the doc is created, initialize their session.
                     initializeUserSession(newUserRole, user.email);
                 } catch (error) {
                     console.error("Error creating user document:", error);
@@ -805,16 +917,16 @@
         const viewOnlyBanner = document.getElementById('view-only-banner');
         const forms = document.querySelectorAll('form');
 
-        if (role === 'admin') {
-            roleBadge.classList.add('bg-purple-200', 'text-purple-800');
-            adminTab.classList.remove('hidden');
+        if (role === 'admin' || role === 'editor') {
             viewOnlyBanner.classList.add('hidden');
             forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = false));
-        } else if (role === 'editor') {
-            roleBadge.classList.add('bg-blue-200', 'text-blue-800');
-            adminTab.classList.add('hidden');
-            viewOnlyBanner.classList.add('hidden');
-            forms.forEach(f => f.querySelectorAll('input, button, textarea').forEach(el => el.disabled = false));
+            if (role === 'admin') {
+                roleBadge.classList.add('bg-purple-200', 'text-purple-800');
+                adminTab.classList.remove('hidden');
+            } else {
+                 roleBadge.classList.add('bg-blue-200', 'text-blue-800');
+                adminTab.classList.add('hidden');
+            }
         } else { // viewer
             roleBadge.classList.add('bg-gray-200', 'text-gray-800');
             adminTab.classList.add('hidden');
@@ -829,7 +941,6 @@
         authError.style.display = 'none';
 
         try {
-            // The onAuthStateChanged observer will handle document creation.
             await createUserWithEmailAndPassword(auth, email, password);
             showToast('Account created successfully!', 'success');
         } catch (error) {
@@ -843,7 +954,6 @@
         const password = document.getElementById('signin-password').value;
         authError.style.display = 'none';
 
-        // Add loading state to button
         signinBtn.disabled = true;
         signinBtn.textContent = 'Signing In...';
 
@@ -851,7 +961,6 @@
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
             console.error('Sign-in error:', error);
-            // Provide a more user-friendly message for invalid credentials.
             if (error.code === 'auth/invalid-credential') {
                 authError.textContent = 'Incorrect email or password. Please try again.';
             } else {
@@ -859,7 +968,6 @@
             }
             authError.style.display = 'block';
         } finally {
-            // Always restore button state
             signinBtn.disabled = false;
             signinBtn.textContent = 'Sign In';
         }
@@ -873,7 +981,6 @@
     document.getElementById('delivery-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const imei = document.getElementById('del-imei').value.trim();
-        
         if(imei.length !== 15 || !/^\d+$/.test(imei)) {
             showToast('IMEI must be 15 digits.', 'error');
             return;
@@ -933,9 +1040,8 @@
 
         try {
             await runTransaction(db, async (transaction) => {
-                const salesRef = collection(db, 'sales');
                 transaction.delete(stockDoc.ref);
-                transaction.set(doc(salesRef), newSale);
+                transaction.set(doc(collection(db, 'sales')), newSale);
             });
             e.target.reset();
             showToast('Sale recorded successfully!');
@@ -944,6 +1050,87 @@
             showToast('Failed to record sale.', 'error');
         }
     });
+
+    document.getElementById('transfer-in-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('tin-imei').value.trim();
+        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
+            showToast('IMEI must be 15 digits.', 'error');
+            return;
+        }
+        
+        const inventoryRef = collection(db, 'inventory');
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const existing = await getDocs(q);
+        if(!existing.empty){
+            showToast('This IMEI already exists in stock.', 'error');
+            return;
+        }
+
+        const newItem = {
+            imei: imei,
+            brand: document.getElementById('tin-brand').value.trim(),
+            model: document.getElementById('tin-model').value.trim(),
+            variant: document.getElementById('tin-variant').value.trim(),
+            color: document.getElementById('tin-color').value.trim(),
+            price: parseFloat(document.getElementById('tin-price').value),
+            notes: document.getElementById('tin-notes').value.trim(),
+            transferredAt: serverTimestamp()
+        };
+        
+        try {
+            await runTransaction(db, async (transaction) => {
+                transaction.set(doc(collection(db, 'inventory')), newItem);
+                transaction.set(doc(collection(db, 'transfersIn')), newItem);
+            });
+            e.target.reset();
+            showToast('Item transferred in successfully!');
+        } catch (error) {
+            console.error("Error transferring item in: ", error);
+            showToast('Failed to transfer item in.', 'error');
+        }
+    });
+
+    document.getElementById('transfer-out-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('tout-imei').value.trim();
+        if (!imei) {
+            showToast('Please enter an IMEI to transfer out.', 'error');
+            return;
+        }
+
+        const inventoryRef = collection(db, 'inventory');
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            showToast('Item with this IMEI not found in stock.', 'error');
+            return;
+        }
+
+        const itemDoc = snapshot.docs[0];
+        const itemData = itemDoc.data();
+        const transferOutData = {
+            ...itemData,
+            notes: document.getElementById('tout-notes').value.trim(),
+            transferredAt: serverTimestamp()
+        };
+
+        showConfirm(`Are you sure you want to transfer out item with IMEI ${imei}?`, async () => {
+            try {
+                 await runTransaction(db, async (transaction) => {
+                    transaction.delete(itemDoc.ref);
+                    transaction.set(doc(collection(db, 'transfersOut')), transferOutData);
+                });
+                showToast('Item transferred out successfully.', 'success');
+                e.target.reset();
+            } catch (error) {
+                console.error("Error transferring item out:", error);
+                showToast('Failed to transfer item out.', 'error');
+            }
+        }, { title: 'Confirm Transfer Out', okText: 'Transfer' });
+    });
+
 
     // --- UI TOGGLES AND MODALS ---
     showSignupBtn.addEventListener('click', () => {
@@ -958,13 +1145,15 @@
         authError.style.display = 'none';
     });
 
-    const openEditModal = (item) => {
+    const openEditModal = (item, type) => {
+        editModalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)} Record`;
         editItemForm.elements['edit-item-id'].value = item.id;
+        editItemForm.elements['edit-item-type'].value = type;
         editItemForm.elements['edit-imei'].value = item.imei;
         editItemForm.elements['edit-brand'].value = item.brand;
         editItemForm.elements['edit-model'].value = item.model;
-        editItemForm.elements['edit-variant'].value = item.variant;
-        editItemForm.elements['edit-color'].value = item.color;
+        editItemForm.elements['edit-variant'].value = item.variant || '';
+        editItemForm.elements['edit-color'].value = item.color || '';
         editItemForm.elements['edit-price'].value = item.price;
         editItemForm.elements['edit-notes'].value = item.notes;
         editItemModal.classList.remove('hidden');
@@ -981,6 +1170,8 @@
     editItemForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const itemId = e.target.elements['edit-item-id'].value;
+        const itemType = e.target.elements['edit-item-type'].value;
+
         const updatedData = {
             brand: e.target.elements['edit-brand'].value.trim(),
             model: e.target.elements['edit-model'].value.trim(),
@@ -991,13 +1182,13 @@
         };
 
         try {
-            const itemRef = doc(db, 'inventory', itemId);
+            const itemRef = doc(db, itemType, itemId);
             await updateDoc(itemRef, updatedData);
-            showToast('Item updated successfully.', 'success');
+            showToast('Record updated successfully.', 'success');
             closeEditModal();
         } catch (error) {
-            console.error("Error updating item:", error);
-            showToast('Failed to update item.', 'error');
+            console.error("Error updating record:", error);
+            showToast('Failed to update record.', 'error');
         }
     });
 
@@ -1006,31 +1197,37 @@
         darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
         changeTab('dashboard');
 
-        // Add event listener for stock actions
-        document.getElementById('stock-table-body').addEventListener('click', async (e) => {
-            const editBtn = e.target.closest('.edit-stock-item-btn');
-            const deleteBtn = e.target.closest('.delete-stock-item-btn');
+        // Generic event listener for action buttons
+        document.getElementById('tab-content').addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.edit-item-btn');
+            const deleteBtn = e.target.closest('.delete-item-btn');
 
             if (editBtn) {
                 const itemId = editBtn.dataset.itemid;
-                const item = inventory.find(i => i.id === itemId);
+                const itemType = editBtn.dataset.type;
+                let item;
+                if(itemType === 'inventory') item = inventory.find(i => i.id === itemId);
+                if(itemType === 'transfersIn') item = transfersIn.find(i => i.id === itemId);
+                if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
+                
                 if (item) {
-                    openEditModal(item);
+                    openEditModal(item, itemType);
                 }
             }
             
             if (deleteBtn) {
                 const itemId = deleteBtn.dataset.itemid;
-                showConfirm('Are you sure you want to permanently delete this item from stock?', async () => {
+                const itemType = deleteBtn.dataset.type;
+                 showConfirm(`Are you sure you want to permanently delete this record? This action cannot be undone.`, async () => {
                     try {
-                        const itemRef = doc(db, 'inventory', itemId);
+                        const itemRef = doc(db, itemType, itemId);
                         await deleteDoc(itemRef);
-                        showToast('Item deleted successfully.', 'success');
+                        showToast('Record deleted successfully.', 'success');
                     } catch (error) {
-                        console.error("Error deleting item:", error);
-                        showToast('Failed to delete item.', 'error');
+                        console.error("Error deleting record:", error);
+                        showToast('Failed to delete record.', 'error');
                     }
-                });
+                }, { title: 'Confirm Deletion', okText: 'Delete' });
             }
         });
     });
