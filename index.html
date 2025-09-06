@@ -704,14 +704,19 @@
         authError.style.display = 'none';
 
         try {
-            const usersRef = collection(db, 'users');
-            const q = query(usersRef, limit(1));
-            const existingUsers = await getDocs(q);
-            const isFirstUser = existingUsers.empty;
-
+            // Step 1: Create user in Auth. This makes them authenticated for the next step.
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
+            // Step 2: Check if any other user documents exist in Firestore.
+            // This needs to be done *after* sign up, but before setting the doc
+            const usersRef = collection(db, 'users');
+            // We check for any doc other than the one we are about to create
+            const q = query(usersRef, where('__name__', '!=', user.uid), limit(1));
+            const existingUsers = await getDocs(q);
+            const isFirstUser = existingUsers.empty;
+            
+            // Step 3: Create the user document in Firestore with the correct role.
             const userDocRef = doc(db, 'users', user.uid);
             await setDoc(userDocRef, {
                 email: user.email,
@@ -729,7 +734,7 @@
 
     signinBtn.addEventListener('click', async () => {
         const email = document.getElementById('signin-email').value;
-        const password = document.getElementById('signup-password').value;
+        const password = document.getElementById('signin-password').value; // Corrected this line
         authError.style.display = 'none';
 
         try {
