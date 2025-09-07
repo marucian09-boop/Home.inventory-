@@ -362,7 +362,8 @@
                             <option value="Bank Transfer">Bank Transfer</option>
                             <option value="Others">Others</option>
                         </select>
-                        <input type="text" id="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sale-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-full">
                         <button type="submit" style="background-color: var(--success);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sale</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
@@ -387,6 +388,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Payment</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Incentive</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Receipt #</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
@@ -565,6 +567,7 @@
                         <option value="Bank Transfer">Bank Transfer</option>
                         <option value="Others">Others</option>
                     </select>
+                    <input type="text" id="edit-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
                     <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-2" rows="2"></textarea>
                 </div>
                 <div class="flex justify-end gap-4 mt-6">
@@ -610,7 +613,7 @@
         authDomain: "inventory-d4c22.firebaseapp.com",
         databaseURL: "https://inventory-d4c22-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "inventory-d4c22",
-        storageBucket: "inventory-d4c22.firebasestorage.app",
+        storageBucket: "inventory-d4c22.appspot.com",
         messagingSenderId: "99206301025",
         appId: "1:99206301025:web:8c636434bdfb69af3a3120",
         measurementId: "G-5C5DETNZG7"
@@ -870,7 +873,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -892,7 +895,7 @@
                         </svg>
                     </button>`;
             }
-
+            
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
             row.id = `row-sales-${item.id}`;
@@ -902,6 +905,7 @@
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
                 <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
                 <td data-label="Incentive" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
+                <td data-label="Receipt #" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.receiptNumber || 'N/A'}</td>
                 <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
@@ -1442,6 +1446,7 @@
             ...soldItemData,
             incentive: parseFloat(document.getElementById('sale-incentive').value) || 0,
             paymentOption: document.getElementById('sale-payment').value,
+            receiptNumber: document.getElementById('sale-receipt-number').value.trim(),
             notes: document.getElementById('sale-notes').value.trim(),
             soldAt: serverTimestamp(),
             authorEmail: currentUserEmail
@@ -1568,18 +1573,23 @@
         editItemForm.elements['edit-price'].value = item.price;
         editItemForm.elements['edit-incentive'].value = item.incentive || '';
         editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
+        editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
         editItemForm.elements['edit-notes'].value = item.notes;
 
         const incentiveField = editItemForm.elements['edit-incentive'].parentElement;
         const paymentField = editItemForm.elements['edit-payment'].parentElement;
+        const receiptField = editItemForm.elements['edit-receipt-number'].parentElement;
         const priceField = editItemForm.elements['edit-price'];
+        
         if (type === 'sales') {
             incentiveField.style.display = 'block';
             paymentField.style.display = 'block';
+            receiptField.style.display = 'block';
             priceField.disabled = true;
         } else {
             incentiveField.style.display = 'none';
             paymentField.style.display = 'none';
+            receiptField.style.display = 'none';
             priceField.disabled = false;
         }
 
@@ -1610,6 +1620,7 @@
         if(itemType === 'sales') {
             updatedData.incentive = parseFloat(e.target.elements['edit-incentive'].value) || 0;
             updatedData.paymentOption = e.target.elements['edit-payment'].value;
+            updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
         } else {
             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
         }
@@ -1727,7 +1738,7 @@
 
             const resultsHtml = results.map(item => {
                 let status = '';
-                let date = '';
+                let date = null;
                 let tab = '';
 
                 switch(item.type) {
@@ -1743,7 +1754,7 @@
                             style="background-color: var(--bg-tertiary);"
                             data-doc-id="${item.id}" 
                             data-doc-type="${tab}" 
-                            data-doc-date="${date.toDate().toISOString().split('T')[0]}">
+                            data-doc-date="${date?.toDate().toISOString().split('T')[0]}">
                         <div>
                             <p class="font-semibold">${item.brand} ${item.model}</p>
                             <p class="text-sm" style="color: var(--text-secondary);">${item.imei}</p>
