@@ -305,6 +305,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
@@ -336,9 +337,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
-                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
-                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Color</th>
-                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date Added</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
@@ -386,8 +385,8 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Payment</th>
-                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Incentive</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Receipt #</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
@@ -426,6 +425,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
@@ -468,6 +468,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
                                 </tr>
@@ -755,8 +756,10 @@
     };
 
     const formatDate = (date) => {
-        if (!date || !date.toDate) return 'N/A';
-        return date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        // Handle both JS Date objects and Firestore Timestamps
+        if (!date) return 'N/A';
+        const dateObj = date.toDate ? date.toDate() : new Date(date);
+        return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
     
     // --- TAB MANAGEMENT ---
@@ -850,9 +853,7 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Color" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.color || ''}</td>
-                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                <td data-label="Date Added" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
                 <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
@@ -903,8 +904,8 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
                 <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
-                <td data-label="Incentive" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.incentive)}</td>
                 <td data-label="Receipt #" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.receiptNumber || 'N/A'}</td>
                 <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
@@ -926,7 +927,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -950,6 +951,7 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
                 <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
@@ -970,7 +972,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -1000,6 +1002,7 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
                 <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
@@ -1020,7 +1023,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -1050,6 +1053,7 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
                 <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
@@ -1639,19 +1643,24 @@
     // --- INITIALIZATION ---
     document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        selectedDate = today;
         dateFilter.value = today.toISOString().split('T')[0];
 
         darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
         changeTab('dashboard');
 
         dateFilter.addEventListener('change', () => {
-            selectedDate = new Date(dateFilter.value);
+            const [year, month, day] = dateFilter.value.split('-').map(Number);
+            selectedDate = new Date(year, month - 1, day);
             setupListeners(currentUserRole);
         });
 
         gotoTodayBtn.addEventListener('click', () => {
-            selectedDate = new Date();
-            dateFilter.value = selectedDate.toISOString().split('T')[0];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            selectedDate = today;
+            dateFilter.value = today.toISOString().split('T')[0];
             setupListeners(currentUserRole);
         });
 
