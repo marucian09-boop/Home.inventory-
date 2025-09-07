@@ -375,6 +375,17 @@
                                     <option value="alphabetical">Brand (A-Z)</option>
                                  </select>
                             </div>
+                             <div class="flex items-center gap-2">
+                                <label for="sales-payment-filter" class="text-sm font-medium">Filter by:</label>
+                                 <select id="sales-payment-filter" class="form-select p-2 border rounded-md text-sm">
+                                    <option value="all">All Payments</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Credit Card">Credit Card</option>
+                                    <option value="Digital Wallet">Digital Wallet</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Others">Others</option>
+                                 </select>
+                            </div>
                             <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="sales" style="background-color: var(--bg-tertiary);">Download CSV</button>
                         </div>
                     </div>
@@ -1673,7 +1684,10 @@
                     data = inventory;
                     filename = 'current-inventory.csv';
                 }
-                if(type === 'sales') data = sales;
+                if(type === 'sales') {
+                    const paymentFilter = document.getElementById('sales-payment-filter').value;
+                    data = sales.filter(sale => paymentFilter === 'all' || sale.paymentOption === paymentFilter);
+                }
                 if(type === 'deliveries') data = deliveries;
                 if(type === 'transfersIn') data = transfersIn;
                 if(type === 'transfersOut') data = transfersOut;
@@ -1845,6 +1859,10 @@
                 renderAll();
             });
         });
+
+        document.getElementById('sales-payment-filter').addEventListener('change', (e) => {
+            renderSalesTable(document.getElementById('sales-sort').value);
+        })
     });
 </script>
 
