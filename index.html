@@ -231,6 +231,7 @@
                     <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
                     <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
                     <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
+                    <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
                     <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
                     <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn">Transfer In</button>
                     <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel">Stock Level</button>
@@ -411,6 +412,50 @@
                     </div>
                 </div>
                 
+                <!-- Accessories -->
+                <div id="accessories" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Add New Accessory</h2>
+                    <form id="accessory-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="acc-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-variant" placeholder="Variant (e.g., Color, Size)" class="form-input w-full p-2 border rounded-md">
+                        <select id="acc-type" class="form-select w-full p-2 border rounded-md" required>
+                            <option value="" disabled selected>Accessory Type</option>
+                            <option value="For Sale">For Sale</option>
+                            <option value="Freebie">Freebie</option>
+                        </select>
+                        <input type="number" id="acc-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Add Accessory</button>
+                    </form>
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="accessories-title">Today's Accessories</h3>
+                        <div class="flex items-center gap-2">
+                             <label for="accessories-sort" class="text-sm font-medium">Sort by:</label>
+                             <select id="accessories-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessories">
+                                <option value="latest">Latest First</option>
+                                <option value="alphabetical">Brand (A-Z)</option>
+                             </select>
+                        </div>
+                    </div>
+                     <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Type</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accessories-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Stock Transfer Out -->
                 <div id="transferOut" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Transfer Stock Out</h2>
@@ -570,7 +615,7 @@
                 <input type="hidden" id="edit-item-id">
                 <input type="hidden" id="edit-item-type">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div id="edit-imei-wrapper">
                         <label for="edit-imei" class="block text-sm font-medium mb-1">IMEI</label>
                         <input type="text" id="edit-imei" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
                     </div>
@@ -586,7 +631,7 @@
                         <label for="edit-variant" class="block text-sm font-medium mb-1">Variant</label>
                         <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
                     </div>
-                    <div>
+                    <div id="edit-color-wrapper">
                         <label for="edit-color" class="block text-sm font-medium mb-1">Color</label>
                         <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                     </div>
@@ -680,11 +725,13 @@
     let transfersInUnsubscribe = null;
     let transfersOutUnsubscribe = null;
     let deliveriesUnsubscribe = null;
+    let accessoriesUnsubscribe = null;
     let inventory = [];
     let sales = [];
     let transfersIn = [];
     let transfersOut = [];
     let deliveries = [];
+    let accessories = [];
     let selectedDate = new Date();
     
     // --- UI Elements ---
@@ -841,6 +888,7 @@
         renderDeliveriesTable(sortType);
         renderTransfersInTable(sortType);
         renderTransfersOutTable(sortType);
+        renderAccessoriesTable(sortType);
     };
 
     const renderDashboard = () => {
@@ -1176,6 +1224,58 @@
         }
     };
 
+    const renderAccessoriesTable = (sortType = 'latest') => {
+        document.getElementById('accessories-title').textContent = `Accessories for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('accessories-table-body');
+        tableBody.innerHTML = '';
+        
+        let sortedData = [...accessories];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
+        }
+        
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No accessories recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="accessories" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Accessory">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="accessories" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Accessory">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-accessories-${item.id}`;
+            row.innerHTML = `
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Type" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.type}</td>
+                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
+
+
     // --- Firestore Data Handling ---
     const setupListeners = (role) => {
         detachListeners();
@@ -1215,6 +1315,12 @@
             renderAll();
         });
 
+        const accessoriesQuery = query(collection(db, "accessories"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
+        accessoriesUnsubscribe = onSnapshot(accessoriesQuery, (snapshot) => {
+            accessories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
         if (role === 'admin') {
             setupAdminListeners();
         }
@@ -1235,6 +1341,7 @@
         if (transfersInUnsubscribe) transfersInUnsubscribe();
         if (transfersOutUnsubscribe) transfersOutUnsubscribe();
         if (usersUnsubscribe) usersUnsubscribe();
+        if (accessoriesUnsubscribe) accessoriesUnsubscribe();
     }
 
     const renderUserManagementTable = (users) => {
@@ -1336,6 +1443,7 @@
         deliveries = [];
         transfersIn = [];
         transfersOut = [];
+        accessories = [];
         currentUserRole = null;
         currentUserEmail = null;
     };
@@ -1622,6 +1730,49 @@
         }, { title: 'Confirm Transfer Out', okText: 'Transfer' });
     });
 
+    document.getElementById('accessory-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const type = document.getElementById('acc-type').value;
+        const priceInput = document.getElementById('acc-price');
+        let price = parseFloat(priceInput.value);
+
+        if (type === 'Freebie') {
+            price = 0;
+        }
+
+        const newAccessory = {
+            brand: document.getElementById('acc-brand').value.trim(),
+            model: document.getElementById('acc-model').value.trim(),
+            variant: document.getElementById('acc-variant').value.trim(),
+            type: type,
+            price: price,
+            addedAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+
+        try {
+            await addDoc(collection(db, 'accessories'), newAccessory);
+            e.target.reset();
+            priceInput.disabled = false;
+            priceInput.value = '';
+            showToast('Accessory added successfully!');
+        } catch (error) {
+            console.error("Error adding accessory:", error);
+            showToast('Failed to add accessory.', 'error');
+        }
+    });
+
+    document.getElementById('acc-type').addEventListener('change', (e) => {
+        const priceInput = document.getElementById('acc-price');
+        if(e.target.value === 'Freebie') {
+            priceInput.value = '0.00';
+            priceInput.disabled = true;
+        } else {
+            priceInput.value = '';
+            priceInput.disabled = false;
+        }
+    });
+
 
     // --- UI TOGGLES AND MODALS ---
     showSignupBtn.addEventListener('click', () => {
@@ -1640,33 +1791,60 @@
         editModalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)} Record`;
         editItemForm.elements['edit-item-id'].value = item.id;
         editItemForm.elements['edit-item-type'].value = type;
-        editItemForm.elements['edit-imei'].value = item.imei;
+        
+        // Common fields
         editItemForm.elements['edit-brand'].value = item.brand;
         editItemForm.elements['edit-model'].value = item.model;
         editItemForm.elements['edit-variant'].value = item.variant || '';
-        editItemForm.elements['edit-color'].value = item.color || '';
-        editItemForm.elements['edit-price'].value = item.price;
-        editItemForm.elements['edit-incentive'].value = item.incentive || '';
-        editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
-        editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
-        editItemForm.elements['edit-notes'].value = item.notes;
+        editItemForm.elements['edit-notes'].value = item.notes || '';
 
+        // Type-specific fields
+        const imeiField = document.getElementById('edit-imei-wrapper');
+        const colorField = document.getElementById('edit-color-wrapper');
         const incentiveField = document.getElementById('edit-incentive-wrapper');
         const paymentField = document.getElementById('edit-payment-wrapper');
         const receiptField = document.getElementById('edit-receipt-number-wrapper');
-        const priceField = document.getElementById('edit-price');
+        const priceFieldWrapper = document.getElementById('edit-price-wrapper');
         
+        // Hide all optional fields first
+        imeiField.style.display = 'none';
+        colorField.style.display = 'none';
+        incentiveField.style.display = 'none';
+        paymentField.style.display = 'none';
+        receiptField.style.display = 'none';
+        priceFieldWrapper.style.display = 'none';
+
+
         if (type === 'sales') {
-            incentiveField.classList.remove('hidden');
-            paymentField.classList.remove('hidden');
-            receiptField.classList.remove('hidden');
-            priceField.disabled = true;
-        } else {
-            incentiveField.classList.add('hidden');
-            paymentField.classList.add('hidden');
-            receiptField.classList.add('hidden');
-            priceField.disabled = false;
+            imeiField.style.display = 'block';
+            colorField.style.display = 'block';
+            incentiveField.style.display = 'block';
+            paymentField.style.display = 'block';
+            receiptField.style.display = 'block';
+            priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = true;
+
+            editItemForm.elements['edit-imei'].value = item.imei;
+            editItemForm.elements['edit-color'].value = item.color || '';
+            editItemForm.elements['edit-price'].value = item.price;
+            editItemForm.elements['edit-incentive'].value = item.incentive || 0;
+            editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
+            editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
+        } else if (type === 'accessories') {
+             priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = item.type === 'Freebie';
+            editItemForm.elements['edit-price'].value = item.price;
+        } else { // inventory, deliveries, transfers
+            imeiField.style.display = 'block';
+            colorField.style.display = 'block';
+            priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = false;
+
+            editItemForm.elements['edit-imei'].value = item.imei;
+            editItemForm.elements['edit-color'].value = item.color || '';
+            editItemForm.elements['edit-price'].value = item.price;
         }
+
 
         editItemModal.classList.remove('hidden');
     };
@@ -1688,7 +1866,6 @@
             brand: e.target.elements['edit-brand'].value.trim(),
             model: e.target.elements['edit-model'].value.trim(),
             variant: e.target.elements['edit-variant'].value.trim(),
-            color: e.target.elements['edit-color'].value.trim(),
             notes: e.target.elements['edit-notes'].value.trim(),
             lastEditorEmail: currentUserEmail,
             lastEditedAt: serverTimestamp()
@@ -1698,8 +1875,12 @@
             updatedData.incentive = parseFloat(e.target.elements['edit-incentive'].value) || 0;
             updatedData.paymentOption = e.target.elements['edit-payment'].value;
             updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
+            updatedData.color = e.target.elements['edit-color'].value.trim();
+        } else if (itemType === 'accessories') {
+             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
         } else {
             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
+            updatedData.color = e.target.elements['edit-color'].value.trim();
         }
 
         try {
@@ -1727,8 +1908,10 @@
         changeTab('dashboard');
 
         dateFilter.addEventListener('change', () => {
-            const [year, month, day] = dateFilter.value.split('-').map(Number);
-            selectedDate = new Date(year, month - 1, day);
+            const dateString = dateFilter.value;
+            const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+            const dateAsUTC = new Date(new Date(dateString).getTime() + timezoneOffset);
+            selectedDate = dateAsUTC;
             setupListeners(currentUserRole);
         });
 
@@ -1759,6 +1942,7 @@
                 if(type === 'deliveries') data = deliveries;
                 if(type === 'transfersIn') data = transfersIn;
                 if(type === 'transfersOut') data = transfersOut;
+                if(type === 'accessories') data = accessories;
 
                 if (data && data.length > 0) {
                     const csv = convertToCSV(data);
@@ -1806,7 +1990,7 @@
 
             searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
             
-            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut'];
+            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut', 'accessories'];
             const results = [];
 
             for (const collectionName of collectionsToSearch) {
@@ -1838,6 +2022,7 @@
                     case 'deliveries': status = 'Delivered'; tab = 'deliveries'; date = item.addedAt; break;
                     case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
                     case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
+                    case 'accessories': status = 'Accessory'; tab = 'accessories'; date = item.addedAt; break;
                 }
                 
                 return `
@@ -1848,7 +2033,7 @@
                             data-doc-date="${date?.toDate().toISOString().split('T')[0]}">
                         <div>
                             <p class="font-semibold">${item.brand} ${item.model}</p>
-                            <p class="text-sm" style="color: var(--text-secondary);">${item.imei}</p>
+                            <p class="text-sm" style="color: var(--text-secondary);">${item.imei || 'Accessory'}</p>
                         </div>
                         <div class="text-right">
                              <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background-color: var(--info-bg); color: var(--info-text);">${status}</span>
@@ -1902,6 +2087,7 @@
                 if(itemType === 'transfersIn') item = transfersIn.find(i => i.id === itemId);
                 if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
                 if(itemType === 'sales') item = sales.find(i => i.id === itemId);
+                if(itemType === 'accessories') item = accessories.find(i => i.id === itemId);
                 
                 if (item) {
                     openEditModal(item, itemType);
@@ -1938,5 +2124,4 @@
 
 </body>
 </html>
-
 
