@@ -305,6 +305,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
@@ -337,6 +338,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date Added</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
@@ -396,6 +398,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Payment</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Receipt #</th>
@@ -436,6 +439,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
@@ -479,6 +483,7 @@
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
                                     <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
                                     <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
@@ -565,22 +570,52 @@
                 <input type="hidden" id="edit-item-id">
                 <input type="hidden" id="edit-item-type">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" id="edit-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
-                    <input type="text" id="edit-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
-                    <input type="text" id="edit-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
-                    <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
-                    <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
-                    <input type="number" id="edit-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
-                    <input type="number" id="edit-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md">
-                    <select id="edit-payment" class="form-select w-full p-2 border rounded-md">
-                        <option value="Cash">Cash</option>
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="Digital Wallet">Digital Wallet</option>
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Others">Others</option>
-                    </select>
-                    <input type="text" id="edit-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
-                    <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-2" rows="2"></textarea>
+                    <div>
+                        <label for="edit-imei" class="block text-sm font-medium mb-1">IMEI</label>
+                        <input type="text" id="edit-imei" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
+                    </div>
+                    <div>
+                        <label for="edit-brand" class="block text-sm font-medium mb-1">Brand</label>
+                        <input type="text" id="edit-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="edit-model" class="block text-sm font-medium mb-1">Model</label>
+                        <input type="text" id="edit-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="edit-variant" class="block text-sm font-medium mb-1">Variant</label>
+                        <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div>
+                        <label for="edit-color" class="block text-sm font-medium mb-1">Color</label>
+                        <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div id="edit-price-wrapper">
+                        <label for="edit-price" class="block text-sm font-medium mb-1">Price</label>
+                        <input type="number" id="edit-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                    </div>
+                    <div id="edit-incentive-wrapper" class="hidden">
+                        <label for="edit-incentive" class="block text-sm font-medium mb-1">Incentive</label>
+                        <input type="number" id="edit-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div id="edit-payment-wrapper" class="hidden">
+                        <label for="edit-payment" class="block text-sm font-medium mb-1">Payment Method</label>
+                        <select id="edit-payment" class="form-select w-full p-2 border rounded-md">
+                            <option value="Cash">Cash</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Digital Wallet">Digital Wallet</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div id="edit-receipt-number-wrapper" class="hidden">
+                        <label for="edit-receipt-number" class="block text-sm font-medium mb-1">Receipt #</label>
+                        <input type="text" id="edit-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="edit-notes" class="block text-sm font-medium mb-1">Notes</label>
+                        <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md" rows="2"></textarea>
+                    </div>
                 </div>
                 <div class="flex justify-end gap-4 mt-6">
                      <button type="button" id="edit-modal-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-32" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
@@ -857,6 +892,10 @@
                     </button>`;
             }
 
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
             row.id = `row-inventory-${item.id}`;
@@ -864,8 +903,9 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
                 <td data-label="Date Added" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
             tableBody.appendChild(row);
@@ -885,7 +925,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -908,6 +948,10 @@
                     </button>`;
             }
             
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
             row.id = `row-sales-${item.id}`;
@@ -915,10 +959,11 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
                 <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
                 <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
                 <td data-label="Receipt #" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.receiptNumber || 'N/A'}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
             tableBody.appendChild(row);
@@ -938,7 +983,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -955,6 +1000,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
                     </button>`;
             }
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+                
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
             row.id = `row-deliveries-${item.id}`;
@@ -962,8 +1011,9 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
                 <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
             tableBody.appendChild(row);
@@ -983,7 +1033,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -1006,6 +1056,10 @@
                     </button>`;
             }
 
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
             row.id = `row-transfersIn-${item.id}`;
@@ -1013,8 +1067,9 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
                 <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
             tableBody.appendChild(row);
@@ -1034,7 +1089,7 @@
         }
 
         if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
             return;
         }
         sortedData.forEach(item => {
@@ -1057,6 +1112,10 @@
                     </button>`;
             }
             
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
             row.id = `row-transfersOut-${item.id}`;
@@ -1064,8 +1123,9 @@
                 <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
                 <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
                 <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
                 <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.authorEmail || 'N/A'}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
                 <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
             tableBody.appendChild(row);
@@ -1591,10 +1651,10 @@
         editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
         editItemForm.elements['edit-notes'].value = item.notes;
 
-        const incentiveField = editItemForm.elements['edit-incentive'].parentElement;
-        const paymentField = editItemForm.elements['edit-payment'].parentElement;
-        const receiptField = editItemForm.elements['edit-receipt-number'].parentElement;
-        const priceField = editItemForm.elements['edit-price'];
+        const incentiveField = document.getElementById('edit-incentive').parentElement;
+        const paymentField = document.getElementById('edit-payment').parentElement;
+        const receiptField = document.getElementById('edit-receipt-number').parentElement;
+        const priceField = document.getElementById('edit-price');
         
         if (type === 'sales') {
             incentiveField.style.display = 'block';
@@ -1629,7 +1689,9 @@
             model: e.target.elements['edit-model'].value.trim(),
             variant: e.target.elements['edit-variant'].value.trim(),
             color: e.target.elements['edit-color'].value.trim(),
-            notes: e.target.elements['edit-notes'].value.trim()
+            notes: e.target.elements['edit-notes'].value.trim(),
+            lastEditorEmail: currentUserEmail,
+            lastEditedAt: serverTimestamp()
         };
 
         if(itemType === 'sales') {
@@ -1702,7 +1764,7 @@
         });
 
         function convertToCSV(data) {
-            const headers = Object.keys(data[0]).filter(key => key !== 'id' && !key.endsWith('At'));
+            const headers = Object.keys(data[0]).filter(key => key !== 'id' && !key.endsWith('At') && key !== 'lastEditorEmail');
             const rows = data.map(row => 
                 headers.map(header => {
                     let value = row[header];
