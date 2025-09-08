@@ -1333,7 +1333,7 @@
         } else {
             sortedData.sort((a,b) => (b.soldAt?.toMillis() || 0) - (a.soldAt?.toMillis() || 0));
         }
-
+        
         if (sortedData.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No accessory sales recorded on this day.</td></tr>`;
             return;
@@ -1371,6 +1371,7 @@
             tableBody.appendChild(row);
         });
     };
+
 
     // --- Firestore Data Handling ---
     const setupListeners = (role) => {
@@ -1425,12 +1426,13 @@
             });
             renderAll();
         });
-
+        
         const accessoriesSellOutQuery = query(collection(db, "accessoriesSellOut"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
         accessoriesSellOutUnsubscribe = onSnapshot(accessoriesSellOutQuery, (snapshot) => {
             accessoriesSellOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
+
 
         if (role === 'admin') {
             setupAdminListeners();
@@ -2028,7 +2030,7 @@
             updatedData.paymentOption = e.target.elements['edit-payment'].value;
             updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
             updatedData.color = e.target.elements['edit-color'].value.trim();
-        } else if (itemType === 'accessories' || type === 'accessoriesSellOut') {
+        } else if (itemType === 'accessories' || itemType === 'accessoriesSellOut') {
              updatedData.price = parseFloat(e.target.elements['edit-price'].value);
         } else {
             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
