@@ -1651,20 +1651,20 @@
         editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
         editItemForm.elements['edit-notes'].value = item.notes;
 
-        const incentiveField = document.getElementById('edit-incentive').parentElement;
-        const paymentField = document.getElementById('edit-payment').parentElement;
-        const receiptField = document.getElementById('edit-receipt-number').parentElement;
+        const incentiveField = document.getElementById('edit-incentive-wrapper');
+        const paymentField = document.getElementById('edit-payment-wrapper');
+        const receiptField = document.getElementById('edit-receipt-number-wrapper');
         const priceField = document.getElementById('edit-price');
         
         if (type === 'sales') {
-            incentiveField.style.display = 'block';
-            paymentField.style.display = 'block';
-            receiptField.style.display = 'block';
+            incentiveField.classList.remove('hidden');
+            paymentField.classList.remove('hidden');
+            receiptField.classList.remove('hidden');
             priceField.disabled = true;
         } else {
-            incentiveField.style.display = 'none';
-            paymentField.style.display = 'none';
-            receiptField.style.display = 'none';
+            incentiveField.classList.add('hidden');
+            paymentField.classList.add('hidden');
+            receiptField.classList.add('hidden');
             priceField.disabled = false;
         }
 
@@ -1716,9 +1716,12 @@
     // --- INITIALIZATION ---
     document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        selectedDate = today;
-        dateFilter.value = today.toISOString().split('T')[0];
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        
+        selectedDate = new Date(year, month - 1, day);
+        dateFilter.value = `${year}-${month}-${day}`;
 
         darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
         changeTab('dashboard');
@@ -1731,9 +1734,12 @@
 
         gotoTodayBtn.addEventListener('click', () => {
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            selectedDate = today;
-            dateFilter.value = today.toISOString().split('T')[0];
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+
+            selectedDate = new Date(year, month - 1, day);
+            dateFilter.value = `${year}-${month}-${day}`;
             setupListeners(currentUserRole);
         });
 
@@ -1862,7 +1868,9 @@
             if (resultItem) {
                 const { docId, docType, docDate } = resultItem.dataset;
                 
-                selectedDate = new Date(docDate);
+                const dateAsUTC = new Date(docDate);
+                selectedDate = new Date(dateAsUTC.getTime() + dateAsUTC.getTimezoneOffset() * 60000);
+
                 dateFilter.value = docDate;
                 
                 changeTab(docType);
