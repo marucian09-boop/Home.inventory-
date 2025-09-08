@@ -232,6 +232,7 @@
                     <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
                     <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
                     <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
+                    <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessoriesSellOut">Accessories Sell Out</button>
                     <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
                     <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn">Transfer In</button>
                     <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel">Stock Level</button>
@@ -452,6 +453,49 @@
                                 </tr>
                             </thead>
                             <tbody id="accessories-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                 <!-- Accessories Sell Out -->
+                <div id="accessoriesSellOut" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Record Accessory Sell Out</h2>
+                     <form id="accessory-sell-out-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <select id="sell-out-accessory" class="form-select w-full p-2 border rounded-md md:col-span-full" required>
+                            <option value="" disabled selected>Select Accessory to Sell</option>
+                        </select>
+                        <input type="text" id="sell-out-receipt" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sell-out-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
+                        <button type="submit" style="background-color: var(--success);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sell Out</button>
+                    </form>
+
+                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="accessories-sell-out-title">Today's Accessory Sales</h3>
+                        <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <label for="accessoriesSellOut-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="accessoriesSellOut-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessoriesSellOut">
+                                    <option value="latest">Latest First</option>
+                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="accessoriesSellOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accessories-sell-out-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -726,12 +770,14 @@
     let transfersOutUnsubscribe = null;
     let deliveriesUnsubscribe = null;
     let accessoriesUnsubscribe = null;
+    let accessoriesSellOutUnsubscribe = null;
     let inventory = [];
     let sales = [];
     let transfersIn = [];
     let transfersOut = [];
     let deliveries = [];
     let accessories = [];
+    let accessoriesSellOut = [];
     let selectedDate = new Date();
     
     // --- UI Elements ---
@@ -889,6 +935,7 @@
         renderTransfersInTable(sortType);
         renderTransfersOutTable(sortType);
         renderAccessoriesTable(sortType);
+        renderAccessoriesSellOutTable(sortType);
     };
 
     const renderDashboard = () => {
@@ -1275,6 +1322,55 @@
         });
     };
 
+    const renderAccessoriesSellOutTable = (sortType = 'latest') => {
+        document.getElementById('accessories-sell-out-title').textContent = `Accessory Sales for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('accessories-sell-out-table-body');
+        tableBody.innerHTML = '';
+        
+        let sortedData = [...accessoriesSellOut];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.soldAt?.toMillis() || 0) - (a.soldAt?.toMillis() || 0));
+        }
+
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No accessory sales recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="accessoriesSellOut" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Accessory Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="accessoriesSellOut" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Accessory Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-accessoriesSellOut-${item.id}`;
+            row.innerHTML = `
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
 
     // --- Firestore Data Handling ---
     const setupListeners = (role) => {
@@ -1315,9 +1411,24 @@
             renderAll();
         });
 
-        const accessoriesQuery = query(collection(db, "accessories"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
+        const accessoriesQuery = query(collection(db, "accessories"));
         accessoriesUnsubscribe = onSnapshot(accessoriesQuery, (snapshot) => {
             accessories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            const sellOutSelect = document.getElementById('sell-out-accessory');
+            sellOutSelect.innerHTML = '<option value="" disabled selected>Select Accessory to Sell</option>';
+            accessories.forEach(acc => {
+                const option = document.createElement('option');
+                option.value = acc.id;
+                option.textContent = `${acc.brand} ${acc.model} ${acc.variant || ''}`;
+                sellOutSelect.appendChild(option);
+            });
+            renderAll();
+        });
+
+        const accessoriesSellOutQuery = query(collection(db, "accessoriesSellOut"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
+        accessoriesSellOutUnsubscribe = onSnapshot(accessoriesSellOutQuery, (snapshot) => {
+            accessoriesSellOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderAll();
         });
 
@@ -1342,6 +1453,7 @@
         if (transfersOutUnsubscribe) transfersOutUnsubscribe();
         if (usersUnsubscribe) usersUnsubscribe();
         if (accessoriesUnsubscribe) accessoriesUnsubscribe();
+        if (accessoriesSellOutUnsubscribe) accessoriesSellOutUnsubscribe();
     }
 
     const renderUserManagementTable = (users) => {
@@ -1444,6 +1556,7 @@
         transfersIn = [];
         transfersOut = [];
         accessories = [];
+        accessoriesSellOut = [];
         currentUserRole = null;
         currentUserEmail = null;
     };
@@ -1761,6 +1874,45 @@
             showToast('Failed to add accessory.', 'error');
         }
     });
+    
+    document.getElementById('accessory-sell-out-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const accessoryId = document.getElementById('sell-out-accessory').value;
+        if (!accessoryId) {
+            showToast('Please select an accessory to sell.', 'error');
+            return;
+        }
+
+        const accessoryDocRef = doc(db, 'accessories', accessoryId);
+        const accessoryDoc = await getDoc(accessoryDocRef);
+
+        if (!accessoryDoc.exists()) {
+             showToast('Selected accessory not found.', 'error');
+             return;
+        }
+
+        const accessoryData = accessoryDoc.data();
+        const sellOutData = {
+            ...accessoryData,
+            receiptNumber: document.getElementById('sell-out-receipt').value.trim(),
+            notes: document.getElementById('sell-out-notes').value.trim(),
+            soldAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+
+        try {
+            await runTransaction(db, async (transaction) => {
+                transaction.delete(accessoryDocRef);
+                transaction.set(doc(collection(db, 'accessoriesSellOut')), sellOutData);
+            });
+            e.target.reset();
+            showToast('Accessory sold successfully!');
+        } catch(error) {
+            console.error("Error selling accessory: ", error);
+            showToast('Failed to sell accessory.', 'error');
+        }
+    });
+
 
     document.getElementById('acc-type').addEventListener('change', (e) => {
         const priceInput = document.getElementById('acc-price');
@@ -1830,7 +1982,7 @@
             editItemForm.elements['edit-incentive'].value = item.incentive || 0;
             editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
             editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
-        } else if (type === 'accessories') {
+        } else if (type === 'accessories' || type === 'accessoriesSellOut') {
              priceFieldWrapper.style.display = 'block';
             editItemForm.elements['edit-price'].disabled = item.type === 'Freebie';
             editItemForm.elements['edit-price'].value = item.price;
@@ -1876,7 +2028,7 @@
             updatedData.paymentOption = e.target.elements['edit-payment'].value;
             updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
             updatedData.color = e.target.elements['edit-color'].value.trim();
-        } else if (itemType === 'accessories') {
+        } else if (itemType === 'accessories' || type === 'accessoriesSellOut') {
              updatedData.price = parseFloat(e.target.elements['edit-price'].value);
         } else {
             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
@@ -1943,6 +2095,7 @@
                 if(type === 'transfersIn') data = transfersIn;
                 if(type === 'transfersOut') data = transfersOut;
                 if(type === 'accessories') data = accessories;
+                if(type === 'accessoriesSellOut') data = accessoriesSellOut;
 
                 if (data && data.length > 0) {
                     const csv = convertToCSV(data);
@@ -1990,7 +2143,7 @@
 
             searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
             
-            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut', 'accessories'];
+            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut', 'accessories', 'accessoriesSellOut'];
             const results = [];
 
             for (const collectionName of collectionsToSearch) {
@@ -2023,6 +2176,7 @@
                     case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
                     case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
                     case 'accessories': status = 'Accessory'; tab = 'accessories'; date = item.addedAt; break;
+                    case 'accessoriesSellOut': status = 'Accessory Sold'; tab = 'accessoriesSellOut'; date = item.soldAt; break;
                 }
                 
                 return `
@@ -2088,6 +2242,7 @@
                 if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
                 if(itemType === 'sales') item = sales.find(i => i.id === itemId);
                 if(itemType === 'accessories') item = accessories.find(i => i.id === itemId);
+                if(itemType === 'accessoriesSellOut') item = accessoriesSellOut.find(i => i.id === itemId);
                 
                 if (item) {
                     openEditModal(item, itemType);
