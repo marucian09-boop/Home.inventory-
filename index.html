@@ -153,8 +153,8 @@
             }
             .responsive-table td[data-label="Actions"],
             .responsive-table td[data-label="Manage"] {
-                 justify-content: flex-end;
-                 padding-top: 0.75rem;
+                justify-content: flex-end;
+                padding-top: 0.75rem;
             }
         }
     </style>
@@ -172,16 +172,16 @@
             <div id="auth-error" class="text-center p-2 rounded-md" style="color: var(--destructive); display: none;"></div>
             <!-- Auth Forms -->
             <div id="signin-form">
-                <input type="email" id="signin-email" name="signin-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
-                <input type="password" id="signin-password" name="signin-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
+                <input type="email" id="signin-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
+                <input type="password" id="signin-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
                 <button id="signin-btn" style="background-color: var(--accent-primary);" class="w-full text-white font-semibold py-2 px-4 rounded-md transition-colors disabled:opacity-50">Sign In</button>
                 <p class="mt-4 text-center text-sm" style="color: var(--text-secondary);">
                     No account? <button id="show-signup-btn" class="font-medium hover:underline" style="color: var(--accent-primary);">Sign up</button>
                 </p>
             </div>
             <div id="signup-form" class="hidden">
-                 <input type="email" id="signup-email" name="signup-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
-                <input type="password" id="signup-password" name="signup-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
+                 <input type="email" id="signup-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
+                <input type="password" id="signup-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
                 <button id="signup-btn" style="background-color: var(--success);" class="w-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Create Account</button>
                 <p class="mt-4 text-center text-sm" style="color: var(--text-secondary);">
                     Already have an account? <button id="show-signin-btn" class="font-medium hover:underline" style="color: var(--accent-primary);">Sign in</button>
@@ -217,11 +217,12 @@
 
         <!-- Main Content -->
         <div style="background-color: var(--bg-secondary); box-shadow: var(--shadow-lg);" class="rounded-xl p-2 sm:p-6">
-            <!-- Date Filter -->
+            <!-- Date Filter & Daily Report -->
             <div class="flex flex-wrap items-center gap-4 mb-4 pb-4 border-b" style="border-color: var(--border-primary);">
                  <label for="date-filter" class="font-semibold text-sm">Showing data for:</label>
-                 <input type="date" id="date-filter" name="date-filter" class="form-input p-2 border rounded-md">
+                 <input type="date" id="date-filter" class="form-input p-2 border rounded-md">
                  <button id="goto-today-btn" class="text-sm font-semibold py-2 px-4 rounded-md" style="background-color: var(--bg-tertiary);">Today</button>
+                 <button id="download-report-btn" class="text-sm font-semibold py-2 px-4 rounded-md" style="background-color: var(--accent-primary); color: white;">Download Daily Report</button>
             </div>
 
             <!-- Tabs -->
@@ -230,7 +231,7 @@
                     <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard">Dashboard</button>
                     <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
                     <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
-                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
+                    <button onclick="changeTab('sales')" class="tab whitespace-now-wrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
                     <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
                     <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessoriesSellOut">Accessories Sell Out</button>
                     <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
@@ -248,7 +249,7 @@
                     <div id="search-section" class="mb-6">
                         <h2 class="text-xl font-semibold mb-4">System-Wide Search</h2>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="search-input" name="search-input" placeholder="Search by IMEI..." class="form-input flex-grow" maxlength="15">
+                            <input type="text" id="search-input" placeholder="Search by IMEI..." class="form-input flex-grow" maxlength="15" required>
                             <button id="search-btn" style="background-color: var(--accent-primary);" class="text-white font-semibold py-2 px-6 rounded-md transition-colors">Search</button>
                         </div>
                         <div id="search-results-container" class="mt-4">
@@ -257,7 +258,7 @@
                     </div>
                     
                     <div class="border-t pt-6" style="border-color: var(--border-primary);">
-                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div style="background-color: var(--info-bg); color: var(--info-text);" class="p-6 rounded-lg">
                                 <h3 class="font-semibold text-lg" id="dashboard-sales-title">Sales for Today</h3>
                                 <p class="text-3xl font-bold mt-2" id="dashboard-sales">₱0.00</p>
@@ -270,7 +271,7 @@
                                 <h3 class="font-semibold text-lg" id="dashboard-incentives-title">Incentives for Today</h3>
                                 <p class="text-3xl font-bold mt-2" id="dashboard-incentives">₱0.00</p>
                             </div>
-                        </div>
+                          </div>
                     </div>
                 </div>
 
@@ -281,22 +282,22 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="deliveries" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <form id="delivery-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <input type="text" id="del-imei" name="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
-                        <input type="text" id="del-brand" name="del-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="del-model" name="del-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="del-variant" name="del-variant" placeholder="Variant (e.g., 128GB)" class="form-input w-full p-2 border rounded-md">
-                        <input type="text" id="del-color" name="del-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
-                        <input type="number" id="del-price" name="del-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="del-notes" name="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
+                        <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="text" id="del-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="del-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="del-variant" placeholder="Variant (e.g., 128GB)" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="del-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                        <input type="number" id="del-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Stock</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="deliveries-title">Today's Deliveries</h3>
                         <div class="flex items-center gap-2">
                              <label for="deliveries-sort" class="text-sm font-medium">Sort by:</label>
-                             <select id="deliveries-sort" name="deliveries-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="deliveries">
-                                <option value="latest">Latest First</option>
-                                <option value="alphabetical">Brand (A-Z)</option>
+                             <select id="deliveries-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="deliveries">
+                                 <option value="latest">Latest First</option>
+                                 <option value="alphabetical">Brand (A-Z)</option>
                              </select>
                         </div>
                     </div>
@@ -325,9 +326,9 @@
                         <div class="flex items-center gap-4">
                             <div class="flex items-center gap-2">
                                 <label for="stocks-sort" class="text-sm font-medium">Sort by:</label>
-                                 <select id="stocks-sort" name="stocks-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="inventory">
-                                    <option value="latest">Latest First</option>
-                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 <select id="stocks-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="inventory">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
                                  </select>
                             </div>
                             <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="inventory" style="background-color: var(--bg-tertiary);">Download CSV</button>
@@ -355,9 +356,9 @@
                 <div id="sales" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Record a Sale</h2>
                     <form id="sales-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="sale-imei" name="sale-imei" placeholder="15-Digit IMEI of sold item" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
-                        <input type="number" id="sale-incentive" name="sale-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md" required>
-                        <select id="sale-payment" name="sale-payment" class="form-select w-full p-2 border rounded-md" required>
+                        <input type="text" id="sale-imei" placeholder="15-Digit IMEI of sold item" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="number" id="sale-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md" required>
+                        <select id="sale-payment" class="form-select w-full p-2 border rounded-md" required>
                             <option value="" disabled selected>Payment Option</option>
                             <option value="Cash">Cash</option>
                             <option value="Credit Card">Credit Card</option>
@@ -365,8 +366,8 @@
                             <option value="Bank Transfer">Bank Transfer</option>
                             <option value="Others">Others</option>
                         </select>
-                        <input type="text" id="sale-receipt-number" name="sale-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
-                        <input type="text" id="sale-notes" name="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-full">
+                        <input type="text" id="sale-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-full">
                         <button type="submit" style="background-color: var(--success);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sale</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
@@ -374,20 +375,20 @@
                         <div class="flex items-center gap-4">
                              <div class="flex items-center gap-2">
                                 <label for="sales-sort" class="text-sm font-medium">Sort by:</label>
-                                 <select id="sales-sort" name="sales-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="sales">
-                                    <option value="latest">Latest First</option>
-                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 <select id="sales-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="sales">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
                                  </select>
                             </div>
-                             <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2">
                                 <label for="sales-payment-filter" class="text-sm font-medium">Filter by:</label>
-                                 <select id="sales-payment-filter" name="sales-payment-filter" class="form-select p-2 border rounded-md text-sm">
-                                    <option value="all">All Payments</option>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Credit Card">Credit Card</option>
-                                    <option value="Digital Wallet">Digital Wallet</option>
-                                    <option value="Bank Transfer">Bank Transfer</option>
-                                    <option value="Others">Others</option>
+                                 <select id="sales-payment-filter" class="form-select p-2 border rounded-md text-sm">
+                                     <option value="all">All Payments</option>
+                                     <option value="Cash">Cash</option>
+                                     <option value="Credit Card">Credit Card</option>
+                                     <option value="Digital Wallet">Digital Wallet</option>
+                                     <option value="Bank Transfer">Bank Transfer</option>
+                                     <option value="Others">Others</option>
                                  </select>
                             </div>
                             <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="sales" style="background-color: var(--bg-tertiary);">Download CSV</button>
@@ -417,24 +418,24 @@
                 <div id="accessories" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Add New Accessory</h2>
                     <form id="accessory-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="acc-brand" name="acc-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="acc-model" name="acc-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="acc-variant" name="acc-variant" placeholder="Variant (e.g., Color, Size)" class="form-input w-full p-2 border rounded-md">
-                        <select id="acc-type" name="acc-type" class="form-select w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-variant" placeholder="Variant (e.g., Color, Size)" class="form-input w-full p-2 border rounded-md">
+                        <select id="acc-type" class="form-select w-full p-2 border rounded-md" required>
                             <option value="" disabled selected>Accessory Type</option>
                             <option value="For Sale">For Sale</option>
                             <option value="Freebie">Freebie</option>
                         </select>
-                        <input type="number" id="acc-price" name="acc-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="number" id="acc-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
                         <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Add Accessory</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="accessories-title">Today's Accessories</h3>
                         <div class="flex items-center gap-2">
                              <label for="accessories-sort" class="text-sm font-medium">Sort by:</label>
-                             <select id="accessories-sort" name="accessories-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessories">
-                                <option value="latest">Latest First</option>
-                                <option value="alphabetical">Brand (A-Z)</option>
+                             <select id="accessories-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessories">
+                                 <option value="latest">Latest First</option>
+                                 <option value="alphabetical">Brand (A-Z)</option>
                              </select>
                         </div>
                     </div>
@@ -461,11 +462,11 @@
                 <div id="accessoriesSellOut" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Record Accessory Sell Out</h2>
                      <form id="accessory-sell-out-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <select id="sell-out-accessory" name="sell-out-accessory" class="form-select w-full p-2 border rounded-md md:col-span-full" required>
+                        <select id="sell-out-accessory" class="form-select w-full p-2 border rounded-md md:col-span-full" required>
                             <option value="" disabled selected>Select Accessory to Sell</option>
                         </select>
-                        <input type="text" id="sell-out-receipt" name="sell-out-receipt" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
-                        <input type="text" id="sell-out-notes" name="sell-out-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sell-out-receipt" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sell-out-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--success);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sell Out</button>
                     </form>
 
@@ -474,9 +475,9 @@
                         <div class="flex items-center gap-4">
                              <div class="flex items-center gap-2">
                                 <label for="accessoriesSellOut-sort" class="text-sm font-medium">Sort by:</label>
-                                 <select id="accessoriesSellOut-sort" name="accessoriesSellOut-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessoriesSellOut">
-                                    <option value="latest">Latest First</option>
-                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 <select id="accessoriesSellOut-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessoriesSellOut">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
                                  </select>
                             </div>
                             <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="accessoriesSellOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
@@ -504,8 +505,8 @@
                 <div id="transferOut" class="tab-pane hidden">
                     <h2 class="text-xl font-semibold mb-4">Transfer Stock Out</h2>
                     <form id="transfer-out-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <input type="text" id="tout-imei" name="tout-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
-                        <input type="text" id="tout-notes" name="tout-notes" placeholder="Notes (e.g., Destination)" class="form-input w-full p-2 border rounded-md md:col-span-2 lg:col-span-2">
+                        <input type="text" id="tout-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="text" id="tout-notes" placeholder="Notes (e.g., Destination)" class="form-input w-full p-2 border rounded-md md:col-span-2 lg:col-span-2">
                         <button type="submit" style="background-color: var(--destructive);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer Out</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
@@ -513,9 +514,9 @@
                         <div class="flex items-center gap-4">
                              <div class="flex items-center gap-2">
                                 <label for="tout-sort" class="text-sm font-medium">Sort by:</label>
-                                 <select id="tout-sort" name="tout-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersOut">
-                                    <option value="latest">Latest First</option>
-                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 <select id="tout-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersOut">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
                                  </select>
                             </div>
                             <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
@@ -543,13 +544,13 @@
                 <div id="transferIn" class="tab-pane hidden">
                      <h2 class="text-xl font-semibold mb-4">Transfer Stock In</h2>
                     <form id="transfer-in-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <input type="text" id="tin-imei" name="tin-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
-                        <input type="text" id="tin-brand" name="tin-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="tin-model" name="tin-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="tin-variant" name="tin-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
-                        <input type="text" id="tin-color" name="tin-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
-                        <input type="number" id="tin-price" name="tin-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
-                        <input type="text" id="tin-notes" name="tin-notes" placeholder="Notes (e.g., Origin)" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
+                        <input type="text" id="tin-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="text" id="tin-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="tin-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="tin-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="tin-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                        <input type="number" id="tin-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="tin-notes" placeholder="Notes (e.g., Origin)" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
                         <button type="submit" style="background-color: var(--special);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer In</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
@@ -557,9 +558,9 @@
                         <div class="flex items-center gap-4">
                             <div class="flex items-center gap-2">
                                 <label for="tin-sort" class="text-sm font-medium">Sort by:</label>
-                                 <select id="tin-sort" name="tin-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersIn">
-                                    <option value="latest">Latest First</option>
-                                    <option value="alphabetical">Brand (A-Z)</option>
+                                 <select id="tin-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersIn">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
                                  </select>
                             </div>
                             <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersIn" style="background-color: var(--bg-tertiary);">Download CSV</button>
@@ -639,7 +640,7 @@
         </div>
     </div>
 
-     <!-- Kicked Modal -->
+      <!-- Kicked Modal -->
     <div id="kicked-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
         <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
             <h3 class="text-xl font-bold mb-4" style="color: var(--destructive);">Access Denied</h3>
@@ -648,48 +649,48 @@
         </div>
     </div>
 
-    <!-- Edit Item Modal (for IMEI-tracked items) -->
+    <!-- Edit Item Modal -->
     <div id="edit-item-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold" id="edit-item-modal-title">Edit Item</h3>
-                <button id="edit-item-modal-close-btn">&times;</button>
+                <h3 class="text-xl font-bold" id="edit-modal-title">Edit Stock Item</h3>
+                <button id="edit-modal-close-btn">&times;</button>
             </div>
             <form id="edit-item-form">
-                <input type="hidden" id="edit-item-id" name="edit-item-id">
-                <input type="hidden" id="edit-item-type" name="edit-item-type">
+                <input type="hidden" id="edit-item-id">
+                <input type="hidden" id="edit-item-type">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="edit-item-imei" class="block text-sm font-medium mb-1">IMEI</label>
-                        <input type="text" id="edit-item-imei" name="edit-item-imei" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
+                    <div id="edit-imei-wrapper">
+                        <label for="edit-imei" class="block text-sm font-medium mb-1">IMEI</label>
+                        <input type="text" id="edit-imei" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
                     </div>
                     <div>
-                        <label for="edit-item-brand" class="block text-sm font-medium mb-1">Brand</label>
-                        <input type="text" id="edit-item-brand" name="edit-item-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <label for="edit-brand" class="block text-sm font-medium mb-1">Brand</label>
+                        <input type="text" id="edit-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
                     </div>
                     <div>
-                        <label for="edit-item-model" class="block text-sm font-medium mb-1">Model</label>
-                        <input type="text" id="edit-item-model" name="edit-item-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <label for="edit-model" class="block text-sm font-medium mb-1">Model</label>
+                        <input type="text" id="edit-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
                     </div>
                     <div>
-                        <label for="edit-item-variant" class="block text-sm font-medium mb-1">Variant</label>
-                        <input type="text" id="edit-item-variant" name="edit-item-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
+                        <label for="edit-variant" class="block text-sm font-medium mb-1">Variant</label>
+                        <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
                     </div>
-                    <div>
-                        <label for="edit-item-color" class="block text-sm font-medium mb-1">Color</label>
-                        <input type="text" id="edit-item-color" name="edit-item-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                    <div id="edit-color-wrapper">
+                        <label for="edit-color" class="block text-sm font-medium mb-1">Color</label>
+                        <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                     </div>
-                    <div>
-                        <label for="edit-item-price" class="block text-sm font-medium mb-1">Price</label>
-                        <input type="number" id="edit-item-price" name="edit-item-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                    <div id="edit-price-wrapper">
+                        <label for="edit-price" class="block text-sm font-medium mb-1">Price</label>
+                        <input type="number" id="edit-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
                     </div>
-                    <div id="edit-item-incentive-wrapper" class="hidden">
-                        <label for="edit-item-incentive" class="block text-sm font-medium mb-1">Incentive</label>
-                        <input type="number" id="edit-item-incentive" name="edit-item-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md">
+                    <div id="edit-incentive-wrapper" class="hidden">
+                        <label for="edit-incentive" class="block text-sm font-medium mb-1">Incentive</label>
+                        <input type="number" id="edit-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md">
                     </div>
-                    <div id="edit-item-payment-wrapper" class="hidden">
-                        <label for="edit-item-payment" class="block text-sm font-medium mb-1">Payment Method</label>
-                        <select id="edit-item-payment" name="edit-item-payment" class="form-select w-full p-2 border rounded-md">
+                    <div id="edit-payment-wrapper" class="hidden">
+                        <label for="edit-payment" class="block text-sm font-medium mb-1">Payment Method</label>
+                        <select id="edit-payment" class="form-select w-full p-2 border rounded-md">
                             <option value="Cash">Cash</option>
                             <option value="Credit Card">Credit Card</option>
                             <option value="Digital Wallet">Digital Wallet</option>
@@ -697,61 +698,17 @@
                             <option value="Others">Others</option>
                         </select>
                     </div>
-                    <div id="edit-item-receipt-number-wrapper" class="hidden">
-                        <label for="edit-item-receipt-number" class="block text-sm font-medium mb-1">Receipt #</label>
-                        <input type="text" id="edit-item-receipt-number" name="edit-item-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                    <div id="edit-receipt-number-wrapper" class="hidden">
+                        <label for="edit-receipt-number" class="block text-sm font-medium mb-1">Receipt #</label>
+                        <input type="text" id="edit-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
                     </div>
                     <div class="md:col-span-2">
-                        <label for="edit-item-notes" class="block text-sm font-medium mb-1">Notes</label>
-                        <textarea id="edit-item-notes" name="edit-item-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md" rows="2"></textarea>
+                        <label for="edit-notes" class="block text-sm font-medium mb-1">Notes</label>
+                        <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md" rows="2"></textarea>
                     </div>
                 </div>
                 <div class="flex justify-end gap-4 mt-6">
-                     <button type="button" id="edit-item-modal-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-32" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
-                     <button type="submit" class="py-2 px-4 rounded-md font-semibold text-white w-32" style="background-color: var(--success);">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Edit Accessory Modal -->
-    <div id="edit-accessory-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold" id="edit-accessory-modal-title">Edit Accessory</h3>
-                <button id="edit-accessory-modal-close-btn">&times;</button>
-            </div>
-            <form id="edit-accessory-form">
-                <input type="hidden" id="edit-accessory-id" name="edit-accessory-id">
-                <input type="hidden" id="edit-accessory-type" name="edit-accessory-type">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="edit-accessory-brand" class="block text-sm font-medium mb-1">Brand</label>
-                        <input type="text" id="edit-accessory-brand" name="edit-accessory-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
-                    </div>
-                    <div>
-                        <label for="edit-accessory-model" class="block text-sm font-medium mb-1">Model</label>
-                        <input type="text" id="edit-accessory-model" name="edit-accessory-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
-                    </div>
-                    <div>
-                        <label for="edit-accessory-variant" class="block text-sm font-medium mb-1">Variant</label>
-                        <input type="text" id="edit-accessory-variant" name="edit-accessory-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
-                    </div>
-                    <div>
-                        <label for="edit-accessory-price" class="block text-sm font-medium mb-1">Price</label>
-                        <input type="number" id="edit-accessory-price" name="edit-accessory-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
-                    </div>
-                    <div id="edit-accessory-receipt-wrapper" class="hidden md:col-span-2">
-                        <label for="edit-accessory-receipt" class="block text-sm font-medium mb-1">Receipt #</label>
-                        <input type="text" id="edit-accessory-receipt" name="edit-accessory-receipt" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="edit-accessory-notes" class="block text-sm font-medium mb-1">Notes</label>
-                        <textarea id="edit-accessory-notes" name="edit-accessory-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-end gap-4 mt-6">
-                     <button type="button" id="edit-accessory-modal-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-32" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
+                     <button type="button" id="edit-modal-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-32" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
                      <button type="submit" class="py-2 px-4 rounded-md font-semibold text-white w-32" style="background-color: var(--success);">Save Changes</button>
                 </div>
             </form>
@@ -787,7 +744,8 @@
         runTransaction
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // --- Firebase Config ---
+    // This is a hardcoded Firebase configuration. In a production environment,
+    // this should be loaded from environment variables or a secure source.
     const firebaseConfig = {
         apiKey: "AIzaSyCRoM0688XXI5q51uV_dBPVu6pmomSGwss",
         authDomain: "inventory-d4c22.firebaseapp.com",
@@ -830,6 +788,7 @@
     const authError = document.getElementById('auth-error');
     const dateFilter = document.getElementById('date-filter');
     const gotoTodayBtn = document.getElementById('goto-today-btn');
+    const downloadReportBtn = document.getElementById('download-report-btn');
 
     const signinForm = document.getElementById('signin-form');
     const signupForm = document.getElementById('signup-form');
@@ -850,17 +809,11 @@
     const kickedModal = document.getElementById('kicked-modal');
     const kickedOkBtn = document.getElementById('kicked-ok-btn');
 
-    // Edit Modals
     const editItemModal = document.getElementById('edit-item-modal');
     const editItemForm = document.getElementById('edit-item-form');
-    const editItemModalCloseBtn = document.getElementById('edit-item-modal-close-btn');
-    const editItemModalCancelBtn = document.getElementById('edit-item-modal-cancel-btn');
-
-    const editAccessoryModal = document.getElementById('edit-accessory-modal');
-    const editAccessoryForm = document.getElementById('edit-accessory-form');
-    const editAccessoryModalCloseBtn = document.getElementById('edit-accessory-modal-close-btn');
-    const editAccessoryModalCancelBtn = document.getElementById('edit-accessory-modal-cancel-btn');
-
+    const editModalCloseBtn = document.getElementById('edit-item-modal');
+    const editModalCancelBtn = document.getElementById('edit-modal-cancel-btn');
+    const editModalTitle = document.getElementById('edit-modal-title');
     const searchBtn = document.getElementById('search-btn');
     const searchInput = document.getElementById('search-input');
     const searchResultsContainer = document.getElementById('search-results-container');
@@ -1462,8 +1415,8 @@
             renderAll();
         });
 
-        const accessoriesQuery = query(collection(db, "accessories"));
-        accessoriesUnsubscribe = onSnapshot(accessoriesQuery, (snapshot) => {
+        const accessoriesRef = collection(db, "accessories");
+        accessoriesUnsubscribe = onSnapshot(accessoriesRef, (snapshot) => {
             accessories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             
             const sellOutSelect = document.getElementById('sell-out-accessory');
@@ -1530,7 +1483,7 @@
                 </td>
                 <td data-label="Manage" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">
                      ${!isCurrentUser ? `
-                        ${user.kicked 
+                         ${user.kicked 
                             ? `<button data-userid="${user.id}" class="unkick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--success); color: white;">Un-kick</button>`
                             : `<button data-userid="${user.id}" class="kick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--destructive); color: white;">Kick</button>`
                         }
@@ -1668,7 +1621,7 @@
         const adminTab = document.getElementById('admin-tab-btn');
         const viewOnlyBanner = document.getElementById('view-only-banner');
         const forms = document.querySelectorAll('form');
-        const downloadButtons = document.querySelectorAll('.download-btn');
+        const downloadButtons = document.querySelectorAll('.download-btn, #download-report-btn');
 
         if (role === 'admin' || role === 'editor') {
             viewOnlyBanner.classList.add('hidden');
@@ -1991,83 +1944,74 @@
         authError.style.display = 'none';
     });
 
-    const openEditItemModal = (item, type) => {
-        const modalTitle = document.getElementById('edit-item-modal-title');
-        modalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)} Record`;
-
-        // Populate common fields
+    const openEditModal = (item, type) => {
+        editModalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)} Record`;
         editItemForm.elements['edit-item-id'].value = item.id;
         editItemForm.elements['edit-item-type'].value = type;
-        editItemForm.elements['edit-item-imei'].value = item.imei;
-        editItemForm.elements['edit-item-brand'].value = item.brand;
-        editItemForm.elements['edit-item-model'].value = item.model;
-        editItemForm.elements['edit-item-variant'].value = item.variant || '';
-        editItemForm.elements['edit-item-color'].value = item.color || '';
-        editItemForm.elements['edit-item-price'].value = item.price;
-        editItemForm.elements['edit-item-notes'].value = item.notes || '';
+        
+        // Common fields
+        editItemForm.elements['edit-brand'].value = item.brand;
+        editItemForm.elements['edit-model'].value = item.model;
+        editItemForm.elements['edit-variant'].value = item.variant || '';
+        editItemForm.elements['edit-notes'].value = item.notes || '';
 
-        // Handle type-specific fields (for sales)
-        const incentiveWrapper = document.getElementById('edit-item-incentive-wrapper');
-        const paymentWrapper = document.getElementById('edit-item-payment-wrapper');
-        const receiptWrapper = document.getElementById('edit-item-receipt-number-wrapper');
-        const priceInput = document.getElementById('edit-item-price');
+        // Type-specific fields
+        const imeiField = document.getElementById('edit-imei-wrapper');
+        const colorField = document.getElementById('edit-color-wrapper');
+        const incentiveField = document.getElementById('edit-incentive-wrapper');
+        const paymentField = document.getElementById('edit-payment-wrapper');
+        const receiptField = document.getElementById('edit-receipt-number-wrapper');
+        const priceFieldWrapper = document.getElementById('edit-price-wrapper');
+        
+        // Hide all optional fields first
+        imeiField.style.display = 'none';
+        colorField.style.display = 'none';
+        incentiveField.style.display = 'none';
+        paymentField.style.display = 'none';
+        receiptField.style.display = 'none';
+        priceFieldWrapper.style.display = 'none';
+
 
         if (type === 'sales') {
-            incentiveWrapper.classList.remove('hidden');
-            paymentWrapper.classList.remove('hidden');
-            receiptWrapper.classList.remove('hidden');
-            priceInput.disabled = true; // Price for a sold item shouldn't change
-            editItemForm.elements['edit-item-incentive'].value = item.incentive || 0;
-            editItemForm.elements['edit-item-payment'].value = item.paymentOption || 'Cash';
-            editItemForm.elements['edit-item-receipt-number'].value = item.receiptNumber || '';
-        } else {
-            incentiveWrapper.classList.add('hidden');
-            paymentWrapper.classList.add('hidden');
-            receiptWrapper.classList.add('hidden');
-            priceInput.disabled = false;
+            imeiField.style.display = 'block';
+            colorField.style.display = 'block';
+            incentiveField.style.display = 'block';
+            paymentField.style.display = 'block';
+            receiptField.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = true;
+
+            editItemForm.elements['edit-imei'].value = item.imei;
+            editItemForm.elements['edit-color'].value = item.color || '';
+            editItemForm.elements['edit-price'].value = item.price;
+            editItemForm.elements['edit-incentive'].value = item.incentive || 0;
+            editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
+            editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
+        } else if (type === 'accessories' || type === 'accessoriesSellOut') {
+             priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = item.type === 'Freebie';
+            editItemForm.elements['edit-price'].value = item.price;
+        } else { // inventory, deliveries, transfers
+            imeiField.style.display = 'block';
+            colorField.style.display = 'block';
+            priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = false;
+
+            editItemForm.elements['edit-imei'].value = item.imei;
+            editItemForm.elements['edit-color'].value = item.color || '';
+            editItemForm.elements['edit-price'].value = item.price;
         }
-        
+
+
         editItemModal.classList.remove('hidden');
     };
 
-    const openEditAccessoryModal = (item, type) => {
-        // Populate fields
-        editAccessoryForm.elements['edit-accessory-id'].value = item.id;
-        editAccessoryForm.elements['edit-accessory-type'].value = type;
-        editAccessoryForm.elements['edit-accessory-brand'].value = item.brand;
-        editAccessoryForm.elements['edit-accessory-model'].value = item.model;
-        editAccessoryForm.elements['edit-accessory-variant'].value = item.variant || '';
-        editAccessoryForm.elements['edit-accessory-price'].value = item.price;
-        editAccessoryForm.elements['edit-accessory-notes'].value = item.notes || '';
-
-        const priceInput = document.getElementById('edit-accessory-price');
-        priceInput.disabled = item.type === 'Freebie';
-
-        const receiptWrapper = document.getElementById('edit-accessory-receipt-wrapper');
-        if (type === 'accessoriesSellOut') {
-            receiptWrapper.classList.remove('hidden');
-            editAccessoryForm.elements['edit-accessory-receipt'].value = item.receiptNumber || '';
-        } else {
-            receiptWrapper.classList.add('hidden');
-        }
-
-        editAccessoryModal.classList.remove('hidden');
-    };
-
-    const closeEditItemModal = () => {
+    const closeEditModal = () => {
         editItemModal.classList.add('hidden');
         editItemForm.reset();
     };
-    
-    const closeEditAccessoryModal = () => {
-        editAccessoryModal.classList.add('hidden');
-        editAccessoryForm.reset();
-    };
 
-    editItemModalCloseBtn.addEventListener('click', closeEditItemModal);
-    editItemModalCancelBtn.addEventListener('click', closeEditItemModal);
-    editAccessoryModalCloseBtn.addEventListener('click', closeEditAccessoryModal);
-    editAccessoryModalCancelBtn.addEventListener('click', closeEditAccessoryModal);
+    editModalCloseBtn.addEventListener('click', closeEditModal);
+    editModalCancelBtn.addEventListener('click', closeEditModal);
 
     editItemForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -2075,60 +2019,34 @@
         const itemType = e.target.elements['edit-item-type'].value;
 
         let updatedData = {
-            brand: e.target.elements['edit-item-brand'].value.trim(),
-            model: e.target.elements['edit-item-model'].value.trim(),
-            variant: e.target.elements['edit-item-variant'].value.trim(),
-            color: e.target.elements['edit-item-color'].value.trim(),
-            price: parseFloat(e.target.elements['edit-item-price'].value),
-            notes: e.target.elements['edit-item-notes'].value.trim(),
+            brand: e.target.elements['edit-brand'].value.trim(),
+            model: e.target.elements['edit-model'].value.trim(),
+            variant: e.target.elements['edit-variant'].value.trim(),
+            notes: e.target.elements['edit-notes'].value.trim(),
             lastEditorEmail: currentUserEmail,
             lastEditedAt: serverTimestamp()
         };
 
-        if (itemType === 'sales') {
-            updatedData.incentive = parseFloat(e.target.elements['edit-item-incentive'].value) || 0;
-            updatedData.paymentOption = e.target.elements['edit-item-payment'].value;
-            updatedData.receiptNumber = e.target.elements['edit-item-receipt-number'].value.trim();
+        if(itemType === 'sales') {
+            updatedData.incentive = parseFloat(e.target.elements['edit-incentive'].value) || 0;
+            updatedData.paymentOption = e.target.elements['edit-payment'].value;
+            updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
+            updatedData.color = e.target.elements['edit-color'].value.trim();
+        } else if (itemType === 'accessories' || itemType === 'accessoriesSellOut') {
+             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
+        } else {
+            updatedData.price = parseFloat(e.target.elements['edit-price'].value);
+            updatedData.color = e.target.elements['edit-color'].value.trim();
         }
 
         try {
             const itemRef = doc(db, itemType, itemId);
             await updateDoc(itemRef, updatedData);
             showToast('Record updated successfully.', 'success');
-            closeEditItemModal();
+            closeEditModal();
         } catch (error) {
             console.error("Error updating record:", error);
             showToast('Failed to update record.', 'error');
-        }
-    });
-
-    editAccessoryForm.addEventListener('submit', async(e) => {
-        e.preventDefault();
-        const itemId = e.target.elements['edit-accessory-id'].value;
-        const itemType = e.target.elements['edit-accessory-type'].value;
-
-        let updatedData = {
-            brand: e.target.elements['edit-accessory-brand'].value.trim(),
-            model: e.target.elements['edit-accessory-model'].value.trim(),
-            variant: e.target.elements['edit-accessory-variant'].value.trim(),
-            price: parseFloat(e.target.elements['edit-accessory-price'].value),
-            notes: e.target.elements['edit-accessory-notes'].value.trim(),
-            lastEditorEmail: currentUserEmail,
-            lastEditedAt: serverTimestamp()
-        };
-
-        if (itemType === 'accessoriesSellOut') {
-            updatedData.receiptNumber = e.target.elements['edit-accessory-receipt'].value.trim();
-        }
-
-        try {
-            const itemRef = doc(db, itemType, itemId);
-            await updateDoc(itemRef, updatedData);
-            showToast('Accessory updated successfully.', 'success');
-            closeEditAccessoryModal();
-        } catch (error) {
-            console.error("Error updating accessory:", error);
-            showToast('Failed to update accessory.', 'error');
         }
     });
 
@@ -2163,6 +2081,117 @@
             dateFilter.value = `${year}-${month}-${day}`;
             setupListeners(currentUserRole);
         });
+        
+        // Event listener for the new Daily Report button
+        downloadReportBtn.addEventListener('click', async () => {
+            const date = dateFilter.value;
+            downloadReportBtn.disabled = true;
+            downloadReportBtn.textContent = 'Generating...';
+
+            try {
+                const endOfDay = new Date(selectedDate);
+                endOfDay.setHours(23, 59, 59, 999);
+                const startOfDay = new Date(selectedDate);
+                startOfDay.setHours(0, 0, 0, 0);
+
+                // Fetch all data for the date selected
+                const allSalesQuery = query(collection(db, "sales"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
+                const allDeliveriesQuery = query(collection(db, "deliveries"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
+                const allTransfersInQuery = query(collection(db, "transfersIn"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
+                const allTransfersOutQuery = query(collection(db, "transfersOut"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
+                const allInventoryQuery = query(collection(db, "inventory"));
+
+                const [dailySalesSnapshot, dailyDeliveriesSnapshot, dailyTransfersInSnapshot, dailyTransfersOutSnapshot, allInventorySnapshot] = await Promise.all([
+                    getDocs(allSalesQuery),
+                    getDocs(allDeliveriesQuery),
+                    getDocs(allTransfersInQuery),
+                    getDocs(allTransfersOutQuery),
+                    getDocs(allInventoryQuery)
+                ]);
+
+                const dailySales = dailySalesSnapshot.docs.map(doc => doc.data());
+                const dailyDeliveries = dailyDeliveriesSnapshot.docs.map(doc => doc.data());
+                const dailyTransfersIn = dailyTransfersInSnapshot.docs.map(doc => doc.data());
+                const dailyTransfersOut = dailyTransfersOutSnapshot.docs.map(doc => doc.data());
+                const allInventory = allInventorySnapshot.docs.map(doc => doc.data());
+                
+                // Fetch all historical sales, deliveries, and transfers to calculate beginning stock
+                const allHistoricalSalesSnapshot = await getDocs(collection(db, "sales"));
+                const allHistoricalDeliveriesSnapshot = await getDocs(collection(db, "deliveries"));
+                const allHistoricalTransfersInSnapshot = await getDocs(collection(db, "transfersIn"));
+                const allHistoricalTransfersOutSnapshot = await getDocs(collection(db, "transfersOut"));
+
+                const allHistoricalSales = allHistoricalSalesSnapshot.docs.map(doc => doc.data());
+                const allHistoricalDeliveries = allHistoricalDeliveriesSnapshot.docs.map(doc => doc.data());
+                const allHistoricalTransfersIn = allHistoricalTransfersInSnapshot.docs.map(doc => doc.data());
+                const allHistoricalTransfersOut = allHistoricalTransfersOutSnapshot.docs.map(doc => doc.data());
+
+                const allModelKeys = new Set();
+                allInventory.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailySales.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailyDeliveries.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailyTransfersIn.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailyTransfersOut.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+
+
+                const reportData = [];
+                reportData.push(['MODEL', 'DATE BEG', 'PULL IN', 'PULL OUT', 'DELIVERY', 'SOLD', 'END INVENTORY', 'REMARKS']);
+
+                allModelKeys.forEach(modelKey => {
+                    // Count daily transactions for this specific model
+                    const dailyPullInCount = dailyTransfersIn.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    const dailyPullOutCount = dailyTransfersOut.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    const dailyDeliveriesCount = dailyDeliveries.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    const dailySoldCount = dailySales.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    
+                    // Calculate current ending inventory
+                    const endingInventory = allInventory.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    
+                    // Calculate beginning inventory by reversing the day's changes
+                    const beginningInventory = endingInventory + dailySoldCount + dailyPullOutCount - dailyDeliveriesCount - dailyPullInCount;
+                    
+                    // Collect remarks from all daily transactions for this model
+                    const dailyTransactions = [...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
+                    const remarks = dailyTransactions.filter(item => 
+                        `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey
+                    ).map(item => item.notes).filter(note => note);
+                    
+                    reportData.push([
+                        `"${modelKey}"`,
+                        beginningInventory,
+                        dailyPullInCount,
+                        dailyPullOutCount,
+                        dailyDeliveriesCount,
+                        dailySoldCount,
+                        endingInventory,
+                        `"${remarks.join('; ')}"`
+                    ]);
+                });
+                
+
+                const csvContent = reportData.map(e => e.join(',')).join('\n');
+                downloadCSV(csvContent, `Daily_Report_${date}.csv`);
+                showToast('Daily report downloaded successfully!');
+
+            } catch (error) {
+                console.error("Error generating daily report:", error);
+                showToast('Failed to generate daily report.', 'error');
+            } finally {
+                downloadReportBtn.disabled = false;
+                downloadReportBtn.textContent = 'Download Daily Report';
+            }
+        });
+
 
         document.querySelectorAll('.download-btn').forEach(button => {
             button.addEventListener('click', () => {
@@ -2229,7 +2258,7 @@
 
             searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
             
-            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut'];
+            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut', 'accessories', 'accessoriesSellOut'];
             const results = [];
 
             for (const collectionName of collectionsToSearch) {
@@ -2261,6 +2290,8 @@
                     case 'deliveries': status = 'Delivered'; tab = 'deliveries'; date = item.addedAt; break;
                     case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
                     case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
+                    case 'accessories': status = 'Accessory'; tab = 'accessories'; date = item.addedAt; break;
+                    case 'accessoriesSellOut': status = 'Accessory Sold'; tab = 'accessoriesSellOut'; date = item.soldAt; break;
                 }
                 
                 return `
@@ -2320,13 +2351,16 @@
                 const itemId = editBtn.dataset.itemid;
                 const itemType = editBtn.dataset.type;
                 let item;
-
-                if(itemType === 'accessories' || itemType === 'accessoriesSellOut') {
-                    item = [...accessories, ...accessoriesSellOut].find(i => i.id === itemId);
-                    if(item) openEditAccessoryModal(item, itemType);
-                } else {
-                    item = [...inventory, ...sales, ...deliveries, ...transfersIn, ...transfersOut].find(i => i.id === itemId);
-                    if (item) openEditItemModal(item, itemType);
+                if(itemType === 'inventory') item = inventory.find(i => i.id === itemId);
+                if(itemType === 'deliveries') item = deliveries.find(i => i.id === itemId);
+                if(itemType === 'transfersIn') item = transfersIn.find(i => i.id === itemId);
+                if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
+                if(itemType === 'sales') item = sales.find(i => i.id === itemId);
+                if(itemType === 'accessories') item = accessories.find(i => i.id === itemId);
+                if(itemType === 'accessoriesSellOut') item = accessoriesSellOut.find(i => i.id === itemId);
+                
+                if (item) {
+                    openEditModal(item, itemType);
                 }
             }
             
@@ -2360,4 +2394,3 @@
 
 </body>
 </html>
-
