@@ -1,367 +1,2396 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Dashboard</title>
+    <title>Daily Sales & Inventory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --font-sans: 'Inter', sans-serif;
+            /* Light Theme Colors */
+            --bg-primary: #f3f4f6; /* gray-100 */
+            --bg-secondary: #ffffff; /* white */
+            --bg-tertiary: #f9fafb; /* gray-50 */
+            --border-primary: #e5e7eb; /* gray-200 */
+            --text-primary: #111827; /* gray-900 */
+            --text-secondary: #6b7280; /* gray-500 */
+            --accent-primary: #3b82f6; /* blue-500 */
+            --accent-primary-hover: #2563eb; /* blue-600 */
+            --destructive: #ef4444; /* red-500 */
+            --destructive-hover: #dc2626; /* red-600 */
+            --success: #22c55e; /* green-500 */
+            --success-hover: #16a34a; /* green-600 */
+            --special: #a855f7; /* purple-500 */
+            --special-hover: #9333ea; /* purple-600 */
+            
+            --info-bg: #eff6ff; /* blue-50 */
+            --info-text: #1e3a8a; /* blue-900 */
+            --success-card-bg: #f0fdf4; /* green-50 */
+            --success-card-text: #14532d; /* green-900 */
+            --warning-bg: #fefce8; /* yellow-50 */
+            --warning-text: #713f12; /* yellow-900 */
+
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .dark {
+            /* Dark Theme Colors */
+            --bg-primary: #111827; /* gray-900 */
+            --bg-secondary: #1f2937; /* gray-800 */
+            --bg-tertiary: #374151; /* gray-700 */
+            --border-primary: #4b5563; /* gray-600 */
+            --text-primary: #f9fafb; /* gray-50 */
+            --text-secondary: #9ca3af; /* gray-400 */
+            --accent-primary: #60a5fa; /* blue-400 */
+            --accent-primary-hover: #3b82f6; /* blue-500 */
+            --destructive: #f87171; /* red-400 */
+            --destructive-hover: #ef4444; /* red-500 */
+            --success: #4ade80; /* green-400 */
+            --success-hover: #22c55e; /* green-500 */
+            --special: #c084fc; /* purple-400 */
+            --special-hover: #a855f7; /* purple-500 */
+
+            --info-bg: #1e2937; 
+            --info-text: #93c5fd; 
+            --success-card-bg: #1e2937; 
+            --success-card-text: #86efac;
+            --warning-bg: #1e2937;
+            --warning-text: #fde047;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .dark .dark\:bg-gray-800 { background-color: #1f2937; }
-        .dark .dark\:bg-gray-900 { background-color: #111827; }
-        .dark .dark\:border-gray-700 { border-color: #374151; }
-        .dark .dark\:text-gray-300 { color: #d1d5db; }
-        .dark .dark\:text-gray-400 { color: #9ca3af; }
-        .dark .dark\:hover\:bg-gray-700:hover { background-color: #374151; }
-        .dark .dark\:focus\:ring-offset-gray-800:focus { --tw-ring-offset-color: #1f2937; }
         .tab-active {
-            border-color: #4f46e5;
-            color: #ffffff;
+            border-bottom-color: var(--accent-primary);
+            color: var(--accent-primary);
+            font-weight: 600;
         }
-        /* Custom scrollbar for dark mode */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        .table-container {
+            max-height: 60vh;
+            overflow-y: auto;
         }
-        ::-webkit-scrollbar-track {
-            background: #1f2937;
+        .form-input, .form-select {
+            transition: all 0.3s ease;
+            background-color: var(--bg-primary);
+            border-color: var(--border-primary);
         }
-        ::-webkit-scrollbar-thumb {
-            background-color: #4a5568;
-            border-radius: 4px;
+        .form-input:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 20%, transparent);
+            outline: none;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: #718096;
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-tertiary); transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        .row-highlight {
+            animation: highlight-animation 2s ease-out;
+        }
+
+        @keyframes highlight-animation {
+            0% { background-color: color-mix(in srgb, var(--accent-primary) 30%, transparent); }
+            100% { background-color: transparent; }
+        }
+
+        /* Responsive Table Styles */
+        @media screen and (max-width: 768px) {
+            .responsive-table thead {
+                display: none;
+            }
+            .responsive-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid var(--border-primary);
+                border-radius: 0.5rem;
+                padding: 1rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .dark .responsive-table tr {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid var(--border-primary);
+                text-align: right;
+                font-size: 0.875rem;
+            }
+            .responsive-table td:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+             .responsive-table td:first-child {
+                padding-top: 0;
+            }
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                text-align: left;
+                margin-right: 1rem;
+                color: var(--text-primary);
+            }
+            .responsive-table td[data-label="Actions"],
+            .responsive-table td[data-label="Manage"] {
+                justify-content: flex-end;
+                padding-top: 0.75rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-300">
+<body class="antialiased">
 
-<div id="app" class="p-4 sm:p-6 lg:p-8">
-    <!-- Header -->
-    <header class="flex flex-wrap justify-between items-center pb-4 mb-4 border-b border-gray-700">
-        <div>
-            <h1 class="text-xl font-bold text-white">Inventory Dashboard</h1>
-            <p id="userEmailDisplay" class="text-sm">yujinandrade@gmail.com <span class="text-xs font-semibold ml-2 px-2 py-0.5 bg-indigo-600 text-white rounded-full">Admin</span></p>
-        </div>
-        <div class="flex items-center space-x-4 mt-4 sm:mt-0">
-            <button id="signOutBtn" class="px-4 py-2 text-sm font-semibold bg-red-600 hover:bg-red-700 rounded-lg transition-colors">Sign Out</button>
-            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-700">
-                <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-            </button>
-        </div>
-    </header>
-
-    <!-- Date Controls -->
-    <div class="flex flex-wrap items-center gap-4 p-4 mb-6 bg-gray-800 rounded-lg">
-        <div class="flex items-center">
-            <label for="date-picker" class="text-sm mr-2">Showing data for:</label>
-            <input type="date" id="date-picker" class="bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-        </div>
-        <button id="todayBtn" class="px-4 py-2 text-sm font-semibold bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">Today</button>
-        <button class="px-4 py-2 text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">Download Daily Report</button>
-    </div>
-
-    <!-- Main Content -->
-    <div class="bg-gray-800 rounded-lg p-2 sm:p-4">
-        <!-- Tabs -->
-        <div class="border-b border-gray-700">
-            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                <a href="#" class="tab-link whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:border-gray-500 hover:text-gray-300" data-tab="dashboard">Dashboard</a>
-                <a href="#" class="tab-link whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:border-gray-500 hover:text-gray-300" data-tab="deliveries">Deliveries</a>
-                <a href="#" class="tab-link whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:border-gray-500 hover:text-gray-300" data-tab="stocks">Stocks</a>
-                <a href="#" class="tab-link whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:border-gray-500 hover:text-gray-300" data-tab="sales">Sales</a>
-                <a href="#" class="tab-link tab-active whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2" data-tab="transfer-out">Transfer Out</a>
-                <a href="#" class="tab-link whitespace-nowrap py-3 px-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:border-gray-500 hover:text-gray-300" data-tab="transfer-in">Transfer In</a>
-            </nav>
-        </div>
-
-        <!-- Tab Content -->
-        <div class="pt-6">
-            <div id="dashboard-content" class="tab-content hidden">Dashboard Content</div>
-            <div id="deliveries-content" class="tab-content hidden">Deliveries Content</div>
-            <div id="stocks-content" class="tab-content hidden">Stocks Content</div>
-            <div id="sales-content" class="tab-content hidden">Sales Content</div>
-            
-            <!-- Transfer Out Content -->
-            <div id="transfer-out-content" class="tab-content">
-                <h2 class="text-2xl font-bold mb-4 text-white">Transfer Stock Out</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <input type="text" id="transfer-out-imei" placeholder="15-Digit IMEI" class="bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="text" id="transfer-out-notes" placeholder="Notes (e.g., Destination, Reason)" class="bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <button class="w-full py-3 text-sm font-bold bg-red-600 hover:bg-red-700 rounded-lg transition-colors mb-8">Transfer Out</button>
-
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-white">Transfers Out for <span id="transfer-out-date"></span></h3>
-                    <button class="px-4 py-2 text-sm font-semibold bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">Download CSV</button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-left">
-                        <thead class="bg-gray-700 text-xs uppercase">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">IMEI</th>
-                                <th scope="col" class="px-6 py-3">Brand</th>
-                                <th scope="col" class="px-6 py-3">Model</th>
-                                <th scope="col" class="px-6 py-3">Variant</th>
-                                <th scope="col" class="px-6 py-3">Notes</th>
-                                <th scope="col" class="px-6 py-3">Date</th>
-                                <th scope="col" class="px-6 py-3">Author</th>
-                                <th scope="col" class="px-6 py-3 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transfer-out-table">
-                            <!-- Data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
+    <!-- Auth Container -->
+    <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full space-y-8 p-8 sm:p-10 rounded-xl shadow-lg" style="background-color: var(--bg-secondary);">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold" style="color: var(--text-primary);">
+                    Sign in or create an account
+                </h2>
             </div>
-
-            <!-- Transfer In Content -->
-            <div id="transfer-in-content" class="tab-content hidden">
-                 <h2 class="text-2xl font-bold mb-4 text-white">Transfer Stock In</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <input type="text" id="transfer-in-imei" placeholder="15-Digit IMEI" class="bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="text" id="transfer-in-notes" placeholder="Notes (e.g., Source)" class="bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-                <button class="w-full py-3 text-sm font-bold bg-green-600 hover:bg-green-700 rounded-lg transition-colors mb-8">Transfer In</button>
-
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-white">Transfers In for <span id="transfer-in-date"></span></h3>
-                    <button class="px-4 py-2 text-sm font-semibold bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">Download CSV</button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-left">
-                        <thead class="bg-gray-700 text-xs uppercase">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">IMEI</th>
-                                <th scope="col" class="px-6 py-3">Brand</th>
-                                <th scope="col" class="px-6 py-3">Model</th>
-                                <th scope="col" class="px-6 py-3">Variant</th>
-                                <th scope="col" class="px-6 py-3">Notes</th>
-                                <th scope="col" class="px-6 py-3">Date</th>
-                                <th scope="col" class="px-6 py-3">Author</th>
-                                <th scope="col" class="px-6 py-3 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transfer-in-table">
-                            <!-- Data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
+            <div id="auth-error" class="text-center p-2 rounded-md" style="color: var(--destructive); display: none;"></div>
+            <!-- Auth Forms -->
+            <div id="signin-form">
+                <input type="email" id="signin-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
+                <input type="password" id="signin-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
+                <button id="signin-btn" style="background-color: var(--accent-primary);" class="w-full text-white font-semibold py-2 px-4 rounded-md transition-colors disabled:opacity-50">Sign In</button>
+                <p class="mt-4 text-center text-sm" style="color: var(--text-secondary);">
+                    No account? <button id="show-signup-btn" class="font-medium hover:underline" style="color: var(--accent-primary);">Sign up</button>
+                </p>
+            </div>
+            <div id="signup-form" class="hidden">
+                 <input type="email" id="signup-email" placeholder="Email address" class="form-input w-full p-2 border rounded-md mb-4">
+                <input type="password" id="signup-password" placeholder="Password" class="form-input w-full p-2 border rounded-md mb-4">
+                <button id="signup-btn" style="background-color: var(--success);" class="w-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Create Account</button>
+                <p class="mt-4 text-center text-sm" style="color: var(--text-secondary);">
+                    Already have an account? <button id="show-signin-btn" class="font-medium hover:underline" style="color: var(--accent-primary);">Sign in</button>
+                </p>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Edit Modal -->
-<div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
-    <div class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-        <h2 class="text-xl font-bold text-white mb-4">Edit Entry</h2>
-        <form id="edit-form">
-            <input type="hidden" id="edit-id">
-            <input type="hidden" id="edit-type">
-            <div class="space-y-4">
-                <div>
-                    <label for="edit-imei" class="block text-sm font-medium mb-1">IMEI</label>
-                    <input type="text" id="edit-imei" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm" readonly>
-                </div>
-                 <div>
-                    <label for="edit-notes" class="block text-sm font-medium mb-1">Notes</label>
-                    <textarea id="edit-notes" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm"></textarea>
+
+    <!-- App Container -->
+    <div id="app-container" class="hidden container mx-auto p-2 sm:p-6 lg:p-8">
+        <header class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-center sm:text-left" style="color: var(--text-primary);">Inventory Dashboard</h1>
+                <div id="user-info" class="flex items-center justify-center sm:justify-start gap-4 mt-2">
+                    <p style="color: var(--text-secondary);" id="user-email" class="text-sm"></p>
+                    <span id="user-role-badge" class="text-xs font-semibold px-2 py-1 rounded-full"></span>
+                    <button id="signout-btn" style="background-color: var(--destructive);" class="text-white text-xs font-semibold py-1 px-3 rounded-md transition-colors">Sign Out</button>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end space-x-4">
-                <button type="button" id="cancel-edit-btn" class="px-4 py-2 text-sm font-semibold bg-gray-600 hover:bg-gray-500 rounded-lg">Cancel</button>
-                <button type="submit" class="px-4 py-2 text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 rounded-lg">Save Changes</button>
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
             </div>
-        </form>
+        </header>
+        
+        <div id="view-only-banner" class="hidden mb-4 p-4 rounded-md text-center" style="background-color: var(--warning-bg); color: var(--warning-text);">
+            You have view-only access.
+        </div>
+
+        <!-- Main Content -->
+        <div style="background-color: var(--bg-secondary); box-shadow: var(--shadow-lg);" class="rounded-xl p-2 sm:p-6">
+            <!-- Date Filter & Daily Report -->
+            <div class="flex flex-wrap items-center gap-4 mb-4 pb-4 border-b" style="border-color: var(--border-primary);">
+                 <label for="date-filter" class="font-semibold text-sm">Showing data for:</label>
+                 <input type="date" id="date-filter" class="form-input p-2 border rounded-md">
+                 <button id="goto-today-btn" class="text-sm font-semibold py-2 px-4 rounded-md" style="background-color: var(--bg-tertiary);">Today</button>
+                 <button id="download-report-btn" class="text-sm font-semibold py-2 px-4 rounded-md" style="background-color: var(--accent-primary); color: white;">Download Daily Report</button>
+            </div>
+
+            <!-- Tabs -->
+            <div style="border-color: var(--border-primary);" class="border-b mb-6">
+                <nav id="tabs-nav" class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard">Dashboard</button>
+                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
+                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
+                    <button onclick="changeTab('sales')" class="tab whitespace-now-wrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
+                    <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
+                    <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessoriesSellOut">Accessories Sell Out</button>
+                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
+                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn">Transfer In</button>
+                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel">Stock Level</button>
+                    <button id="admin-tab-btn" onclick="changeTab('admin')" class="tab hidden whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="admin">Admin Tools</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-content">
+                <!-- Dashboard -->
+                <div id="dashboard" class="tab-pane">
+                    <!-- Search Section -->
+                    <div id="search-section" class="mb-6">
+                        <h2 class="text-xl font-semibold mb-4">System-Wide Search</h2>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="search-input" placeholder="Search by IMEI..." class="form-input flex-grow" maxlength="15" required>
+                            <button id="search-btn" style="background-color: var(--accent-primary);" class="text-white font-semibold py-2 px-6 rounded-md transition-colors">Search</button>
+                        </div>
+                        <div id="search-results-container" class="mt-4">
+                            <!-- Search results will be injected here -->
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-6" style="border-color: var(--border-primary);">
+                          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div style="background-color: var(--info-bg); color: var(--info-text);" class="p-6 rounded-lg">
+                                <h3 class="font-semibold text-lg" id="dashboard-sales-title">Sales for Today</h3>
+                                <p class="text-3xl font-bold mt-2" id="dashboard-sales">₱0.00</p>
+                            </div>
+                            <div style="background-color: var(--success-card-bg); color: var(--success-card-text);" class="p-6 rounded-lg">
+                                <h3 class="font-semibold text-lg">Total Stock Items</h3>
+                                <p class="text-3xl font-bold mt-2" id="dashboard-stock">0</p>
+                            </div>
+                            <div style="background-color: var(--warning-bg); color: var(--warning-text);" class="p-6 rounded-lg">
+                                <h3 class="font-semibold text-lg" id="dashboard-incentives-title">Incentives for Today</h3>
+                                <p class="text-3xl font-bold mt-2" id="dashboard-incentives">₱0.00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deliveries -->
+                <div id="deliveries" class="tab-pane hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Add New Delivery</h2>
+                        <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="deliveries" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                    </div>
+                    <form id="delivery-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="text" id="del-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="del-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="del-variant" placeholder="Variant (e.g., 128GB)" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="del-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                        <input type="number" id="del-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
+                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Stock</button>
+                    </form>
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="deliveries-title">Today's Deliveries</h3>
+                        <div class="flex items-center gap-2">
+                              <label for="deliveries-sort" class="text-sm font-medium">Sort by:</label>
+                              <select id="deliveries-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="deliveries">
+                                  <option value="latest">Latest First</option>
+                                  <option value="alphabetical">Brand (A-Z)</option>
+                              </select>
+                        </div>
+                    </div>
+                     <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deliveries-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Stocks -->
+                <div id="stocks" class="tab-pane hidden">
+                     <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+                        <h2 class="text-xl font-semibold">Current Stock</h2>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <label for="stocks-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="stocks-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="inventory">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="inventory" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date Added</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Sales Today -->
+                <div id="sales" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Record a Sale</h2>
+                    <form id="sales-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="sale-imei" placeholder="15-Digit IMEI of sold item" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="number" id="sale-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md" required>
+                        <select id="sale-payment" class="form-select w-full p-2 border rounded-md" required>
+                            <option value="" disabled selected>Payment Option</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Digital Wallet">Digital Wallet</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <input type="text" id="sale-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="sale-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md md:col-span-full">
+                        <button type="submit" style="background-color: var(--success);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sale</button>
+                    </form>
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="sales-title">Today's Sales</h3>
+                        <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <label for="sales-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="sales-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="sales">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label for="sales-payment-filter" class="text-sm font-medium">Filter by:</label>
+                                 <select id="sales-payment-filter" class="form-select p-2 border rounded-md text-sm">
+                                     <option value="all">All Payments</option>
+                                     <option value="Cash">Cash</option>
+                                     <option value="Credit Card">Credit Card</option>
+                                     <option value="Digital Wallet">Digital Wallet</option>
+                                     <option value="Bank Transfer">Bank Transfer</option>
+                                     <option value="Others">Others</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="sales" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
+                    </div>
+                     <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Payment</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Receipt #</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Accessories -->
+                <div id="accessories" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Add New Accessory</h2>
+                    <form id="accessory-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="acc-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="acc-variant" placeholder="Variant (e.g., Color, Size)" class="form-input w-full p-2 border rounded-md">
+                        <select id="acc-type" class="form-select w-full p-2 border rounded-md" required>
+                            <option value="" disabled selected>Accessory Type</option>
+                            <option value="For Sale">For Sale</option>
+                            <option value="Freebie">Freebie</option>
+                        </select>
+                        <input type="number" id="acc-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Add Accessory</button>
+                    </form>
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="accessories-title">Today's Accessories</h3>
+                        <div class="flex items-center gap-2">
+                             <label for="accessories-sort" class="text-sm font-medium">Sort by:</label>
+                             <select id="accessories-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessories">
+                                 <option value="latest">Latest First</option>
+                                 <option value="alphabetical">Brand (A-Z)</option>
+                             </select>
+                        </div>
+                    </div>
+                     <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Type</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accessories-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                 <!-- Accessories Sell Out -->
+                <div id="accessoriesSellOut" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Record Accessory Sell Out</h2>
+                     <form id="accessory-sell-out-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <select id="sell-out-accessory" class="form-select w-full p-2 border rounded-md md:col-span-full" required>
+                             <option value="" disabled selected>Select Accessory to Sell</option>
+                         </select>
+                         <input type="text" id="sell-out-receipt" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                         <input type="text" id="sell-out-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md">
+                         <button type="submit" style="background-color: var(--success);" class="md:col-span-full text-white font-semibold py-2 px-4 rounded-md transition-colors">Record Sell Out</button>
+                    </form>
+
+                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="accessories-sell-out-title">Today's Accessory Sales</h3>
+                        <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <label for="accessoriesSellOut-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="accessoriesSellOut-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="accessoriesSellOut">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="accessoriesSellOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Price</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accessories-sell-out-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Stock Transfer Out -->
+                <div id="transferOut" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Transfer Stock Out</h2>
+                    <form id="transfer-out-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <input type="text" id="tout-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="text" id="tout-notes" placeholder="Notes (e.g., Destination)" class="form-input w-full p-2 border rounded-md md:col-span-2 lg:col-span-2">
+                        <button type="submit" style="background-color: var(--destructive);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer Out</button>
+                    </form>
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="transfer-out-title">Today's Transfers Out</h3>
+                        <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <label for="tout-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="tout-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersOut">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersOut" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transfer-out-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Stock Transfer In -->
+                <div id="transferIn" class="tab-pane hidden">
+                     <h2 class="text-xl font-semibold mb-4">Transfer Stock In</h2>
+                    <form id="transfer-in-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <input type="text" id="tin-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <input type="text" id="tin-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="tin-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="tin-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
+                        <input type="text" id="tin-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                        <input type="number" id="tin-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                        <input type="text" id="tin-notes" placeholder="Notes (e.g., Origin)" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
+                        <button type="submit" style="background-color: var(--special);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Transfer In</button>
+                    </form>
+                    <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
+                        <h3 class="text-lg font-semibold" id="transfer-in-title">Today's Transfers In</h3>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <label for="tin-sort" class="text-sm font-medium">Sort by:</label>
+                                 <select id="tin-sort" class="sort-select form-select p-2 border rounded-md text-sm" data-type="transfersIn">
+                                     <option value="latest">Latest First</option>
+                                     <option value="alphabetical">Brand (A-Z)</option>
+                                 </select>
+                            </div>
+                            <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="transfersIn" style="background-color: var(--bg-tertiary);">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">IMEI</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Brand</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Model</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Variant</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Date</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Author</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transfer-in-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Stock Level -->
+                <div id="stockLevel" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Stock Level Check</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2" style="color: var(--success);">High Stock Products</h3>
+                            <div id="high-stock-list" class="space-y-2"></div>
+                        </div>
+                         <div>
+                            <h3 class="font-semibold text-lg mb-2" style="color: var(--destructive);">Low Stock Products</h3>
+                            <div id="low-stock-list" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Admin Tools -->
+                <div id="admin" class="tab-pane hidden">
+                    <h2 class="text-xl font-semibold mb-4">Manage User Roles</h2>
+                    <div class="table-container">
+                        <table class="min-w-full responsive-table">
+                             <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">User Email</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Current Role</th>
+                                    <th class="py-2 px-4 border-b text-left" style="border-color: var(--border-primary);">Change Role</th>
+                                    <th class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">Manage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-management-table-body">
+                                <!-- User list will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
+            <span id="toast-message"></span>
+        </div>
     </div>
-</div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
+            <h3 class="text-lg font-bold mb-4" id="confirm-modal-title">Confirm Action</h3>
+            <p style="color: var(--text-secondary);" class="mb-6" id="confirm-modal-message"></p>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-24" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
+                <button id="confirm-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-24">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+     <!-- Kicked Modal -->
+    <div id="kicked-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--destructive);">Access Denied</h3>
+            <p style="color: var(--text-secondary);" class="mb-6">Your account has been kicked by an administrator. Please contact support for more information.</p>
+            <button id="kicked-ok-btn" class="py-2 px-4 rounded-md font-semibold text-white w-full" style="background-color: var(--accent-primary);">OK</button>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div id="edit-item-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold" id="edit-modal-title">Edit Stock Item</h3>
+                <button id="edit-modal-close-btn">&times;</button>
+            </div>
+            <form id="edit-item-form">
+                <input type="hidden" id="edit-item-id">
+                <input type="hidden" id="edit-item-type">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="edit-imei-wrapper">
+                        <label for="edit-imei" class="block text-sm font-medium mb-1">IMEI</label>
+                        <input type="text" id="edit-imei" class="form-input w-full p-2 border rounded-md" maxlength="15" required disabled>
+                    </div>
+                    <div>
+                        <label for="edit-brand" class="block text-sm font-medium mb-1">Brand</label>
+                        <input type="text" id="edit-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="edit-model" class="block text-sm font-medium mb-1">Model</label>
+                        <input type="text" id="edit-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="edit-variant" class="block text-sm font-medium mb-1">Variant</label>
+                        <input type="text" id="edit-variant" placeholder="Variant" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div id="edit-color-wrapper">
+                        <label for="edit-color" class="block text-sm font-medium mb-1">Color</label>
+                        <input type="text" id="edit-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div id="edit-price-wrapper">
+                        <label for="edit-price" class="block text-sm font-medium mb-1">Price</label>
+                        <input type="number" id="edit-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
+                    </div>
+                    <div id="edit-incentive-wrapper" class="hidden">
+                        <label for="edit-incentive" class="block text-sm font-medium mb-1">Incentive</label>
+                        <input type="number" id="edit-incentive" placeholder="Incentive" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div id="edit-payment-wrapper" class="hidden">
+                        <label for="edit-payment" class="block text-sm font-medium mb-1">Payment Method</label>
+                        <select id="edit-payment" class="form-select w-full p-2 border rounded-md">
+                            <option value="Cash">Cash</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Digital Wallet">Digital Wallet</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div id="edit-receipt-number-wrapper" class="hidden">
+                        <label for="edit-receipt-number" class="block text-sm font-medium mb-1">Receipt #</label>
+                        <input type="text" id="edit-receipt-number" placeholder="Order Receipt #" class="form-input w-full p-2 border rounded-md">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="edit-notes" class="block text-sm font-medium mb-1">Notes</label>
+                        <textarea id="edit-notes" placeholder="Notes" class="form-input w-full p-2 border rounded-md" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                     <button type="button" id="edit-modal-cancel-btn" class="py-2 px-4 rounded-md font-semibold w-32" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
+                     <button type="submit" class="py-2 px-4 rounded-md font-semibold text-white w-32" style="background-color: var(--success);">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Mock Data ---
-    const MOCK_DATA = {
-        transfersOut: [
-            { id: 1, imei: '454552532442343', brand: 'Infinix', model: 'Q1', variant: '128GB', notes: 'Transfer to main branch', date: '2025-09-12', author: 'yujinandrade@gmail.com' },
-            { id: 2, imei: '987654321012345', brand: 'Samsung', model: 'S23', variant: '256GB', notes: 'Return to supplier', date: '2025-09-12', author: 'admin@example.com' },
-        ],
-        transfersIn: [
-            { id: 3, imei: '112233445566778', brand: 'Apple', model: 'iPhone 15', variant: '512GB', notes: 'From supplier warehouse', date: '2025-09-12', author: 'yujinandrade@gmail.com' },
-        ],
+<script type="module">
+    // --- Firebase SDKs ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+        getAuth, 
+        onAuthStateChanged, 
+        createUserWithEmailAndPassword, 
+        signInWithEmailAndPassword, 
+        signOut 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+        getFirestore, 
+        doc, 
+        setDoc,
+        updateDoc,
+        deleteDoc,
+        getDoc,
+        getDocs,
+        addDoc, 
+        collection, 
+        query, 
+        onSnapshot,
+        where,
+        limit,
+        serverTimestamp,
+        runTransaction
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // This is a hardcoded Firebase configuration. In a production environment,
+    // this should be loaded from environment variables or a secure source.
+    const firebaseConfig = {
+        apiKey: "AIzaSyCRoM0688XXI5q51uV_dBPVu6pmomSGwss",
+        authDomain: "inventory-d4c22.firebaseapp.com",
+        databaseURL: "https://inventory-d4c22-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "inventory-d4c22",
+        storageBucket: "inventory-d4c22.appspot.com",
+        messagingSenderId: "99206301025",
+        appId: "1:99206301025:web:8c636434bdfb69af3a3120",
+        measurementId: "G-5C5DETNZG7"
     };
 
-    // --- State ---
-    let transfersOut = MOCK_DATA.transfersOut;
-    let transfersIn = MOCK_DATA.transfersIn;
+    // --- Firebase Initialization ---
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- Global State ---
+    let currentUserRole = null;
+    let currentUserEmail = null;
+    let usersUnsubscribe = null;
+    let inventoryUnsubscribe = null;
+    let salesUnsubscribe = null;
+    let transfersInUnsubscribe = null;
+    let transfersOutUnsubscribe = null;
+    let deliveriesUnsubscribe = null;
+    let accessoriesUnsubscribe = null;
+    let accessoriesSellOutUnsubscribe = null;
+    let inventory = [];
+    let sales = [];
+    let transfersIn = [];
+    let transfersOut = [];
+    let deliveries = [];
+    let accessories = [];
+    let accessoriesSellOut = [];
+    let selectedDate = new Date();
     
     // --- UI Elements ---
-    const datePicker = document.getElementById('date-picker');
-    const todayBtn = document.getElementById('todayBtn');
-    const transferOutDateSpan = document.getElementById('transfer-out-date');
-    const transferInDateSpan = document.getElementById('transfer-in-date');
-    const transferOutTable = document.getElementById('transfer-out-table');
-    const transferInTable = document.getElementById('transfer-in-table');
-    const tabs = document.querySelectorAll('.tab-link');
-    const tabContents = document.querySelectorAll('.tab-content');
-    const editModal = document.getElementById('edit-modal');
-    const editForm = document.getElementById('edit-form');
-    const cancelEditBtn = document.getElementById('cancel-edit-btn');
-    const themeToggle = document.getElementById('theme-toggle');
-    const lightIcon = document.getElementById('theme-toggle-light-icon');
-    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const authContainer = document.getElementById('auth-container');
+    const appContainer = document.getElementById('app-container');
+    const authError = document.getElementById('auth-error');
+    const dateFilter = document.getElementById('date-filter');
+    const gotoTodayBtn = document.getElementById('goto-today-btn');
+    const downloadReportBtn = document.getElementById('download-report-btn');
+
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+
+    const showSignupBtn = document.getElementById('show-signup-btn');
+    const showSigninBtn = document.getElementById('show-signin-btn');
+
+    const signinBtn = document.getElementById('signin-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const signoutBtn = document.getElementById('signout-btn');
     
-    // --- Date Formatting ---
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmOkBtn = document.getElementById('confirm-ok-btn');
+    const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+    const confirmModalTitle = document.getElementById('confirm-modal-title');
+    const confirmModalMessage = document.getElementById('confirm-modal-message');
+
+    const kickedModal = document.getElementById('kicked-modal');
+    const kickedOkBtn = document.getElementById('kicked-ok-btn');
+
+    const editItemModal = document.getElementById('edit-item-modal');
+    const editItemForm = document.getElementById('edit-item-form');
+    const editModalCloseBtn = document.getElementById('edit-modal-close-btn');
+    const editModalCancelBtn = document.getElementById('edit-modal-cancel-btn');
+    const editModalTitle = document.getElementById('edit-modal-title');
+    const searchBtn = document.getElementById('search-btn');
+    const searchInput = document.getElementById('search-input');
+    const searchResultsContainer = document.getElementById('search-results-container');
+
+    // --- DARK MODE ---
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    
+    function applyDarkMode(isDark) { 
+        document.documentElement.classList.toggle('dark', isDark);
+        localStorage.setItem("darkMode", isDark);
+    }
+    
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedMode = localStorage.getItem("darkMode");
+    const initialDarkMode = savedMode !== null ? savedMode === 'true' : prefersDark;
+    darkModeToggle.checked = initialDarkMode;
+    applyDarkMode(initialDarkMode);
+
+
+    // --- UTILITY FUNCTIONS ---
+    const showToast = (message, type = 'success') => {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        toastMessage.textContent = message;
+
+        toast.classList.remove('bg-red-500', 'bg-green-500');
+        toast.style.backgroundColor = '';
+
+        if (type === 'error') {
+            toast.style.backgroundColor = 'var(--destructive)';
+        } else {
+            toast.style.backgroundColor = 'var(--success)';
+        }
+
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+
+        setTimeout(() => {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0');
+        }, 3000);
+    };
+    
+    let confirmCallback = null;
+    const showConfirm = (message, onConfirm, options = {}) => {
+        const { title = 'Confirm Action', okText = 'Confirm', okClass = 'destructive' } = options;
+        
+        confirmModalTitle.textContent = title;
+        confirmModalMessage.textContent = message;
+        confirmOkBtn.textContent = okText;
+
+        confirmOkBtn.style.backgroundColor = ''; // Reset
+        if(okClass === 'destructive') {
+            confirmOkBtn.style.backgroundColor = 'var(--destructive)';
+        } else {
+            confirmOkBtn.style.backgroundColor = 'var(--success)';
+        }
+
+        confirmModal.classList.remove('hidden');
+        confirmCallback = onConfirm;
+    };
+
+    confirmOkBtn.addEventListener('click', () => {
+        if (confirmCallback) {
+            confirmCallback();
+        }
+        confirmModal.classList.add('hidden');
+        confirmCallback = null;
+    });
+
+    confirmCancelBtn.addEventListener('click', () => {
+        confirmModal.classList.add('hidden');
+        confirmCallback = null;
+    });
+
+    kickedOkBtn.addEventListener('click', () => {
+        kickedModal.classList.add('hidden');
+    });
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
+    };
+
     const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        // Handle both JS Date objects and Firestore Timestamps
+        if (!date) return 'N/A';
+        const dateObj = date.toDate ? date.toDate() : new Date(date);
+        return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    
+    // --- TAB MANAGEMENT ---
+    window.changeTab = (tabName) => {
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+            pane.classList.add('hidden');
+        });
+        document.getElementById(tabName).classList.remove('hidden');
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('tab-active');
+            tab.style.color = 'var(--text-secondary)';
+            tab.style.borderColor = 'transparent';
+        });
+        const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+        activeTab.classList.add('tab-active');
+        activeTab.style.color = 'var(--accent-primary)';
+        activeTab.style.borderColor = 'var(--accent-primary)';
+
     };
 
-    const setDateValue = (date) => {
-        const isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-        datePicker.value = isoDate;
-        const formatted = formatDate(new Date(datePicker.value + 'T00:00:00'));
-        transferOutDateSpan.textContent = formatted;
-        transferInDateSpan.textContent = formatted;
+    // --- RENDERING FUNCTIONS ---
+    const renderAll = () => {
+        const activeTab = document.querySelector('.tab-active')?.dataset.tab;
+        if (!activeTab) return;
+        
+        const sortType = document.querySelector(`#${activeTab}-sort`)?.value || 'latest';
+
+        renderDashboard();
+        renderStockTable(sortType);
+        renderSalesTable(sortType);
+        renderStockLevels();
+        renderDeliveriesTable(sortType);
+        renderTransfersInTable(sortType);
+        renderTransfersOutTable(sortType);
+        renderAccessoriesTable(sortType);
+        renderAccessoriesSellOutTable(sortType);
     };
 
-    // --- Rendering Functions ---
-    const createActionButton = (icon, colorClass, onClick) => {
-        const button = document.createElement('button');
-        button.className = `p-1.5 ${colorClass} rounded`;
-        button.innerHTML = icon;
-        button.addEventListener('click', onClick);
-        return button;
-    };
+    const renderDashboard = () => {
+        const formattedDate = formatDate(selectedDate);
+        document.getElementById('dashboard-sales-title').textContent = `Sales for ${formattedDate}`;
+        document.getElementById('dashboard-incentives-title').textContent = `Incentives for ${formattedDate}`;
 
-    const renderTable = (tableElement, data, type) => {
-        tableElement.innerHTML = '';
-        if (data.length === 0) {
-            tableElement.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-gray-500">No data for this date.</td></tr>`;
+        const totalSales = sales.reduce((sum, item) => sum + item.price, 0);
+        const totalIncentives = sales.reduce((sum, item) => sum + item.incentive, 0);
+        
+        document.getElementById('dashboard-sales').textContent = formatCurrency(totalSales);
+        document.getElementById('dashboard-stock').textContent = inventory.length;
+        document.getElementById('dashboard-incentives').textContent = formatCurrency(totalIncentives);
+    };
+    
+    const renderStockTable = (sortType = 'latest') => {
+        const tableBody = document.getElementById('stock-table-body');
+        tableBody.innerHTML = '';
+
+        let sortedData = [...inventory];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else { // 'latest'
+            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
+        }
+
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No items in stock.</td></tr>`;
             return;
         }
-        data.forEach(item => {
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="inventory" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+             if (isAdmin) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="inventory" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
             const row = document.createElement('tr');
-            row.className = 'border-b border-gray-700 hover:bg-gray-700';
-            
-            const editBtn = createActionButton(
-                `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>`,
-                'text-blue-400 hover:text-blue-300',
-                (e) => {
-                    e.stopPropagation();
-                    openEditModal(item, type);
-                }
-            );
-
-            const deleteBtn = createActionButton(
-                `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`,
-                'text-red-400 hover:text-red-300',
-                (e) => {
-                    e.stopPropagation();
-                    console.log('Delete item:', item.id);
-                }
-            );
-            
-            const actionsCell = document.createElement('td');
-            actionsCell.className = 'px-6 py-4 text-center space-x-2';
-            actionsCell.appendChild(editBtn);
-            actionsCell.appendChild(deleteBtn);
-
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-inventory-${item.id}`;
             row.innerHTML = `
-                <td class="px-6 py-4 font-medium text-white">${item.imei}</td>
-                <td class="px-6 py-4">${item.brand}</td>
-                <td class="px-6 py-4">${item.model}</td>
-                <td class="px-6 py-4">${item.variant}</td>
-                <td class="px-6 py-4 text-gray-400">${item.notes}</td>
-                <td class="px-6 py-4">${formatDate(item.date)}</td>
-                <td class="px-6 py-4">${item.author}</td>
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Date Added" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
             `;
-            row.appendChild(actionsCell);
-            tableElement.appendChild(row);
+            tableBody.appendChild(row);
         });
     };
 
-    const refreshTables = () => {
-        renderTable(transferOutTable, transfersOut, 'out');
-        renderTable(transferInTable, transfersIn, 'in');
+    const renderSalesTable = (sortType = 'latest') => {
+        document.getElementById('sales-title').textContent = `Sales for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('sales-table-body');
+        tableBody.innerHTML = '';
+        
+        let sortedData = [...sales];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.soldAt?.toMillis() || 0) - (a.soldAt?.toMillis() || 0));
+        }
+
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="sales" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+             if (isAdmin) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="sales" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+            
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-sales-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
+                <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
+                <td data-label="Receipt #" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.receiptNumber || 'N/A'}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
+
+    const renderDeliveriesTable = (sortType = 'latest') => {
+        document.getElementById('deliveries-title').textContent = `Deliveries for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('deliveries-table-body');
+        tableBody.innerHTML = '';
+        
+        let sortedData = [...deliveries];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
+        }
+
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="deliveries" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Delivery">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="deliveries" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Delivery">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+                
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-deliveries-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
     };
     
-    // --- Modal Logic ---
+    const renderTransfersInTable = (sortType = 'latest') => {
+        document.getElementById('transfer-in-title').textContent = `Transfers In for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('transfer-in-table-body');
+        tableBody.innerHTML = '';
+
+        let sortedData = [...transfersIn];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.transferredAt?.toMillis() || 0) - (a.transferredAt?.toMillis() || 0));
+        }
+
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="transfersIn" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="transfersIn" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-transfersIn-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
+
+    const renderTransfersOutTable = (sortType = 'latest') => {
+        document.getElementById('transfer-out-title').textContent = `Transfers Out for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('transfer-out-table-body');
+        tableBody.innerHTML = '';
+
+        let sortedData = [...transfersOut];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.transferredAt?.toMillis() || 0) - (a.transferredAt?.toMillis() || 0));
+        }
+
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="transfersOut" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="transfersOut" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>`;
+            }
+            
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-transfersOut-${item.id}`;
+            row.innerHTML = `
+                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
+
+    const renderStockLevels = () => {
+        const highStockList = document.getElementById('high-stock-list');
+        const lowStockList = document.getElementById('low-stock-list');
+        highStockList.innerHTML = '';
+        lowStockList.innerHTML = '';
+        
+        const stockCounts = inventory.reduce((acc, item) => {
+            const key = `${item.brand} ${item.model} ${item.variant}`;
+            acc[key] = (acc[key] || 0) + 1;
+            return acc;
+        }, {});
+        
+        const sortedStock = Object.entries(stockCounts).sort(([,a],[,b]) => b - a);
+        
+        if(sortedStock.length === 0) {
+            highStockList.innerHTML = `<p style="color: var(--text-secondary);">No stock to analyze.</p>`;
+            lowStockList.innerHTML = `<p style="color: var(--text-secondary);">No stock to analyze.</p>`;
+            return;
+        }
+
+        const LOW_STOCK_THRESHOLD = 3;
+        
+        sortedStock.forEach(([name, count]) => {
+            const itemHtml = `
+                <div class="flex justify-between items-center p-2 rounded-md" style="background-color: var(--bg-tertiary);">
+                    <span class="text-sm">${name}</span>
+                    <span class="font-bold text-sm px-2 py-1 rounded-full ${count > LOW_STOCK_THRESHOLD ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'}">${count}</span>
+                </div>`;
+
+            if (count > LOW_STOCK_THRESHOLD) {
+                highStockList.innerHTML += itemHtml;
+            } else {
+                lowStockList.innerHTML += itemHtml;
+            }
+        });
+
+        if (highStockList.innerHTML === '') {
+            highStockList.innerHTML = `<p style="color: var(--text-secondary);">No items with high stock levels.</p>`;
+        }
+        if (lowStockList.innerHTML === '') {
+            lowStockList.innerHTML = `<p style="color: var(--text-secondary);">No items with low stock levels.</p>`;
+        }
+    };
+
+    const renderAccessoriesTable = (sortType = 'latest') => {
+        document.getElementById('accessories-title').textContent = `Accessories for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('accessories-table-body');
+        tableBody.innerHTML = '';
+        
+        let sortedData = [...accessories];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
+        }
+        
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No accessories recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="accessories" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Accessory">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="accessories" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Accessory">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-accessories-${item.id}`;
+            row.innerHTML = `
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Type" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.type}</td>
+                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
+
+    const renderAccessoriesSellOutTable = (sortType = 'latest') => {
+        document.getElementById('accessories-sell-out-title').textContent = `Accessory Sales for ${formatDate(selectedDate)}`;
+        const tableBody = document.getElementById('accessories-sell-out-table-body');
+        tableBody.innerHTML = '';
+        
+        let sortedData = [...accessoriesSellOut];
+        if(sortType === 'alphabetical') {
+            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+        } else {
+            sortedData.sort((a,b) => (b.soldAt?.toMillis() || 0) - (a.soldAt?.toMillis() || 0));
+        }
+        
+        if (sortedData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No accessory sales recorded on this day.</td></tr>`;
+            return;
+        }
+        sortedData.forEach(item => {
+            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
+            const isAdmin = currentUserRole === 'admin';
+            let actionsHtml = '';
+            if (canEdit) {
+                 actionsHtml += `<button data-itemid="${item.id}" data-type="accessoriesSellOut" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Accessory Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            if (isAdmin) {
+                actionsHtml += `<button data-itemid="${item.id}" data-type="accessoriesSellOut" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Accessory Sale">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </button>`;
+            }
+            const authorHtml = item.lastEditorEmail 
+                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
+                : item.authorEmail || 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
+            row.id = `row-accessoriesSellOut-${item.id}`;
+            row.innerHTML = `
+                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
+                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
+                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
+                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
+                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
+                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
+                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    };
+
+
+    // --- Firestore Data Handling ---
+    const setupListeners = (role) => {
+        detachListeners();
+        
+        const startOfDay = new Date(selectedDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(selectedDate);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const inventoryRef = collection(db, "inventory");
+        inventoryUnsubscribe = onSnapshot(inventoryRef, (snapshot) => {
+            inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        const salesQuery = query(collection(db, "sales"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
+        salesUnsubscribe = onSnapshot(salesQuery, (snapshot) => {
+            sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+        
+        const deliveriesQuery = query(collection(db, "deliveries"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
+        deliveriesUnsubscribe = onSnapshot(deliveriesQuery, (snapshot) => {
+            deliveries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        const transfersInQuery = query(collection(db, "transfersIn"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
+        transfersInUnsubscribe = onSnapshot(transfersInQuery, (snapshot) => {
+            transfersIn = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        const transfersOutQuery = query(collection(db, "transfersOut"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
+        transfersOutUnsubscribe = onSnapshot(transfersOutQuery, (snapshot) => {
+            transfersOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+        const accessoriesRef = collection(db, "accessories");
+        accessoriesUnsubscribe = onSnapshot(accessoriesRef, (snapshot) => {
+            accessories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            const sellOutSelect = document.getElementById('sell-out-accessory');
+            sellOutSelect.innerHTML = '<option value="" disabled selected>Select Accessory to Sell</option>';
+            accessories.forEach(acc => {
+                const option = document.createElement('option');
+                option.value = acc.id;
+                option.textContent = `${acc.brand} ${acc.model} ${acc.variant || ''}`;
+                sellOutSelect.appendChild(option);
+            });
+            renderAll();
+        });
+        
+        const accessoriesSellOutQuery = query(collection(db, "accessoriesSellOut"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
+        accessoriesSellOutUnsubscribe = onSnapshot(accessoriesSellOutQuery, (snapshot) => {
+            accessoriesSellOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAll();
+        });
+
+
+        if (role === 'admin') {
+            setupAdminListeners();
+        }
+    }
+    
+    const setupAdminListeners = () => {
+        const usersRef = collection(db, 'users');
+        usersUnsubscribe = onSnapshot(usersRef, (snapshot) => {
+            const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderUserManagementTable(users);
+        });
+    };
+
+    const detachListeners = () => {
+        if (inventoryUnsubscribe) inventoryUnsubscribe();
+        if (salesUnsubscribe) salesUnsubscribe();
+        if (deliveriesUnsubscribe) deliveriesUnsubscribe();
+        if (transfersInUnsubscribe) transfersInUnsubscribe();
+        if (transfersOutUnsubscribe) transfersOutUnsubscribe();
+        if (usersUnsubscribe) usersUnsubscribe();
+        if (accessoriesUnsubscribe) accessoriesUnsubscribe();
+        if (accessoriesSellOutUnsubscribe) accessoriesSellOutUnsubscribe();
+    }
+
+    const renderUserManagementTable = (users) => {
+        const tableBody = document.getElementById('user-management-table-body');
+        tableBody.innerHTML = '';
+        const currentUserId = auth.currentUser.uid;
+
+        users.forEach(user => {
+            const isCurrentUser = user.id === currentUserId;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td data-label="Email" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.email}</td>
+                <td data-label="Role" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.role}</td>
+                <td data-label="Change Role" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">
+                    ${!isCurrentUser ? `
+                    <select class="form-select p-2 border rounded-md" data-userid="${user.id}">
+                        <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
+                        <option value="editor" ${user.role === 'editor' ? 'selected' : ''}>Editor</option>
+                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                    </select>
+                    ` : 'Cannot change own role'}
+                </td>
+                <td data-label="Manage" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">
+                     ${!isCurrentUser ? `
+                         ${user.kicked 
+                             ? `<button data-userid="${user.id}" class="unkick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--success); color: white;">Un-kick</button>`
+                             : `<button data-userid="${user.id}" class="kick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--destructive); color: white;">Kick</button>`
+                        }
+                    ` : ''}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Add event listeners after rendering
+        tableBody.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', async (e) => {
+                const newRole = e.target.value;
+                const userIdToUpdate = e.target.dataset.userid;
+                try {
+                    const userDocRef = doc(db, 'users', userIdToUpdate);
+                    await updateDoc(userDocRef, { role: newRole });
+                    showToast(`User role updated to ${newRole}.`, 'success');
+                } catch (error) {
+                    console.error("Error updating role: ", error);
+                    showToast('Failed to update role.', 'error');
+                }
+            });
+        });
+
+        tableBody.querySelectorAll('.kick-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const userIdToKick = e.target.dataset.userid;
+                showConfirm('Are you sure you want to kick this user? They will be logged out and unable to sign in.', async () => {
+                    try {
+                        const userDocRef = doc(db, 'users', userIdToKick);
+                        await updateDoc(userDocRef, { kicked: true });
+                        showToast('User has been kicked.', 'success');
+                    } catch(error) {
+                        showToast('Failed to kick user.', 'error');
+                    }
+                }, { title: 'Confirm Kick', okText: 'Kick'});
+            });
+        });
+
+         tableBody.querySelectorAll('.unkick-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const userIdToUnkick = e.target.dataset.userid;
+                 try {
+                    const userDocRef = doc(db, 'users', userIdToUnkick);
+                    await updateDoc(userDocRef, { kicked: false, showWelcomeBack: true });
+                    showToast('User has been un-kicked.', 'success');
+                } catch(error) {
+                    showToast('Failed to un-kick user.', 'error');
+                }
+            });
+        });
+    };
+    
+    // --- AUTHENTICATION & ROLE MANAGEMENT ---
+    
+    const initializeUserSession = (role, email) => {
+        currentUserRole = role; // Set the role first
+        currentUserEmail = email;
+        authContainer.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        document.getElementById('user-email').textContent = email;
+        updateUIAfterLogin(role); // Update UI elements like badges
+        setupListeners(role);    // THEN set up data listeners
+    };
+
+    const cleanupSession = () => {
+        authContainer.classList.remove('hidden');
+        appContainer.classList.add('hidden');
+        detachListeners();
+        // Explicitly clear data and role to prevent state leakage
+        inventory = [];
+        sales = [];
+        deliveries = [];
+        transfersIn = [];
+        transfersOut = [];
+        accessories = [];
+        accessoriesSellOut = [];
+        currentUserRole = null;
+        currentUserEmail = null;
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+        if(user) {
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                if(userData.kicked) {
+                    kickedModal.classList.remove('hidden');
+                    signOut(auth);
+                    return;
+                }
+
+                if(userData.showWelcomeBack) {
+                    showToast('Welcome back! Your account has been reinstated.', 'success');
+                    await updateDoc(userDocRef, { showWelcomeBack: false });
+                }
+
+                initializeUserSession(userData.role, userData.email);
+            } else {
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, limit(1));
+                const existingUsers = await getDocs(q);
+                const isFirstUser = existingUsers.empty;
+                const newUserRole = isFirstUser ? 'admin' : 'viewer';
+
+                try {
+                    await setDoc(userDocRef, {
+                        email: user.email,
+                        role: newUserRole,
+                        createdAt: serverTimestamp(),
+                        kicked: false,
+                        showWelcomeBack: false
+                    });
+                    initializeUserSession(newUserRole, user.email);
+                } catch (error) {
+                    console.error("Error creating user document:", error);
+                    authError.textContent = "Could not create user profile. Please try again.";
+                    authError.style.display = 'block';
+                    signOut(auth);
+                }
+            }
+        } else {
+            cleanupSession();
+        }
+    });
+
+    const updateUIAfterLogin = (role) => {
+        const roleBadge = document.getElementById('user-role-badge');
+        roleBadge.textContent = role;
+        roleBadge.className = 'text-xs font-semibold px-2 py-1 rounded-full'; // reset classes
+        
+        const adminTab = document.getElementById('admin-tab-btn');
+        const viewOnlyBanner = document.getElementById('view-only-banner');
+        const forms = document.querySelectorAll('form');
+        const downloadButtons = document.querySelectorAll('.download-btn, #download-report-btn');
+
+        if (role === 'admin' || role === 'editor') {
+            viewOnlyBanner.classList.add('hidden');
+            forms.forEach(f => f.querySelectorAll('input, button, textarea, select').forEach(el => el.disabled = false));
+            downloadButtons.forEach(btn => btn.style.display = 'block');
+            if (role === 'admin') {
+                roleBadge.classList.add('bg-purple-200', 'text-purple-800');
+                adminTab.classList.remove('hidden');
+            } else {
+                 roleBadge.classList.add('bg-blue-200', 'text-blue-800');
+                adminTab.classList.add('hidden');
+            }
+        } else { // viewer
+            roleBadge.classList.add('bg-gray-200', 'text-gray-800');
+            adminTab.classList.add('hidden');
+            viewOnlyBanner.classList.remove('hidden');
+            forms.forEach(f => f.querySelectorAll('input, button, textarea, select').forEach(el => el.disabled = true));
+            downloadButtons.forEach(btn => btn.style.display = 'none');
+        }
+    };
+    
+    signupBtn.addEventListener('click', async () => {
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        authError.style.display = 'none';
+
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            showToast('Account created successfully!', 'success');
+        } catch (error) {
+            authError.textContent = error.message;
+            authError.style.display = 'block';
+        }
+    });
+
+    signinBtn.addEventListener('click', async () => {
+        const email = document.getElementById('signin-email').value;
+        const password = document.getElementById('signin-password').value;
+        authError.style.display = 'none';
+
+        signinBtn.disabled = true;
+        signinBtn.textContent = 'Signing In...';
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            console.error('Sign-in error:', error);
+            if (error.code === 'auth/invalid-credential') {
+                authError.textContent = 'Incorrect email or password. Please try again.';
+            } else {
+                authError.textContent = error.message;
+            }
+            authError.style.display = 'block';
+        } finally {
+            signinBtn.disabled = false;
+            signinBtn.textContent = 'Sign In';
+        }
+    });
+
+    signoutBtn.addEventListener('click', () => {
+        signOut(auth);
+    });
+
+    // --- FORM SUBMISSIONS ---
+    document.getElementById('delivery-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('del-imei').value.trim();
+        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
+            showToast('IMEI must be 15 digits.', 'error');
+            return;
+        }
+        
+        const inventoryRef = collection(db, 'inventory');
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const existing = await getDocs(q);
+        if(!existing.empty){
+            showToast('This IMEI already exists in stock.', 'error');
+            return;
+        }
+
+        const newItem = {
+            imei: imei,
+            brand: document.getElementById('del-brand').value.trim(),
+            model: document.getElementById('del-model').value.trim(),
+            variant: document.getElementById('del-variant').value.trim(),
+            color: document.getElementById('del-color').value.trim(),
+            price: parseFloat(document.getElementById('del-price').value),
+            notes: document.getElementById('del-notes').value.trim(),
+            addedAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+        
+        try {
+            await runTransaction(db, async (transaction) => {
+                transaction.set(doc(collection(db, 'inventory')), newItem);
+                transaction.set(doc(collection(db, 'deliveries')), newItem);
+            });
+            e.target.reset();
+            showToast('Item added to stock successfully!');
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            showToast('Failed to add item.', 'error');
+        }
+    });
+    
+    document.getElementById('sales-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('sale-imei').value.trim();
+        
+        const inventoryRef = collection(db, `inventory`);
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            showToast('Item with this IMEI not found in stock.', 'error');
+            return;
+        }
+        
+        const stockDoc = snapshot.docs[0];
+        const soldItemData = stockDoc.data();
+        
+        const newSale = {
+            ...soldItemData,
+            incentive: parseFloat(document.getElementById('sale-incentive').value) || 0,
+            paymentOption: document.getElementById('sale-payment').value,
+            receiptNumber: document.getElementById('sale-receipt-number').value.trim(),
+            notes: document.getElementById('sale-notes').value.trim(),
+            soldAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+
+        try {
+            await runTransaction(db, async (transaction) => {
+                transaction.delete(stockDoc.ref);
+                transaction.set(doc(collection(db, 'sales')), newSale);
+            });
+            e.target.reset();
+            showToast('Sale recorded successfully!');
+        } catch (error) {
+            console.error("Transaction failed: ", error);
+            showToast('Failed to record sale.', 'error');
+        }
+    });
+
+    document.getElementById('transfer-in-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('tin-imei').value.trim();
+        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
+            showToast('IMEI must be 15 digits.', 'error');
+            return;
+        }
+        
+        const inventoryRef = collection(db, 'inventory');
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const existing = await getDocs(q);
+        if(!existing.empty){
+            showToast('This IMEI already exists in stock.', 'error');
+            return;
+        }
+
+        const newItem = {
+            imei: imei,
+            brand: document.getElementById('tin-brand').value.trim(),
+            model: document.getElementById('tin-model').value.trim(),
+            variant: document.getElementById('tin-variant').value.trim(),
+            color: document.getElementById('tin-color').value.trim(),
+            price: parseFloat(document.getElementById('tin-price').value),
+            notes: document.getElementById('tin-notes').value.trim(),
+            transferredAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+        
+        try {
+            await runTransaction(db, async (transaction) => {
+                transaction.set(doc(collection(db, 'inventory')), newItem);
+                transaction.set(doc(collection(db, 'transfersIn')), newItem);
+            });
+            e.target.reset();
+            showToast('Item transferred in successfully!');
+        } catch (error) {
+            console.error("Error transferring item in: ", error);
+            showToast('Failed to transfer item in.', 'error');
+        }
+    });
+
+    document.getElementById('transfer-out-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const imei = document.getElementById('tout-imei').value.trim();
+        if (!imei) {
+            showToast('Please enter an IMEI to transfer out.', 'error');
+            return;
+        }
+
+        const inventoryRef = collection(db, 'inventory');
+        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            showToast('Item with this IMEI not found in stock.', 'error');
+            return;
+        }
+
+        const itemDoc = snapshot.docs[0];
+        const itemData = itemDoc.data();
+        const transferOutData = {
+            ...itemData,
+            notes: document.getElementById('tout-notes').value.trim(),
+            transferredAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+
+        showConfirm(`Are you sure you want to transfer out item with IMEI ${imei}?`, async () => {
+            try {
+                 await runTransaction(db, async (transaction) => {
+                    transaction.delete(itemDoc.ref);
+                    transaction.set(doc(collection(db, 'transfersOut')), transferOutData);
+                });
+                showToast('Item transferred out successfully.', 'success');
+                e.target.reset();
+            } catch (error) {
+                console.error("Error transferring item out:", error);
+                showToast('Failed to transfer item out.', 'error');
+            }
+        }, { title: 'Confirm Transfer Out', okText: 'Transfer' });
+    });
+
+    document.getElementById('accessory-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const type = document.getElementById('acc-type').value;
+        const priceInput = document.getElementById('acc-price');
+        let price = parseFloat(priceInput.value);
+
+        if (type === 'Freebie') {
+            price = 0;
+        }
+
+        const newAccessory = {
+            brand: document.getElementById('acc-brand').value.trim(),
+            model: document.getElementById('acc-model').value.trim(),
+            variant: document.getElementById('acc-variant').value.trim(),
+            type: type,
+            price: price,
+            addedAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+
+        try {
+            await addDoc(collection(db, 'accessories'), newAccessory);
+            e.target.reset();
+            priceInput.disabled = false;
+            priceInput.value = '';
+            showToast('Accessory added successfully!');
+        } catch (error) {
+            console.error("Error adding accessory:", error);
+            showToast('Failed to add accessory.', 'error');
+        }
+    });
+    
+    document.getElementById('accessory-sell-out-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const accessoryId = document.getElementById('sell-out-accessory').value;
+        if (!accessoryId) {
+            showToast('Please select an accessory to sell.', 'error');
+            return;
+        }
+
+        const accessoryDocRef = doc(db, 'accessories', accessoryId);
+        const accessoryDoc = await getDoc(accessoryDocRef);
+
+        if (!accessoryDoc.exists()) {
+             showToast('Selected accessory not found.', 'error');
+             return;
+        }
+
+        const accessoryData = accessoryDoc.data();
+        const sellOutData = {
+            ...accessoryData,
+            receiptNumber: document.getElementById('sell-out-receipt').value.trim(),
+            notes: document.getElementById('sell-out-notes').value.trim(),
+            soldAt: serverTimestamp(),
+            authorEmail: currentUserEmail
+        };
+
+        try {
+            await runTransaction(db, async (transaction) => {
+                transaction.delete(accessoryDocRef);
+                transaction.set(doc(collection(db, 'accessoriesSellOut')), sellOutData);
+            });
+            e.target.reset();
+            showToast('Accessory sold successfully!');
+        } catch(error) {
+            console.error("Error selling accessory: ", error);
+            showToast('Failed to sell accessory.', 'error');
+        }
+    });
+
+
+    document.getElementById('acc-type').addEventListener('change', (e) => {
+        const priceInput = document.getElementById('acc-price');
+        if(e.target.value === 'Freebie') {
+            priceInput.value = '0.00';
+            priceInput.disabled = true;
+        } else {
+            priceInput.value = '';
+            priceInput.disabled = false;
+        }
+    });
+
+
+    // --- UI TOGGLES AND MODALS ---
+    showSignupBtn.addEventListener('click', () => {
+        signinForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        authError.style.display = 'none';
+    });
+
+    showSigninBtn.addEventListener('click', () => {
+        signupForm.classList.add('hidden');
+        signinForm.classList.remove('hidden');
+        authError.style.display = 'none';
+    });
+
     const openEditModal = (item, type) => {
-        document.getElementById('edit-id').value = item.id;
-        document.getElementById('edit-type').value = type;
-        document.getElementById('edit-imei').value = item.imei;
-        document.getElementById('edit-notes').value = item.notes;
-        editModal.classList.remove('hidden');
+        editModalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)} Record`;
+        editItemForm.elements['edit-item-id'].value = item.id;
+        editItemForm.elements['edit-item-type'].value = type;
+        
+        // Common fields
+        editItemForm.elements['edit-brand'].value = item.brand;
+        editItemForm.elements['edit-model'].value = item.model;
+        editItemForm.elements['edit-variant'].value = item.variant || '';
+        editItemForm.elements['edit-notes'].value = item.notes || '';
+
+        // Type-specific fields
+        const imeiField = document.getElementById('edit-imei-wrapper');
+        const colorField = document.getElementById('edit-color-wrapper');
+        const incentiveField = document.getElementById('edit-incentive-wrapper');
+        const paymentField = document.getElementById('edit-payment-wrapper');
+        const receiptField = document.getElementById('edit-receipt-number-wrapper');
+        const priceFieldWrapper = document.getElementById('edit-price-wrapper');
+        
+        // Hide all optional fields first
+        imeiField.style.display = 'none';
+        colorField.style.display = 'none';
+        incentiveField.style.display = 'none';
+        paymentField.style.display = 'none';
+        receiptField.style.display = 'none';
+        priceFieldWrapper.style.display = 'none';
+
+
+        if (type === 'sales') {
+            imeiField.style.display = 'block';
+            colorField.style.display = 'block';
+            incentiveField.style.display = 'block';
+            paymentField.style.display = 'block';
+            receiptField.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = true;
+
+            editItemForm.elements['edit-imei'].value = item.imei;
+            editItemForm.elements['edit-color'].value = item.color || '';
+            editItemForm.elements['edit-price'].value = item.price;
+            editItemForm.elements['edit-incentive'].value = item.incentive || 0;
+            editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
+            editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
+        } else if (type === 'accessories' || type === 'accessoriesSellOut') {
+             priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = item.type === 'Freebie';
+            editItemForm.elements['edit-price'].value = item.price;
+        } else { // inventory, deliveries, transfers
+            imeiField.style.display = 'block';
+            colorField.style.display = 'block';
+            priceFieldWrapper.style.display = 'block';
+            editItemForm.elements['edit-price'].disabled = false;
+
+            editItemForm.elements['edit-imei'].value = item.imei;
+            editItemForm.elements['edit-color'].value = item.color || '';
+            editItemForm.elements['edit-price'].value = item.price;
+        }
+
+
+        editItemModal.classList.remove('hidden');
     };
 
     const closeEditModal = () => {
-        editModal.classList.add('hidden');
-        editForm.reset();
+        editItemModal.classList.add('hidden');
+        editItemForm.reset();
     };
-    
-    editForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('edit-id').value);
-        const type = document.getElementById('edit-type').value;
-        const notes = document.getElementById('edit-notes').value;
 
-        if (type === 'out') {
-            transfersOut = transfersOut.map(item => item.id === id ? { ...item, notes } : item);
+    editModalCloseBtn.addEventListener('click', closeEditModal);
+    editModalCancelBtn.addEventListener('click', closeEditModal);
+
+    editItemForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const itemId = e.target.elements['edit-item-id'].value;
+        const itemType = e.target.elements['edit-item-type'].value;
+
+        let updatedData = {
+            brand: e.target.elements['edit-brand'].value.trim(),
+            model: e.target.elements['edit-model'].value.trim(),
+            variant: e.target.elements['edit-variant'].value.trim(),
+            notes: e.target.elements['edit-notes'].value.trim(),
+            lastEditorEmail: currentUserEmail,
+            lastEditedAt: serverTimestamp()
+        };
+
+        if(itemType === 'sales') {
+            updatedData.incentive = parseFloat(e.target.elements['edit-incentive'].value) || 0;
+            updatedData.paymentOption = e.target.elements['edit-payment'].value;
+            updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
+            updatedData.color = e.target.elements['edit-color'].value.trim();
+        } else if (itemType === 'accessories' || itemType === 'accessoriesSellOut') {
+             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
         } else {
-            transfersIn = transfersIn.map(item => item.id === id ? { ...item, notes } : item);
+            updatedData.price = parseFloat(e.target.elements['edit-price'].value);
+            updatedData.color = e.target.elements['edit-color'].value.trim();
+        }
+
+        try {
+            const itemRef = doc(db, itemType, itemId);
+            await updateDoc(itemRef, updatedData);
+            showToast('Record updated successfully.', 'success');
+            closeEditModal();
+        } catch (error) {
+            console.error("Error updating record:", error);
+            showToast('Failed to update record.', 'error');
+        }
+    });
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        
+        selectedDate = new Date(year, month - 1, day);
+        dateFilter.value = `${year}-${month}-${day}`;
+
+        darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
+        changeTab('dashboard');
+
+        dateFilter.addEventListener('change', () => {
+            const dateString = dateFilter.value;
+            const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+            const dateAsUTC = new Date(new Date(dateString).getTime() + timezoneOffset);
+            selectedDate = dateAsUTC;
+            setupListeners(currentUserRole);
+        });
+
+        gotoTodayBtn.addEventListener('click', () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+
+            selectedDate = new Date(year, month - 1, day);
+            dateFilter.value = `${year}-${month}-${day}`;
+            setupListeners(currentUserRole);
+        });
+        
+        // Event listener for the new Daily Report button
+        downloadReportBtn.addEventListener('click', async () => {
+            const date = dateFilter.value;
+            downloadReportBtn.disabled = true;
+            downloadReportBtn.textContent = 'Generating...';
+
+            try {
+                const endOfDay = new Date(selectedDate);
+                endOfDay.setHours(23, 59, 59, 999);
+                const startOfDay = new Date(selectedDate);
+                startOfDay.setHours(0, 0, 0, 0);
+
+                // Fetch all data for the date selected
+                const allSalesQuery = query(collection(db, "sales"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
+                const allDeliveriesQuery = query(collection(db, "deliveries"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
+                const allTransfersInQuery = query(collection(db, "transfersIn"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
+                const allTransfersOutQuery = query(collection(db, "transfersOut"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
+                const allInventoryQuery = query(collection(db, "inventory"));
+
+                const [dailySalesSnapshot, dailyDeliveriesSnapshot, dailyTransfersInSnapshot, dailyTransfersOutSnapshot, allInventorySnapshot] = await Promise.all([
+                    getDocs(allSalesQuery),
+                    getDocs(allDeliveriesQuery),
+                    getDocs(allTransfersInQuery),
+                    getDocs(allTransfersOutQuery),
+                    getDocs(allInventoryQuery)
+                ]);
+
+                const dailySales = dailySalesSnapshot.docs.map(doc => doc.data());
+                const dailyDeliveries = dailyDeliveriesSnapshot.docs.map(doc => doc.data());
+                const dailyTransfersIn = dailyTransfersInSnapshot.docs.map(doc => doc.data());
+                const dailyTransfersOut = dailyTransfersOutSnapshot.docs.map(doc => doc.data());
+                const allInventory = allInventorySnapshot.docs.map(doc => doc.data());
+                
+                // Fetch all historical sales, deliveries, and transfers to calculate beginning stock
+                const allHistoricalSalesSnapshot = await getDocs(collection(db, "sales"));
+                const allHistoricalDeliveriesSnapshot = await getDocs(collection(db, "deliveries"));
+                const allHistoricalTransfersInSnapshot = await getDocs(collection(db, "transfersIn"));
+                const allHistoricalTransfersOutSnapshot = await getDocs(collection(db, "transfersOut"));
+
+                const allHistoricalSales = allHistoricalSalesSnapshot.docs.map(doc => doc.data());
+                const allHistoricalDeliveries = allHistoricalDeliveriesSnapshot.docs.map(doc => doc.data());
+                const allHistoricalTransfersIn = allHistoricalTransfersInSnapshot.docs.map(doc => doc.data());
+                const allHistoricalTransfersOut = allHistoricalTransfersOutSnapshot.docs.map(doc => doc.data());
+
+                const allModelKeys = new Set();
+                allInventory.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailySales.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailyDeliveries.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailyTransfersIn.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+                dailyTransfersOut.forEach(item => {
+                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
+                });
+
+
+                const reportData = [];
+                reportData.push(['MODEL', 'DATE BEG', 'PULL IN', 'PULL OUT', 'DELIVERY', 'SOLD', 'END INVENTORY', 'REMARKS']);
+
+                allModelKeys.forEach(modelKey => {
+                    // Count daily transactions for this specific model
+                    const dailyPullInCount = dailyTransfersIn.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    const dailyPullOutCount = dailyTransfersOut.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    const dailyDeliveriesCount = dailyDeliveries.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    const dailySoldCount = dailySales.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    
+                    // Calculate current ending inventory
+                    const endingInventory = allInventory.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
+                    
+                    // Calculate beginning inventory by reversing the day's changes
+                    const beginningInventory = endingInventory + dailySoldCount + dailyPullOutCount - dailyDeliveriesCount - dailyPullInCount;
+                    
+                    // Collect remarks from all daily transactions for this model
+                    const dailyTransactions = [...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
+                    const remarks = dailyTransactions.filter(item => 
+                        `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey
+                    ).map(item => item.notes).filter(note => note);
+                    
+                    reportData.push([
+                        `"${modelKey}"`,
+                        beginningInventory,
+                        dailyPullInCount,
+                        dailyPullOutCount,
+                        dailyDeliveriesCount,
+                        dailySoldCount,
+                        endingInventory,
+                        `"${remarks.join('; ')}"`
+                    ]);
+                });
+                
+
+                const csvContent = reportData.map(e => e.join(',')).join('\n');
+                downloadCSV(csvContent, `Daily_Report_${date}.csv`);
+                showToast('Daily report downloaded successfully!');
+
+            } catch (error) {
+                console.error("Error generating daily report:", error);
+                showToast('Failed to generate daily report.', 'error');
+            } finally {
+                downloadReportBtn.disabled = false;
+                downloadReportBtn.textContent = 'Download Daily Report';
+            }
+        });
+
+
+        document.querySelectorAll('.download-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const type = button.dataset.type;
+                let data;
+                let filename = `${type}-${dateFilter.value}.csv`;
+                if(type === 'inventory') {
+                    data = inventory;
+                    filename = 'current-inventory.csv';
+                }
+                if(type === 'sales') {
+                    const paymentFilter = document.getElementById('sales-payment-filter').value;
+                    data = sales.filter(sale => paymentFilter === 'all' || sale.paymentOption === paymentFilter);
+                }
+                if(type === 'deliveries') data = deliveries;
+                if(type === 'transfersIn') data = transfersIn;
+                if(type === 'transfersOut') data = transfersOut;
+                if(type === 'accessories') data = accessories;
+                if(type === 'accessoriesSellOut') data = accessoriesSellOut;
+
+                if (data && data.length > 0) {
+                    const csv = convertToCSV(data);
+                    downloadCSV(csv, filename);
+                } else {
+                    showToast('No data to download for this selection.', 'error');
+                }
+            });
+        });
+
+        function convertToCSV(data) {
+            const headers = Object.keys(data[0]).filter(key => key !== 'id' && !key.endsWith('At') && key !== 'lastEditorEmail');
+            const rows = data.map(row => 
+                headers.map(header => {
+                    let value = row[header];
+                    if (typeof value === 'string') {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    }
+                    return value;
+                }).join(',')
+            );
+            return [headers.join(','), ...rows].join('\n');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        searchBtn.addEventListener('click', async () => {
+            const searchTerm = searchInput.value.trim();
+            if(!searchTerm) {
+                searchResultsContainer.innerHTML = '';
+                return;
+            }
+
+            searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
+            
+            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut', 'accessories', 'accessoriesSellOut'];
+            const results = [];
+
+            for (const collectionName of collectionsToSearch) {
+                const q = query(collection(db, collectionName), where("imei", "==", searchTerm));
+                const snapshot = await getDocs(q);
+                snapshot.forEach(doc => {
+                    results.push({ id: doc.id, type: collectionName, ...doc.data() });
+                });
+            }
+
+            renderSearchResults(results);
+        });
+
+        function renderSearchResults(results) {
+            searchResultsContainer.innerHTML = '';
+            if (results.length === 0) {
+                searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">No records found for that IMEI.</p>`;
+                return;
+            }
+
+            const resultsHtml = results.map(item => {
+                let status = '';
+                let date = null;
+                let tab = '';
+
+                switch(item.type) {
+                    case 'inventory': status = 'In Stock'; tab = 'stocks'; date = item.addedAt; break;
+                    case 'sales': status = 'Sold'; tab = 'sales'; date = item.soldAt; break;
+                    case 'deliveries': status = 'Delivered'; tab = 'deliveries'; date = item.addedAt; break;
+                    case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
+                    case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
+                    case 'accessories': status = 'Accessory'; tab = 'accessories'; date = item.addedAt; break;
+                    case 'accessoriesSellOut': status = 'Accessory Sold'; tab = 'accessoriesSellOut'; date = item.soldAt; break;
+                }
+                
+                return `
+                    <button class="search-result-item w-full text-left p-3 my-1 rounded-md flex justify-between items-center" 
+                            style="background-color: var(--bg-tertiary);"
+                            data-doc-id="${item.id}" 
+                            data-doc-type="${tab}" 
+                            data-doc-date="${date?.toDate().toISOString().split('T')[0]}">
+                        <div>
+                            <p class="font-semibold">${item.brand} ${item.model}</p>
+                            <p class="text-sm" style="color: var(--text-secondary);">${item.imei || 'Accessory'}</p>
+                        </div>
+                        <div class="text-right">
+                             <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background-color: var(--info-bg); color: var(--info-text);">${status}</span>
+                             <p class="text-xs mt-1" style="color: var(--text-secondary);">${formatDate(date)}</p>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+            searchResultsContainer.innerHTML = `
+                <h3 class="text-lg font-semibold mb-2">Search Results</h3>
+                ${resultsHtml}
+            `;
         }
         
-        refreshTables();
-        closeEditModal();
-    });
+        searchResultsContainer.addEventListener('click', (e) => {
+            const resultItem = e.target.closest('.search-result-item');
+            if (resultItem) {
+                const { docId, docType, docDate } = resultItem.dataset;
+                
+                const dateAsUTC = new Date(docDate);
+                selectedDate = new Date(dateAsUTC.getTime() + dateAsUTC.getTimezoneOffset() * 60000);
 
-    cancelEditBtn.addEventListener('click', closeEditModal);
+                dateFilter.value = docDate;
+                
+                changeTab(docType);
 
-    // --- Event Listeners ---
-    todayBtn.addEventListener('click', () => setDateValue(new Date()));
-    
-    tabs.forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            e.preventDefault();
-            tabs.forEach(t => t.classList.remove('tab-active'));
-            tab.classList.add('tab-active');
-            
-            tabContents.forEach(content => content.classList.add('hidden'));
-            document.getElementById(`${tab.dataset.tab}-content`).classList.remove('hidden');
+                setTimeout(() => {
+                    const rowId = `row-${docType}-${docId}`;
+                    const row = document.getElementById(rowId);
+                    if (row) {
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        row.classList.add('row-highlight');
+                        setTimeout(() => row.classList.remove('row-highlight'), 2000);
+                    }
+                }, 500);
+            }
         });
-    });
-    
-    themeToggle.addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        const isDark = document.documentElement.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        lightIcon.classList.toggle('hidden', isDark);
-        darkIcon.classList.toggle('hidden', !isDark);
-    });
 
-    // --- Initialization ---
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        darkIcon.classList.remove('hidden');
-        lightIcon.classList.add('hidden');
-    } else {
-        document.documentElement.classList.remove('dark');
-        darkIcon.classList.add('hidden');
-        lightIcon.classList.remove('hidden');
-    }
 
-    setDateValue(new Date('2025-09-12T00:00:00'));
-    refreshTables();
-});
+        // Generic event listener for action buttons
+        document.getElementById('tab-content').addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.edit-item-btn');
+            const deleteBtn = e.target.closest('.delete-item-btn');
+
+            if (editBtn) {
+                const itemId = editBtn.dataset.itemid;
+                const itemType = editBtn.dataset.type;
+                let item;
+                if(itemType === 'inventory') item = inventory.find(i => i.id === itemId);
+                if(itemType === 'deliveries') item = deliveries.find(i => i.id === itemId);
+                if(itemType === 'transfersIn') item = transfersIn.find(i => i.id === itemId);
+                if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
+                if(itemType === 'sales') item = sales.find(i => i.id === itemId);
+                if(itemType === 'accessories') item = accessories.find(i => i.id === itemId);
+                if(itemType === 'accessoriesSellOut') item = accessoriesSellOut.find(i => i.id === itemId);
+                
+                if (item) {
+                    openEditModal(item, itemType);
+                }
+            }
+            
+            if (deleteBtn) {
+                const itemId = deleteBtn.dataset.itemid;
+                const itemType = deleteBtn.dataset.type;
+                 showConfirm(`Are you sure you want to permanently delete this record? This action cannot be undone.`, async () => {
+                    try {
+                        const itemRef = doc(db, itemType, itemId);
+                        await deleteDoc(itemRef);
+                        showToast('Record deleted successfully.', 'success');
+                    } catch (error) {
+                        console.error("Error deleting record:", error);
+                        showToast('Failed to delete record.', 'error');
+                    }
+                }, { title: 'Confirm Deletion', okText: 'Delete' });
+            }
+        });
+
+        document.querySelectorAll('.sort-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                renderAll();
+            });
+        });
+
+        document.getElementById('sales-payment-filter').addEventListener('change', (e) => {
+            renderSalesTable(document.getElementById('sales-sort').value);
+        })
+    });
 </script>
+
 </body>
 </html>
