@@ -231,7 +231,7 @@
                     <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard">Dashboard</button>
                     <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
                     <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
-                    <button onclick="changeTab('sales')" class="tab whitespace-now-wrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
+                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
                     <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
                     <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessoriesSellOut">Accessories Sell Out</button>
                     <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
@@ -2115,70 +2115,85 @@
                 const dailyTransfersOut = dailyTransfersOutSnapshot.docs.map(doc => doc.data());
                 const allInventory = allInventorySnapshot.docs.map(doc => doc.data());
                 
-                // Fetch all historical sales, deliveries, and transfers to calculate beginning stock
-                const allHistoricalSalesSnapshot = await getDocs(collection(db, "sales"));
-                const allHistoricalDeliveriesSnapshot = await getDocs(collection(db, "deliveries"));
-                const allHistoricalTransfersInSnapshot = await getDocs(collection(db, "transfersIn"));
-                const allHistoricalTransfersOutSnapshot = await getDocs(collection(db, "transfersOut"));
-
-                const allHistoricalSales = allHistoricalSalesSnapshot.docs.map(doc => doc.data());
-                const allHistoricalDeliveries = allHistoricalDeliveriesSnapshot.docs.map(doc => doc.data());
-                const allHistoricalTransfersIn = allHistoricalTransfersInSnapshot.docs.map(doc => doc.data());
-                const allHistoricalTransfersOut = allHistoricalTransfersOutSnapshot.docs.map(doc => doc.data());
-
-                const allModelKeys = new Set();
-                allInventory.forEach(item => {
-                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
-                });
-                dailySales.forEach(item => {
-                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
-                });
-                dailyDeliveries.forEach(item => {
-                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
-                });
-                dailyTransfersIn.forEach(item => {
-                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
-                });
-                dailyTransfersOut.forEach(item => {
-                    allModelKeys.add(`${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}`);
-                });
-
-
-                const reportData = [];
-                reportData.push(['MODEL', 'DATE BEG', 'PULL IN', 'PULL OUT', 'DELIVERY', 'SOLD', 'END INVENTORY', 'REMARKS']);
-
-                allModelKeys.forEach(modelKey => {
-                    // Count daily transactions for this specific model
-                    const dailyPullInCount = dailyTransfersIn.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
-                    const dailyPullOutCount = dailyTransfersOut.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
-                    const dailyDeliveriesCount = dailyDeliveries.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
-                    const dailySoldCount = dailySales.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
-                    
-                    // Calculate current ending inventory
-                    const endingInventory = allInventory.filter(item => `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey).length;
-                    
-                    // Calculate beginning inventory by reversing the day's changes
-                    const beginningInventory = endingInventory + dailySoldCount + dailyPullOutCount - dailyDeliveriesCount - dailyPullInCount;
-                    
-                    // Collect remarks from all daily transactions for this model
-                    const dailyTransactions = [...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
-                    const remarks = dailyTransactions.filter(item => 
-                        `${item.brand} ${item.model} ${item.variant || ''} - ${item.color || 'N/A'}` === modelKey
-                    ).map(item => item.notes).filter(note => note);
-                    
-                    reportData.push([
-                        `"${modelKey}"`,
-                        beginningInventory,
-                        dailyPullInCount,
-                        dailyPullOutCount,
-                        dailyDeliveriesCount,
-                        dailySoldCount,
-                        endingInventory,
-                        `"${remarks.join('; ')}"`
-                    ]);
+                // --- NEW LOGIC TO GROUP BY BRAND ---
+                const modelsByBrand = {};
+                
+                // Helper function to create a consistent key for each item
+                const getItemKey = (item) => {
+                    if (!item.brand || !item.model) return null;
+                    const brand = item.brand.trim();
+                    const model = item.model.trim();
+                    const variant = item.variant ? item.variant.trim() : '';
+                    const color = item.color ? item.color.trim() : 'N/A';
+                    return { brand, modelKey: `${model} ${variant} - ${color}`.trim() };
+                };
+                
+                // Aggregate all unique models from all relevant data sources
+                const allItems = [...allInventory, ...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
+                allItems.forEach(item => {
+                    const key = getItemKey(item);
+                    if (key) {
+                        if (!modelsByBrand[key.brand]) {
+                            modelsByBrand[key.brand] = new Set();
+                        }
+                        modelsByBrand[key.brand].add(key.modelKey);
+                    }
                 });
                 
+                const reportData = [];
+                reportData.push(['MODEL', 'BEG INV', 'PULL IN', 'PULL OUT', 'DELIVERY', 'SOLD', 'END INV', 'REMARKS']);
 
+                // Sort brands alphabetically
+                const sortedBrands = Object.keys(modelsByBrand).sort((a, b) => a.localeCompare(b));
+
+                sortedBrands.forEach(brand => {
+                    reportData.push([`"${brand.toUpperCase()}"`]); // Add brand name as a header
+                    
+                    // Sort models within the brand alphabetically
+                    const sortedModels = Array.from(modelsByBrand[brand]).sort((a, b) => a.localeCompare(b));
+
+                    sortedModels.forEach(modelKey => {
+                        // Filter function to find all transactions for the current model
+                        const filterPredicate = item => {
+                             const key = getItemKey(item);
+                             return key && key.brand === brand && key.modelKey === modelKey;
+                        };
+
+                        const dailyPullInCount = dailyTransfersIn.filter(filterPredicate).length;
+                        const dailyPullOutCount = dailyTransfersOut.filter(filterPredicate).length;
+                        const dailyDeliveriesCount = dailyDeliveries.filter(filterPredicate).length;
+                        const dailySoldCount = dailySales.filter(filterPredicate).length;
+                        
+                        const endingInventory = allInventory.filter(filterPredicate).length;
+                        
+                        // Calculate beginning inventory by reversing the day's changes
+                        const beginningInventory = endingInventory + dailySoldCount + dailyPullOutCount - dailyDeliveriesCount - dailyPullInCount;
+                        
+                        const dailyTransactions = [...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
+                        const remarks = dailyTransactions
+                            .filter(filterPredicate)
+                            .map(item => item.notes)
+                            .filter(note => note && note.trim());
+                        
+                        reportData.push([
+                            `"${modelKey}"`,
+                            beginningInventory,
+                            dailyPullInCount,
+                            dailyPullOutCount,
+                            dailyDeliveriesCount,
+                            dailySoldCount,
+                            endingInventory,
+                            `"${remarks.join('; ')}"`
+                        ]);
+                    });
+                    reportData.push([]); // Add a blank row for spacing between brands
+                });
+
+                // Remove the last blank row if it exists
+                if (reportData.length > 0 && reportData[reportData.length - 1].length === 0) {
+                    reportData.pop();
+                }
+                
                 const csvContent = reportData.map(e => e.join(',')).join('\n');
                 downloadCSV(csvContent, `Daily_Report_${date}.csv`);
                 showToast('Daily report downloaded successfully!');
