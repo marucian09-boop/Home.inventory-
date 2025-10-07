@@ -2055,7 +2055,7 @@
             updatedData.paymentOption = e.target.elements['edit-payment'].value;
             updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
             updatedData.color = e.target.elements['edit-color'].value.trim();
-        } else if (itemType === 'accessories' || itemType === 'accessoriesSellOut') {
+        } else if (itemType === 'accessories' || type === 'accessoriesSellOut') {
              updatedData.price = parseFloat(e.target.elements['edit-price'].value);
         } else {
             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
@@ -2439,12 +2439,16 @@
 
             const onScanSuccess = (decodedText, decodedResult) => {
                 scannerStatus.textContent = "Processing...";
-                if (/^\d{15}$/.test(decodedText)) {
-                    imeiInput.value = decodedText;
+                // Use match to find a 15-digit number within the scanned text
+                const match = decodedText.match(/\d{15}/);
+
+                if (match) {
+                    // The first element of the match array is the 15-digit string
+                    imeiInput.value = match[0];
                     showToast('IMEI scanned successfully!', 'success');
                     stopScanner();
                 } else {
-                    scannerStatus.textContent = "Not a valid IMEI. Try again.";
+                    scannerStatus.textContent = "No valid IMEI found. Try again.";
                     setTimeout(() => {
                         if(html5QrCode.isScanning) scannerStatus.textContent = "Scanning...";
                     }, 2000);
@@ -2509,5 +2513,4 @@
 
 </body>
 </html>
-
 
