@@ -725,12 +725,16 @@
         </div>
     </div>
 
-    <!-- NEW: IMEI Scanner Modal -->
+    <!-- UPDATED: IMEI Scanner Modal -->
     <div id="scanner-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4">
         <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-md text-center relative">
             <h3 class="text-lg font-bold mb-4">Scan IMEI Barcode</h3>
-            <div id="reader" class="w-full rounded-md overflow-hidden bg-gray-200" style="aspect-ratio: 1/1;"></div>
-            <button id="scanner-close-btn" class="mt-4 py-2 px-4 rounded-md font-semibold w-full" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
+            <div class="w-full rounded-md overflow-hidden bg-gray-200" style="aspect-ratio: 1/1;">
+                 <div id="reader"></div>
+            </div>
+            <p id="scanner-status" class="mt-2 text-sm" style="color: var(--text-secondary); min-height: 1.25rem;"></p>
+            <button id="start-scan-btn" class="mt-2 py-2 px-4 rounded-md font-semibold w-full text-white" style="background-color: var(--accent-primary);">Start Scanning</button>
+            <button id="scanner-close-btn" class="mt-2 py-2 px-4 rounded-md font-semibold w-full" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
         </div>
     </div>
 
@@ -2422,54 +2426,58 @@
             renderSalesTable(document.getElementById('sales-sort').value);
         });
 
-        // --- IMEI SCANNER ---
+        // --- IMEI SCANNER (UPDATED) ---
         const scannerModal = document.getElementById('scanner-modal');
         const scanImeiBtn = document.getElementById('scan-imei-btn');
         const scannerCloseBtn = document.getElementById('scanner-close-btn');
+        const startScanBtn = document.getElementById('start-scan-btn');
+        const scannerStatus = document.getElementById('scanner-status');
         const imeiInput = document.getElementById('del-imei');
 
         if (scanImeiBtn) {
             const html5QrCode = new Html5Qrcode("reader");
 
             const onScanSuccess = (decodedText, decodedResult) => {
-                // Handle the scanned code.
-                console.log(`Code matched = ${decodedText}`, decodedResult);
-                
-                // Check if the scanned text is a valid IMEI (e.g., numeric, certain length)
+                scannerStatus.textContent = "Processing...";
                 if (/^\d{15}$/.test(decodedText)) {
                     imeiInput.value = decodedText;
                     showToast('IMEI scanned successfully!', 'success');
                     stopScanner();
                 } else {
-                    showToast('Scanned code is not a valid 15-digit IMEI.', 'error');
-                    // Optional: keep scanning by not calling stopScanner()
+                    scannerStatus.textContent = "Not a valid IMEI. Try again.";
+                    setTimeout(() => {
+                        if(html5QrCode.isScanning) scannerStatus.textContent = "Scanning...";
+                    }, 2000);
                 }
             };
 
-            const onScanFailure = (error) => {
-                // handle scan failure, usually better to ignore and keep scanning.
-                // console.warn(`Code scan error = ${error}`);
-            };
+            const onScanFailure = (error) => { /* Ignore */ };
 
             const stopScanner = () => {
-                // Check if scanner is active before trying to stop
                 if (html5QrCode && html5QrCode.isScanning) {
-                    html5QrCode.stop().then((ignore) => {
-                      // QR Code scanning is stopped.
-                      scannerModal.classList.add('hidden');
+                    html5QrCode.stop().then(() => {
+                        scannerModal.classList.add('hidden');
+                        startScanBtn.style.display = 'block';
+                        scannerStatus.textContent = "";
                     }).catch((err) => {
-                      // Stop failed, handle it.
-                      console.error("Failed to stop scanner", err);
-                      scannerModal.classList.add('hidden'); // Force hide anyway
+                        console.error("Failed to stop scanner", err);
+                        scannerModal.classList.add('hidden');
                     });
                 } else {
                     scannerModal.classList.add('hidden');
+                    startScanBtn.style.display = 'block';
+                    scannerStatus.textContent = "";
                 }
             }
-
+            
             scanImeiBtn.addEventListener('click', () => {
                 scannerModal.classList.remove('hidden');
-                // Configuration for the scanner
+            });
+
+            startScanBtn.addEventListener('click', () => {
+                scannerStatus.textContent = "Starting Camera...";
+                startScanBtn.style.display = 'none';
+
                 const config = {
                     fps: 10,
                     qrbox: (viewfinderWidth, viewfinderHeight) => {
@@ -2478,15 +2486,19 @@
                         return { width: qrboxSize, height: qrboxSize };
                     }
                 };
+
                 html5QrCode.start(
-                    { facingMode: "environment" }, // Use back camera
+                    { facingMode: "environment" },
                     config,
                     onScanSuccess,
                     onScanFailure
-                ).catch((err) => {
+                ).then(() => {
+                    scannerStatus.textContent = "Point camera at barcode";
+                }).catch((err) => {
+                    scannerStatus.textContent = "Could not start camera.";
                     console.error(`Unable to start scanning, error: ${err}`);
                     showToast('Could not start camera. Check permissions.', 'error');
-                    scannerModal.classList.add('hidden');
+                    startScanBtn.style.display = 'block';
                 });
             });
 
@@ -2497,4 +2509,5 @@
 
 </body>
 </html>
+
 
