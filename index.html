@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Sales & Inventory</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Barcode Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -282,7 +284,15 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="deliveries" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <form id="delivery-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
+                        <!-- MODIFIED: IMEI Input with Scan Button -->
+                        <div class="relative">
+                            <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md pr-12" maxlength="15" required>
+                            <button type="button" id="scan-imei-btn" class="absolute inset-y-0 right-0 flex items-center px-3 rounded-r-md" style="background-color: var(--accent-primary);" title="Scan IMEI with Camera">
+                                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                                </svg>
+                            </button>
+                        </div>
                         <input type="text" id="del-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-variant" placeholder="Variant (e.g., 128GB)" class="form-input w-full p-2 border rounded-md">
@@ -623,7 +633,7 @@
         </div>
         
         <!-- Toast Notification -->
-        <div id="toast" class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
+        <div id="toast" class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50">
             <span id="toast-message"></span>
         </div>
     </div>
@@ -712,6 +722,15 @@
                      <button type="submit" class="py-2 px-4 rounded-md font-semibold text-white w-32" style="background-color: var(--success);">Save Changes</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- NEW: IMEI Scanner Modal -->
+    <div id="scanner-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4">
+        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-md text-center relative">
+            <h3 class="text-lg font-bold mb-4">Scan IMEI Barcode</h3>
+            <div id="reader" class="w-full rounded-md overflow-hidden bg-gray-200" style="aspect-ratio: 1/1;"></div>
+            <button id="scanner-close-btn" class="mt-4 py-2 px-4 rounded-md font-semibold w-full" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
         </div>
     </div>
 
@@ -2124,13 +2143,8 @@
                     const brand = item.brand.trim();
                     const model = item.model.trim();
                     const variant = item.variant ? item.variant.trim() : '';
-                    const price = (item.price !== undefined && item.price !== null) ? formatCurrency(item.price) : '';
                     const color = item.color ? item.color.trim() : 'N/A';
-                    
-                    const modelAndVariant = [model, variant].filter(Boolean).join(' ');
-                    const finalModelString = `${modelAndVariant} ${color} - ${price}`;
-                    
-                    return { brand, modelKey: finalModelString };
+                    return { brand, modelKey: `${model} ${variant} - ${color}`.trim() };
                 };
                 
                 // Aggregate all unique models from all relevant data sources
@@ -2256,7 +2270,7 @@
         }
 
         function downloadCSV(csv, filename) {
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             if (link.download !== undefined) {
                 const url = URL.createObjectURL(blob);
@@ -2278,7 +2292,7 @@
 
             searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
             
-            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut', 'accessories', 'accessoriesSellOut'];
+            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut'];
             const results = [];
 
             for (const collectionName of collectionsToSearch) {
@@ -2310,8 +2324,6 @@
                     case 'deliveries': status = 'Delivered'; tab = 'deliveries'; date = item.addedAt; break;
                     case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
                     case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
-                    case 'accessories': status = 'Accessory'; tab = 'accessories'; date = item.addedAt; break;
-                    case 'accessoriesSellOut': status = 'Accessory Sold'; tab = 'accessoriesSellOut'; date = item.soldAt; break;
                 }
                 
                 return `
@@ -2408,12 +2420,84 @@
 
         document.getElementById('sales-payment-filter').addEventListener('change', (e) => {
             renderSalesTable(document.getElementById('sales-sort').value);
-        })
+        });
+
+        // --- IMEI SCANNER ---
+        const scannerModal = document.getElementById('scanner-modal');
+        const scanImeiBtn = document.getElementById('scan-imei-btn');
+        const scannerCloseBtn = document.getElementById('scanner-close-btn');
+        const imeiInput = document.getElementById('del-imei');
+
+        if (scanImeiBtn) {
+            const html5QrCode = new Html5Qrcode("reader");
+
+            const onScanSuccess = (decodedText, decodedResult) => {
+                // Handle the scanned code.
+                console.log(`Code matched = ${decodedText}`, decodedResult);
+                
+                // Check if the scanned text is a valid IMEI (e.g., numeric, certain length)
+                if (/^\d{15}$/.test(decodedText)) {
+                    imeiInput.value = decodedText;
+                    showToast('IMEI scanned successfully!', 'success');
+                    stopScanner();
+                } else {
+                    showToast('Scanned code is not a valid 15-digit IMEI.', 'error');
+                    // Optional: keep scanning by not calling stopScanner()
+                }
+            };
+
+            const onScanFailure = (error) => {
+                // handle scan failure, usually better to ignore and keep scanning.
+                // console.warn(`Code scan error = ${error}`);
+            };
+
+            const stopScanner = () => {
+                // Check if scanner is active before trying to stop
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then((ignore) => {
+                      // QR Code scanning is stopped.
+                      scannerModal.classList.add('hidden');
+                    }).catch((err) => {
+                      // Stop failed, handle it.
+                      console.error("Failed to stop scanner", err);
+                      scannerModal.classList.add('hidden'); // Force hide anyway
+                    });
+                } else {
+                    scannerModal.classList.add('hidden');
+                }
+            }
+
+            scanImeiBtn.addEventListener('click', () => {
+                scannerModal.classList.remove('hidden');
+                // Configuration for the scanner
+                const config = {
+                    fps: 10,
+                    qrbox: (viewfinderWidth, viewfinderHeight) => {
+                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+                        const qrboxSize = Math.floor(minEdge * 0.8);
+                        return { width: qrboxSize, height: qrboxSize };
+                    },
+                     supportedScanTypes: [
+                        Html5QrcodeScanType.SCAN_TYPE_CAMERA
+                    ]
+                };
+                html5QrCode.start(
+                    { facingMode: "environment" }, // Use back camera
+                    config,
+                    onScanSuccess,
+                    onScanFailure
+                ).catch((err) => {
+                    console.error(`Unable to start scanning, error: ${err}`);
+                    showToast('Could not start camera. Check permissions.', 'error');
+                    scannerModal.classList.add('hidden');
+                });
+            });
+
+            scannerCloseBtn.addEventListener('click', stopScanner);
+        }
     });
 </script>
 
 </body>
 </html>
-
-
 
