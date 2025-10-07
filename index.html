@@ -284,14 +284,16 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="deliveries" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <form id="delivery-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- MODIFIED: IMEI Input with Scan Button -->
-                        <div class="relative">
-                            <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md pr-12" maxlength="15" required>
-                            <button type="button" id="scan-imei-btn" class="absolute inset-y-0 right-0 flex items-center px-3 rounded-r-md" style="background-color: var(--accent-primary);" title="Scan IMEI with Camera">
-                                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-                                </svg>
-                            </button>
+                        <div class="relative flex items-center">
+                            <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md pr-24" maxlength="15" required>
+                            <div class="absolute inset-y-0 right-0 flex items-center">
+                                <button type="button" id="lookup-imei-btn" class="px-2 text-sm font-semibold hidden" style="color: var(--accent-primary);" title="Look up IMEI details">Lookup</button>
+                                <button type="button" id="scan-imei-btn" class="flex items-center px-3 h-full rounded-r-md" style="background-color: var(--accent-primary);" title="Scan IMEI with Camera">
+                                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <input type="text" id="del-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
@@ -2426,25 +2428,25 @@
             renderSalesTable(document.getElementById('sales-sort').value);
         });
 
-        // --- IMEI SCANNER (UPDATED) ---
+        // --- IMEI SCANNER & LOOKUP (UPDATED) ---
         const scannerModal = document.getElementById('scanner-modal');
         const scanImeiBtn = document.getElementById('scan-imei-btn');
         const scannerCloseBtn = document.getElementById('scanner-close-btn');
         const startScanBtn = document.getElementById('start-scan-btn');
         const scannerStatus = document.getElementById('scanner-status');
         const imeiInput = document.getElementById('del-imei');
+        const lookupImeiBtn = document.getElementById('lookup-imei-btn');
 
         if (scanImeiBtn) {
             const html5QrCode = new Html5Qrcode("reader");
 
             const onScanSuccess = (decodedText, decodedResult) => {
                 scannerStatus.textContent = "Processing...";
-                // Use match to find a 15-digit number within the scanned text
                 const match = decodedText.match(/\d{15}/);
 
                 if (match) {
-                    // The first element of the match array is the 15-digit string
                     imeiInput.value = match[0];
+                    imeiInput.dispatchEvent(new Event('input')); // Trigger input event to show lookup button
                     showToast('IMEI scanned successfully!', 'success');
                     stopScanner();
                 } else {
@@ -2507,10 +2509,29 @@
             });
 
             scannerCloseBtn.addEventListener('click', stopScanner);
+
+            // IMEI Input listener to show/hide lookup button
+            imeiInput.addEventListener('input', () => {
+                if (imeiInput.value.trim().length === 15 && /^\d+$/.test(imeiInput.value.trim())) {
+                    lookupImeiBtn.classList.remove('hidden');
+                } else {
+                    lookupImeiBtn.classList.add('hidden');
+                }
+            });
+
+            // Lookup button functionality
+            lookupImeiBtn.addEventListener('click', () => {
+                const imei = imeiInput.value.trim();
+                if (imei) {
+                    const searchUrl = `https://www.google.com/search?q=IMEI+${imei}+device+info`;
+                    window.open(searchUrl, '_blank');
+                }
+            });
         }
     });
 </script>
 
 </body>
 </html>
+"
 
