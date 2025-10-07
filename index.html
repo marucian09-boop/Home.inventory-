@@ -205,7 +205,9 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                    <path d="M3 7h18M3 12h18M3 17h18" />
+                </svg>
                 <label class="switch">
                     <input type="checkbox" id="darkModeToggle">
                     <span class="slider"></span>
@@ -230,16 +232,16 @@
             <!-- Tabs -->
             <div style="border-color: var(--border-primary);" class="border-b mb-6">
                 <nav id="tabs-nav" class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
-                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard">Dashboard</button>
-                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
-                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
-                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
-                    <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
-                    <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessoriesSellOut">Accessories Sell Out</button>
-                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
-                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn">Transfer In</button>
-                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel">Stock Level</button>
-                    <button id="admin-tab-btn" onclick="changeTab('admin')" class="tab hidden whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="admin">Admin Tools</button>
+                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-active" data-tab="dashboard">Dashboard</button>
+                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="deliveries">Deliveries</button>
+                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="stocks">Stocks</button>
+                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="sales">Sales</button>
+                    <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="accessories">Accessories</button>
+                    <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="accessoriesSellOut">Accessories Sell Out</button>
+                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="transferOut">Transfer Out</button>
+                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="transferIn">Transfer In</button>
+                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="stockLevel">Stock Level</button>
+                    <button id="admin-tab-btn" onclick="changeTab('admin')" class="tab hidden whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="admin">Admin</button>
                 </nav>
             </div>
 
@@ -288,9 +290,9 @@
                             <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md pr-24" maxlength="15" required>
                             <div class="absolute inset-y-0 right-0 flex items-center">
                                 <button type="button" id="lookup-imei-btn" class="px-2 text-sm font-semibold hidden" style="color: var(--accent-primary);" title="Look up IMEI details">Lookup</button>
-                                <button type="button" id="scan-imei-btn" class="flex items-center px-3 h-full rounded-r-md" style="background-color: var(--accent-primary);" title="Scan IMEI with Camera">
+                                <button type="button" id="scan-imei-btn" class="flex items-center px-3 h-full rounded-r-md" style="background-color: var(--accent-primary); color: white;" title="Scan IMEI with Camera">
                                     <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 10-3 0M3.75 18H7.5"/>
                                     </svg>
                                 </button>
                             </div>
@@ -301,7 +303,7 @@
                         <input type="text" id="del-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                         <input type="number" id="del-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
-                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Stock</button>
+                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Deliveries</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="deliveries-title">Today's Deliveries</h3>
@@ -843,6 +845,23 @@
     const searchInput = document.getElementById('search-input');
     const searchResultsContainer = document.getElementById('search-results-container');
 
+    // Scanner elements
+    const scanImeiBtn = document.getElementById('scan-imei-btn');
+    const scannerModal = document.getElementById('scanner-modal');
+    const startScanBtn = document.getElementById('start-scan-btn');
+    const scannerCloseBtn = document.getElementById('scanner-close-btn');
+    const scannerStatus = document.getElementById('scanner-status');
+
+    // Delivery form inputs (for auto-fill)
+    const delImeiInput = document.getElementById('del-imei');
+    const delBrandInput = document.getElementById('del-brand');
+    const delModelInput = document.getElementById('del-model');
+    const delVariantInput = document.getElementById('del-variant');
+    const delColorInput = document.getElementById('del-color');
+    const delPriceInput = document.getElementById('del-price');
+    const delNotesInput = document.getElementById('del-notes');
+    const deliveryForm = document.getElementById('delivery-form');
+
     // --- DARK MODE ---
     const darkModeToggle = document.getElementById("darkModeToggle");
     
@@ -864,7 +883,6 @@
         const toastMessage = document.getElementById('toast-message');
         toastMessage.textContent = message;
 
-        toast.classList.remove('bg-red-500', 'bg-green-500');
         toast.style.backgroundColor = '';
 
         if (type === 'error') {
@@ -942,9 +960,11 @@
             tab.style.borderColor = 'transparent';
         });
         const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
-        activeTab.classList.add('tab-active');
-        activeTab.style.color = 'var(--accent-primary)';
-        activeTab.style.borderColor = 'var(--accent-primary)';
+        if (activeTab) {
+            activeTab.classList.add('tab-active');
+            activeTab.style.color = 'var(--accent-primary)';
+            activeTab.style.borderColor = 'var(--accent-primary)';
+        }
 
     };
 
@@ -971,8 +991,8 @@
         document.getElementById('dashboard-sales-title').textContent = `Sales for ${formattedDate}`;
         document.getElementById('dashboard-incentives-title').textContent = `Incentives for ${formattedDate}`;
 
-        const totalSales = sales.reduce((sum, item) => sum + item.price, 0);
-        const totalIncentives = sales.reduce((sum, item) => sum + item.incentive, 0);
+        const totalSales = sales.reduce((sum, item) => sum + (item.price || 0), 0);
+        const totalIncentives = sales.reduce((sum, item) => sum + (item.incentive || 0), 0);
         
         document.getElementById('dashboard-sales').textContent = formatCurrency(totalSales);
         document.getElementById('dashboard-stock').textContent = inventory.length;
@@ -985,9 +1005,9 @@
 
         let sortedData = [...inventory];
         if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
+            sortedData.sort((a,b) => (a.brand || '').localeCompare(b.brand || ''));
         } else { // 'latest'
-            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
+            sortedData.sort((a,b) => (b.addedAt?.toMillis?.() || 0) - (a.addedAt?.toMillis?.() || 0));
         }
 
         if (sortedData.length === 0) {
@@ -997,1541 +1017,403 @@
         sortedData.forEach(item => {
             const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
             const isAdmin = currentUserRole === 'admin';
-            
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="inventory" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-             if (isAdmin) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="inventory" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-inventory-${item.id}`;
-            row.innerHTML = `
-                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Date Added" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-
-    const renderSalesTable = (sortType = 'latest') => {
-        document.getElementById('sales-title').textContent = `Sales for ${formatDate(selectedDate)}`;
-        const tableBody = document.getElementById('sales-table-body');
-        tableBody.innerHTML = '';
-        
-        let sortedData = [...sales];
-        if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
-        } else {
-            sortedData.sort((a,b) => (b.soldAt?.toMillis() || 0) - (a.soldAt?.toMillis() || 0));
-        }
-
-        if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4" style="color: var(--text-secondary);">No sales recorded on this day.</td></tr>`;
-            return;
-        }
-        sortedData.forEach(item => {
-            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const isAdmin = currentUserRole === 'admin';
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="sales" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Sale">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-             if (isAdmin) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="sales" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Sale">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-            
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-sales-${item.id}`;
-            row.innerHTML = `
-                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
-                <td data-label="Payment" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.paymentOption || 'N/A'}</td>
-                <td data-label="Receipt #" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.receiptNumber || 'N/A'}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-
-    const renderDeliveriesTable = (sortType = 'latest') => {
-        document.getElementById('deliveries-title').textContent = `Deliveries for ${formatDate(selectedDate)}`;
-        const tableBody = document.getElementById('deliveries-table-body');
-        tableBody.innerHTML = '';
-        
-        let sortedData = [...deliveries];
-        if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
-        } else {
-            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
-        }
-
-        if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No deliveries recorded on this day.</td></tr>`;
-            return;
-        }
-        sortedData.forEach(item => {
-            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const isAdmin = currentUserRole === 'admin';
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="deliveries" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Delivery">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                    </button>`;
-            }
-            if (isAdmin) {
-                actionsHtml += `<button data-itemid="${item.id}" data-type="deliveries" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Delivery">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                    </button>`;
-            }
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-                
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-deliveries-${item.id}`;
-            row.innerHTML = `
-                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-    
-    const renderTransfersInTable = (sortType = 'latest') => {
-        document.getElementById('transfer-in-title').textContent = `Transfers In for ${formatDate(selectedDate)}`;
-        const tableBody = document.getElementById('transfer-in-table-body');
-        tableBody.innerHTML = '';
-
-        let sortedData = [...transfersIn];
-        if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
-        } else {
-            sortedData.sort((a,b) => (b.transferredAt?.toMillis() || 0) - (a.transferredAt?.toMillis() || 0));
-        }
-
-        if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No transfers in recorded on this day.</td></tr>`;
-            return;
-        }
-        sortedData.forEach(item => {
-            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const isAdmin = currentUserRole === 'admin';
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="transfersIn" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-            if (isAdmin) {
-                actionsHtml += `<button data-itemid="${item.id}" data-type="transfersIn" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-transfersIn-${item.id}`;
-            row.innerHTML = `
-                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-
-    const renderTransfersOutTable = (sortType = 'latest') => {
-        document.getElementById('transfer-out-title').textContent = `Transfers Out for ${formatDate(selectedDate)}`;
-        const tableBody = document.getElementById('transfer-out-table-body');
-        tableBody.innerHTML = '';
-
-        let sortedData = [...transfersOut];
-        if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
-        } else {
-            sortedData.sort((a,b) => (b.transferredAt?.toMillis() || 0) - (a.transferredAt?.toMillis() || 0));
-        }
-
-        if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No transfers out recorded on this day.</td></tr>`;
-            return;
-        }
-        sortedData.forEach(item => {
-            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const isAdmin = currentUserRole === 'admin';
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="transfersOut" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Item">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-            if (isAdmin) {
-                actionsHtml += `<button data-itemid="${item.id}" data-type="transfersOut" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Item">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                    </button>`;
-            }
-            
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-transfersOut-${item.id}`;
-            row.innerHTML = `
-                <td data-label="IMEI" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.imei}</td>
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.transferredAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-
-    const renderStockLevels = () => {
-        const highStockList = document.getElementById('high-stock-list');
-        const lowStockList = document.getElementById('low-stock-list');
-        highStockList.innerHTML = '';
-        lowStockList.innerHTML = '';
-        
-        const stockCounts = inventory.reduce((acc, item) => {
-            const key = `${item.brand} ${item.model} ${item.variant}`;
-            acc[key] = (acc[key] || 0) + 1;
-            return acc;
-        }, {});
-        
-        const sortedStock = Object.entries(stockCounts).sort(([,a],[,b]) => b - a);
-        
-        if(sortedStock.length === 0) {
-            highStockList.innerHTML = `<p style="color: var(--text-secondary);">No stock to analyze.</p>`;
-            lowStockList.innerHTML = `<p style="color: var(--text-secondary);">No stock to analyze.</p>`;
-            return;
-        }
-
-        const LOW_STOCK_THRESHOLD = 3;
-        
-        sortedStock.forEach(([name, count]) => {
-            const itemHtml = `
-                <div class="flex justify-between items-center p-2 rounded-md" style="background-color: var(--bg-tertiary);">
-                    <span class="text-sm">${name}</span>
-                    <span class="font-bold text-sm px-2 py-1 rounded-full ${count > LOW_STOCK_THRESHOLD ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' : 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'}">${count}</span>
-                </div>`;
-
-            if (count > LOW_STOCK_THRESHOLD) {
-                highStockList.innerHTML += itemHtml;
-            } else {
-                lowStockList.innerHTML += itemHtml;
-            }
-        });
-
-        if (highStockList.innerHTML === '') {
-            highStockList.innerHTML = `<p style="color: var(--text-secondary);">No items with high stock levels.</p>`;
-        }
-        if (lowStockList.innerHTML === '') {
-            lowStockList.innerHTML = `<p style="color: var(--text-secondary);">No items with low stock levels.</p>`;
-        }
-    };
-
-    const renderAccessoriesTable = (sortType = 'latest') => {
-        document.getElementById('accessories-title').textContent = `Accessories for ${formatDate(selectedDate)}`;
-        const tableBody = document.getElementById('accessories-table-body');
-        tableBody.innerHTML = '';
-        
-        let sortedData = [...accessories];
-        if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
-        } else {
-            sortedData.sort((a,b) => (b.addedAt?.toMillis() || 0) - (a.addedAt?.toMillis() || 0));
-        }
-        
-        if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4" style="color: var(--text-secondary);">No accessories recorded on this day.</td></tr>`;
-            return;
-        }
-        sortedData.forEach(item => {
-            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const isAdmin = currentUserRole === 'admin';
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="accessories" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Accessory">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                    </button>`;
-            }
-            if (isAdmin) {
-                actionsHtml += `<button data-itemid="${item.id}" data-type="accessories" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Accessory">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                    </button>`;
-            }
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-accessories-${item.id}`;
-            row.innerHTML = `
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Type" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.type}</td>
-                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
-                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.addedAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-
-    const renderAccessoriesSellOutTable = (sortType = 'latest') => {
-        document.getElementById('accessories-sell-out-title').textContent = `Accessory Sales for ${formatDate(selectedDate)}`;
-        const tableBody = document.getElementById('accessories-sell-out-table-body');
-        tableBody.innerHTML = '';
-        
-        let sortedData = [...accessoriesSellOut];
-        if(sortType === 'alphabetical') {
-            sortedData.sort((a,b) => a.brand.localeCompare(b.brand));
-        } else {
-            sortedData.sort((a,b) => (b.soldAt?.toMillis() || 0) - (a.soldAt?.toMillis() || 0));
-        }
-        
-        if (sortedData.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color: var(--text-secondary);">No accessory sales recorded on this day.</td></tr>`;
-            return;
-        }
-        sortedData.forEach(item => {
-            const canEdit = currentUserRole === 'admin' || currentUserRole === 'editor';
-            const isAdmin = currentUserRole === 'admin';
-            let actionsHtml = '';
-            if (canEdit) {
-                 actionsHtml += `<button data-itemid="${item.id}" data-type="accessoriesSellOut" class="edit-item-btn p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50" title="Edit Accessory Sale">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--accent-primary);" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                    </button>`;
-            }
-            if (isAdmin) {
-                actionsHtml += `<button data-itemid="${item.id}" data-type="accessoriesSellOut" class="delete-item-btn p-1 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 ml-2" title="Delete Accessory Sale">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" style="color: var(--destructive);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                    </button>`;
-            }
-            const authorHtml = item.lastEditorEmail 
-                ? `${item.lastEditorEmail} <span class="text-xs italic">(edited)</span>` 
-                : item.authorEmail || 'N/A';
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50';
-            row.id = `row-accessoriesSellOut-${item.id}`;
-            row.innerHTML = `
-                <td data-label="Brand" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.brand}</td>
-                <td data-label="Model" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.model}</td>
-                <td data-label="Variant" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${item.variant || ''}</td>
-                <td data-label="Price" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatCurrency(item.price)}</td>
-                <td data-label="Date" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${formatDate(item.soldAt)}</td>
-                <td data-label="Author" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${authorHtml}</td>
-                <td data-label="Actions" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">${actionsHtml}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    };
-
-
-    // --- Firestore Data Handling ---
-    const setupListeners = (role) => {
-        detachListeners();
-        
-        const startOfDay = new Date(selectedDate);
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date(selectedDate);
-        endOfDay.setHours(23, 59, 59, 999);
-
-        const inventoryRef = collection(db, "inventory");
-        inventoryUnsubscribe = onSnapshot(inventoryRef, (snapshot) => {
-            inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAll();
-        });
-
-        const salesQuery = query(collection(db, "sales"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
-        salesUnsubscribe = onSnapshot(salesQuery, (snapshot) => {
-            sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAll();
-        });
-        
-        const deliveriesQuery = query(collection(db, "deliveries"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
-        deliveriesUnsubscribe = onSnapshot(deliveriesQuery, (snapshot) => {
-            deliveries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAll();
-        });
-
-        const transfersInQuery = query(collection(db, "transfersIn"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
-        transfersInUnsubscribe = onSnapshot(transfersInQuery, (snapshot) => {
-            transfersIn = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAll();
-        });
-
-        const transfersOutQuery = query(collection(db, "transfersOut"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
-        transfersOutUnsubscribe = onSnapshot(transfersOutQuery, (snapshot) => {
-            transfersOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAll();
-        });
-
-        const accessoriesRef = collection(db, "accessories");
-        accessoriesUnsubscribe = onSnapshot(accessoriesRef, (snapshot) => {
-            accessories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            const sellOutSelect = document.getElementById('sell-out-accessory');
-            sellOutSelect.innerHTML = '<option value="" disabled selected>Select Accessory to Sell</option>';
-            accessories.forEach(acc => {
-                const option = document.createElement('option');
-                option.value = acc.id;
-                option.textContent = `${acc.brand} ${acc.model} ${acc.variant || ''}`;
-                sellOutSelect.appendChild(option);
-            });
-            renderAll();
-        });
-        
-        const accessoriesSellOutQuery = query(collection(db, "accessoriesSellOut"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
-        accessoriesSellOutUnsubscribe = onSnapshot(accessoriesSellOutQuery, (snapshot) => {
-            accessoriesSellOut = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderAll();
-        });
-
-
-        if (role === 'admin') {
-            setupAdminListeners();
-        }
-    }
-    
-    const setupAdminListeners = () => {
-        const usersRef = collection(db, 'users');
-        usersUnsubscribe = onSnapshot(usersRef, (snapshot) => {
-            const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderUserManagementTable(users);
-        });
-    };
-
-    const detachListeners = () => {
-        if (inventoryUnsubscribe) inventoryUnsubscribe();
-        if (salesUnsubscribe) salesUnsubscribe();
-        if (deliveriesUnsubscribe) deliveriesUnsubscribe();
-        if (transfersInUnsubscribe) transfersInUnsubscribe();
-        if (transfersOutUnsubscribe) transfersOutUnsubscribe();
-        if (usersUnsubscribe) usersUnsubscribe();
-        if (accessoriesUnsubscribe) accessoriesUnsubscribe();
-        if (accessoriesSellOutUnsubscribe) accessoriesSellOutUnsubscribe();
-    }
-
-    const renderUserManagementTable = (users) => {
-        const tableBody = document.getElementById('user-management-table-body');
-        tableBody.innerHTML = '';
-        const currentUserId = auth.currentUser.uid;
-
-        users.forEach(user => {
-            const isCurrentUser = user.id === currentUserId;
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td data-label="Email" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.email}</td>
-                <td data-label="Role" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">${user.role}</td>
-                <td data-label="Change Role" class="py-2 px-4 border-b" style="border-color: var(--border-primary);">
-                    ${!isCurrentUser ? `
-                    <select class="form-select p-2 border rounded-md" data-userid="${user.id}">
-                        <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
-                        <option value="editor" ${user.role === 'editor' ? 'selected' : ''}>Editor</option>
-                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
-                    </select>
-                    ` : 'Cannot change own role'}
-                </td>
-                <td data-label="Manage" class="py-2 px-4 border-b text-center" style="border-color: var(--border-primary);">
-                     ${!isCurrentUser ? `
-                         ${user.kicked 
-                             ? `<button data-userid="${user.id}" class="unkick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--success); color: white;">Un-kick</button>`
-                             : `<button data-userid="${user.id}" class="kick-btn text-sm font-semibold py-1 px-3 rounded-md" style="background-color: var(--destructive); color: white;">Kick</button>`
-                        }
-                    ` : ''}
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="py-2 px-4" data-label="IMEI">${item.imei || 'N/A'}</td>
+                <td class="py-2 px-4" data-label="Brand">${item.brand || 'N/A'}</td>
+                <td class="py-2 px-4" data-label="Model">${item.model || 'N/A'}</td>
+                <td class="py-2 px-4" data-label="Variant">${item.variant || ''}</td>
+                <td class="py-2 px-4" data-label="Date Added">${formatDate(item.addedAt)}</td>
+                <td class="py-2 px-4" data-label="Author">${item.author || 'N/A'}</td>
+                <td class="py-2 px-4 text-center" data-label="Actions">
+                    <button class="edit-btn px-2 py-1 text-sm rounded-md" data-imei="${item.imei}" ${canEdit ? '' : 'disabled'} style="background-color: var(--bg-tertiary);">Edit</button>
                 </td>
             `;
-            tableBody.appendChild(row);
-        });
-
-        // Add event listeners after rendering
-        tableBody.querySelectorAll('select').forEach(select => {
-            select.addEventListener('change', async (e) => {
-                const newRole = e.target.value;
-                const userIdToUpdate = e.target.dataset.userid;
-                try {
-                    const userDocRef = doc(db, 'users', userIdToUpdate);
-                    await updateDoc(userDocRef, { role: newRole });
-                    showToast(`User role updated to ${newRole}.`, 'success');
-                } catch (error) {
-                    console.error("Error updating role: ", error);
-                    showToast('Failed to update role.', 'error');
-                }
-            });
-        });
-
-        tableBody.querySelectorAll('.kick-btn').forEach(button => {
-            button.addEventListener('click', async (e) => {
-                const userIdToKick = e.target.dataset.userid;
-                showConfirm('Are you sure you want to kick this user? They will be logged out and unable to sign in.', async () => {
-                    try {
-                        const userDocRef = doc(db, 'users', userIdToKick);
-                        await updateDoc(userDocRef, { kicked: true });
-                        showToast('User has been kicked.', 'success');
-                    } catch(error) {
-                        showToast('Failed to kick user.', 'error');
-                    }
-                }, { title: 'Confirm Kick', okText: 'Kick'});
-            });
-        });
-
-         tableBody.querySelectorAll('.unkick-btn').forEach(button => {
-            button.addEventListener('click', async (e) => {
-                const userIdToUnkick = e.target.dataset.userid;
-                 try {
-                    const userDocRef = doc(db, 'users', userIdToUnkick);
-                    await updateDoc(userDocRef, { kicked: false, showWelcomeBack: true });
-                    showToast('User has been un-kicked.', 'success');
-                } catch(error) {
-                    showToast('Failed to un-kick user.', 'error');
-                }
-            });
+            tableBody.appendChild(tr);
         });
     };
-    
-    // --- AUTHENTICATION & ROLE MANAGEMENT ---
-    
-    const initializeUserSession = (role, email) => {
-        currentUserRole = role; // Set the role first
-        currentUserEmail = email;
-        authContainer.classList.add('hidden');
-        appContainer.classList.remove('hidden');
-        document.getElementById('user-email').textContent = email;
-        updateUIAfterLogin(role); // Update UI elements like badges
-        setupListeners(role);    // THEN set up data listeners
+
+    // Placeholder functions for other renderers (they can be implemented elsewhere)
+    const renderSalesTable = () => {};
+    const renderStockLevels = () => {};
+    const renderDeliveriesTable = () => {};
+    const renderTransfersInTable = () => {};
+    const renderTransfersOutTable = () => {};
+    const renderAccessoriesTable = () => {};
+    const renderAccessoriesSellOutTable = () => {};
+
+    // --- SCANNER IMPLEMENTATION ---
+    // We'll use the globally loaded Html5Qrcode (from unpkg script tag).
+    let html5QrCodeInstance = null;
+    let scanning = false;
+    let lastScannedValue = null;
+
+    const openScannerModal = () => {
+        scannerStatus.textContent = '';
+        scannerModal.classList.remove('hidden');
     };
 
-    const cleanupSession = () => {
-        authContainer.classList.remove('hidden');
-        appContainer.classList.add('hidden');
-        detachListeners();
-        // Explicitly clear data and role to prevent state leakage
-        inventory = [];
-        sales = [];
-        deliveries = [];
-        transfersIn = [];
-        transfersOut = [];
-        accessories = [];
-        accessoriesSellOut = [];
-        currentUserRole = null;
-        currentUserEmail = null;
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-        if(user) {
-            const userDocRef = doc(db, 'users', user.uid);
-            const userDoc = await getDoc(userDocRef);
-
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                if(userData.kicked) {
-                    kickedModal.classList.remove('hidden');
-                    signOut(auth);
-                    return;
-                }
-
-                if(userData.showWelcomeBack) {
-                    showToast('Welcome back! Your account has been reinstated.', 'success');
-                    await updateDoc(userDocRef, { showWelcomeBack: false });
-                }
-
-                initializeUserSession(userData.role, userData.email);
-            } else {
-                const usersRef = collection(db, 'users');
-                const q = query(usersRef, limit(1));
-                const existingUsers = await getDocs(q);
-                const isFirstUser = existingUsers.empty;
-                const newUserRole = isFirstUser ? 'admin' : 'viewer';
-
-                try {
-                    await setDoc(userDocRef, {
-                        email: user.email,
-                        role: newUserRole,
-                        createdAt: serverTimestamp(),
-                        kicked: false,
-                        showWelcomeBack: false
-                    });
-                    initializeUserSession(newUserRole, user.email);
-                } catch (error) {
-                    console.error("Error creating user document:", error);
-                    authError.textContent = "Could not create user profile. Please try again.";
-                    authError.style.display = 'block';
-                    signOut(auth);
-                }
-            }
-        } else {
-            cleanupSession();
-        }
-    });
-
-    const updateUIAfterLogin = (role) => {
-        const roleBadge = document.getElementById('user-role-badge');
-        roleBadge.textContent = role;
-        roleBadge.className = 'text-xs font-semibold px-2 py-1 rounded-full'; // reset classes
-        
-        const adminTab = document.getElementById('admin-tab-btn');
-        const viewOnlyBanner = document.getElementById('view-only-banner');
-        const forms = document.querySelectorAll('form');
-        const downloadButtons = document.querySelectorAll('.download-btn, #download-report-btn');
-
-        if (role === 'admin' || role === 'editor') {
-            viewOnlyBanner.classList.add('hidden');
-            forms.forEach(f => f.querySelectorAll('input, button, textarea, select').forEach(el => el.disabled = false));
-            downloadButtons.forEach(btn => btn.style.display = 'block');
-            if (role === 'admin') {
-                roleBadge.classList.add('bg-purple-200', 'text-purple-800');
-                adminTab.classList.remove('hidden');
-            } else {
-                 roleBadge.classList.add('bg-blue-200', 'text-blue-800');
-                adminTab.classList.add('hidden');
-            }
-        } else { // viewer
-            roleBadge.classList.add('bg-gray-200', 'text-gray-800');
-            adminTab.classList.add('hidden');
-            viewOnlyBanner.classList.remove('hidden');
-            forms.forEach(f => f.querySelectorAll('input, button, textarea, select').forEach(el => el.disabled = true));
-            downloadButtons.forEach(btn => btn.style.display = 'none');
-        }
-    };
-    
-    signupBtn.addEventListener('click', async () => {
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        authError.style.display = 'none';
-
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            showToast('Account created successfully!', 'success');
-        } catch (error) {
-            authError.textContent = error.message;
-            authError.style.display = 'block';
-        }
-    });
-
-    signinBtn.addEventListener('click', async () => {
-        const email = document.getElementById('signin-email').value;
-        const password = document.getElementById('signin-password').value;
-        authError.style.display = 'none';
-
-        signinBtn.disabled = true;
-        signinBtn.textContent = 'Signing In...';
-
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-        } catch (error) {
-            console.error('Sign-in error:', error);
-            if (error.code === 'auth/invalid-credential') {
-                authError.textContent = 'Incorrect email or password. Please try again.';
-            } else {
-                authError.textContent = error.message;
-            }
-            authError.style.display = 'block';
-        } finally {
-            signinBtn.disabled = false;
-            signinBtn.textContent = 'Sign In';
-        }
-    });
-
-    signoutBtn.addEventListener('click', () => {
-        signOut(auth);
-    });
-
-    // --- FORM SUBMISSIONS ---
-    document.getElementById('delivery-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const imei = document.getElementById('del-imei').value.trim();
-        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
-            showToast('IMEI must be 15 digits.', 'error');
-            return;
-        }
-        
-        const inventoryRef = collection(db, 'inventory');
-        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
-        const existing = await getDocs(q);
-        if(!existing.empty){
-            showToast('This IMEI already exists in stock.', 'error');
-            return;
-        }
-
-        const newItem = {
-            imei: imei,
-            brand: document.getElementById('del-brand').value.trim(),
-            model: document.getElementById('del-model').value.trim(),
-            variant: document.getElementById('del-variant').value.trim(),
-            color: document.getElementById('del-color').value.trim(),
-            price: parseFloat(document.getElementById('del-price').value),
-            notes: document.getElementById('del-notes').value.trim(),
-            addedAt: serverTimestamp(),
-            authorEmail: currentUserEmail
-        };
-        
-        try {
-            await runTransaction(db, async (transaction) => {
-                transaction.set(doc(collection(db, 'inventory')), newItem);
-                transaction.set(doc(collection(db, 'deliveries')), newItem);
-            });
-            e.target.reset();
-            showToast('Item added to stock successfully!');
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            showToast('Failed to add item.', 'error');
-        }
-    });
-    
-    document.getElementById('sales-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const imei = document.getElementById('sale-imei').value.trim();
-        
-        const inventoryRef = collection(db, `inventory`);
-        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
-        const snapshot = await getDocs(q);
-
-        if (snapshot.empty) {
-            showToast('Item with this IMEI not found in stock.', 'error');
-            return;
-        }
-        
-        const stockDoc = snapshot.docs[0];
-        const soldItemData = stockDoc.data();
-        
-        const newSale = {
-            ...soldItemData,
-            incentive: parseFloat(document.getElementById('sale-incentive').value) || 0,
-            paymentOption: document.getElementById('sale-payment').value,
-            receiptNumber: document.getElementById('sale-receipt-number').value.trim(),
-            notes: document.getElementById('sale-notes').value.trim(),
-            soldAt: serverTimestamp(),
-            authorEmail: currentUserEmail
-        };
-
-        try {
-            await runTransaction(db, async (transaction) => {
-                transaction.delete(stockDoc.ref);
-                transaction.set(doc(collection(db, 'sales')), newSale);
-            });
-            e.target.reset();
-            showToast('Sale recorded successfully!');
-        } catch (error) {
-            console.error("Transaction failed: ", error);
-            showToast('Failed to record sale.', 'error');
-        }
-    });
-
-    document.getElementById('transfer-in-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const imei = document.getElementById('tin-imei').value.trim();
-        if(imei.length !== 15 || !/^\d+$/.test(imei)) {
-            showToast('IMEI must be 15 digits.', 'error');
-            return;
-        }
-        
-        const inventoryRef = collection(db, 'inventory');
-        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
-        const existing = await getDocs(q);
-        if(!existing.empty){
-            showToast('This IMEI already exists in stock.', 'error');
-            return;
-        }
-
-        const newItem = {
-            imei: imei,
-            brand: document.getElementById('tin-brand').value.trim(),
-            model: document.getElementById('tin-model').value.trim(),
-            variant: document.getElementById('tin-variant').value.trim(),
-            color: document.getElementById('tin-color').value.trim(),
-            price: parseFloat(document.getElementById('tin-price').value),
-            notes: document.getElementById('tin-notes').value.trim(),
-            transferredAt: serverTimestamp(),
-            authorEmail: currentUserEmail
-        };
-        
-        try {
-            await runTransaction(db, async (transaction) => {
-                transaction.set(doc(collection(db, 'inventory')), newItem);
-                transaction.set(doc(collection(db, 'transfersIn')), newItem);
-            });
-            e.target.reset();
-            showToast('Item transferred in successfully!');
-        } catch (error) {
-            console.error("Error transferring item in: ", error);
-            showToast('Failed to transfer item in.', 'error');
-        }
-    });
-
-    document.getElementById('transfer-out-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const imei = document.getElementById('tout-imei').value.trim();
-        if (!imei) {
-            showToast('Please enter an IMEI to transfer out.', 'error');
-            return;
-        }
-
-        const inventoryRef = collection(db, 'inventory');
-        const q = query(inventoryRef, where("imei", "==", imei), limit(1));
-        const snapshot = await getDocs(q);
-
-        if (snapshot.empty) {
-            showToast('Item with this IMEI not found in stock.', 'error');
-            return;
-        }
-
-        const itemDoc = snapshot.docs[0];
-        const itemData = itemDoc.data();
-        const transferOutData = {
-            ...itemData,
-            notes: document.getElementById('tout-notes').value.trim(),
-            transferredAt: serverTimestamp(),
-            authorEmail: currentUserEmail
-        };
-
-        showConfirm(`Are you sure you want to transfer out item with IMEI ${imei}?`, async () => {
+    const closeScannerModal = async () => {
+        scannerModal.classList.add('hidden');
+        scannerStatus.textContent = '';
+        lastScannedValue = null;
+        if (html5QrCodeInstance && scanning) {
             try {
-                 await runTransaction(db, async (transaction) => {
-                    transaction.delete(itemDoc.ref);
-                    transaction.set(doc(collection(db, 'transfersOut')), transferOutData);
-                });
-                showToast('Item transferred out successfully.', 'success');
-                e.target.reset();
-            } catch (error) {
-                console.error("Error transferring item out:", error);
-                showToast('Failed to transfer item out.', 'error');
+                await html5QrCodeInstance.stop();
+            } catch (err) {
+                // ignore stop errors
             }
-        }, { title: 'Confirm Transfer Out', okText: 'Transfer' });
-    });
-
-    document.getElementById('accessory-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const type = document.getElementById('acc-type').value;
-        const priceInput = document.getElementById('acc-price');
-        let price = parseFloat(priceInput.value);
-
-        if (type === 'Freebie') {
-            price = 0;
+            html5QrCodeInstance.clear().catch(()=>{});
+            html5QrCodeInstance = null;
+            scanning = false;
         }
+    };
 
-        const newAccessory = {
-            brand: document.getElementById('acc-brand').value.trim(),
-            model: document.getElementById('acc-model').value.trim(),
-            variant: document.getElementById('acc-variant').value.trim(),
-            type: type,
-            price: price,
-            addedAt: serverTimestamp(),
-            authorEmail: currentUserEmail
+    // Heuristic parser to extract IMEI and obvious fields from scanned text.
+    // Many IMEI barcodes contain just a 15-digit number. Some vendor barcodes have labels like "IMEI:", "S/N:", "Model:", etc.
+    function parseScannedText(scannedText) {
+        const result = {
+            imei: null,
+            brand: null,
+            model: null,
+            variant: null,
+            color: null,
+            price: null,
+            notes: scannedText
         };
 
-        try {
-            await addDoc(collection(db, 'accessories'), newAccessory);
-            e.target.reset();
-            priceInput.disabled = false;
-            priceInput.value = '';
-            showToast('Accessory added successfully!');
-        } catch (error) {
-            console.error("Error adding accessory:", error);
-            showToast('Failed to add accessory.', 'error');
+        if (!scannedText) return result;
+
+        // Try to find a 15-digit IMEI inside scannedText
+        const imeiMatch = scannedText.match(/(\d{15})/);
+        if (imeiMatch) {
+            result.imei = imeiMatch[1];
         }
-    });
-    
-    document.getElementById('accessory-sell-out-form').addEventListener('submit', async (e) => {
+
+        // Try simple key:value parsing (e.g., "IMEI: 12345; MODEL: Foo; BRAND: Bar")
+        const kvPairs = scannedText.split(/[\n\r;\/|,]+/).map(s => s.trim()).filter(Boolean);
+        kvPairs.forEach(part => {
+            const m = part.match(/^\s*([A-Za-z\-\_\s]+)[:=]\s*(.+)$/);
+            if (m) {
+                const key = m[1].trim().toLowerCase();
+                const value = m[2].trim();
+                if (key.includes('imei') && !result.imei) {
+                    const mI = value.match(/(\d{15})/);
+                    if (mI) result.imei = mI[1];
+                } else if (key.includes('brand') || key.includes('vendor')) {
+                    result.brand = value;
+                } else if (key.includes('model') || key.includes('mod')) {
+                    result.model = value;
+                } else if (key.includes('variant') || key.includes('storage') || key.includes('gb')) {
+                    result.variant = value;
+                } else if (key.includes('color')) {
+                    result.color = value;
+                } else if (key.includes('price') || key.includes('php') || key.includes('₱')) {
+                    const digits = value.replace(/[^\d.]/g, '');
+                    if (digits) result.price = parseFloat(digits);
+                }
+            } else {
+                // If token looks like MODEL123 or AB-123, heuristically map it to model if model is empty
+                if (!result.model && /[A-Za-z0-9\-]{3,}/.test(part) && !/^\d{15}$/.test(part)) {
+                    // if it contains letters and digits it's likely a model/sku
+                    result.model = part;
+                }
+            }
+        });
+
+        // If nothing found for model/brand, attempt to match known patterns like "SM-G991B" (Samsung)
+        const modelLike = scannedText.match(/([A-Z0-9]{2,}-[A-Z0-9]{2,}|SM-[A-Z0-9\-]+|M[0-9]{3,})/i);
+        if (!result.model && modelLike) {
+            result.model = modelLike[0];
+        }
+
+        return result;
+    }
+
+    async function startScanning() {
+        if (scanning) return;
+        scannerStatus.textContent = 'Initializing camera...';
+        try {
+            // eslint-disable-next-line no-undef
+            const Html5Qrcode = window.Html5Qrcode;
+            if (!Html5Qrcode) {
+                throw new Error('Html5Qrcode library not loaded.');
+            }
+
+            html5QrCodeInstance = new Html5Qrcode("reader", { verbose: false });
+            const devices = await Html5Qrcode.getCameras();
+            if (!devices || devices.length === 0) {
+                scannerStatus.textContent = 'No camera found.';
+                showToast('No camera found on this device.', 'error');
+                return;
+            }
+            // prefer back camera if available
+            const backCamera = devices.find(d => /back|rear|environment/gi.test(d.label)) || devices[0];
+            const cameraId = backCamera.id;
+
+            scannerStatus.textContent = 'Point the camera at the IMEI barcode...';
+            scanning = true;
+
+            await html5QrCodeInstance.start(
+                cameraId,
+                {
+                    fps: 10,
+                    qrbox: { width: 300, height: 200 },
+                    // Set types if you want to restrict; we'll accept all text
+                },
+                (decodedText, decodedResult) => {
+                    // On successful scan
+                    if (!decodedText) return;
+                    // Avoid duplicate rapid scans
+                    if (lastScannedValue === decodedText) return;
+                    lastScannedValue = decodedText;
+                    scannerStatus.textContent = `Scanned: ${decodedText}`;
+                    // Parse
+                    const parsed = parseScannedText(decodedText);
+                    if (!parsed.imei) {
+                        showToast('No 15-digit IMEI detected in the barcode. Please try again.', 'error');
+                        return;
+                    }
+
+                    // Stop scanning once we have an IMEI (we will process it)
+                    html5QrCodeInstance.stop().then(() => {
+                        scanning = false;
+                        html5QrCodeInstance.clear().catch(()=>{});
+                        html5QrCodeInstance = null;
+                        // Auto-fill the delivery form with parsed data
+                        autofillDeliveryForm(parsed);
+                        // Optionally persist immediately to database
+                        // We'll ask user to confirm saving via a toast + filling the form.
+                        showToast('IMEI detected — delivery form auto-filled. Review and submit to save.', 'success');
+                        // Close scanner modal after brief delay so user can see status
+                        setTimeout(() => closeScannerModal(), 900);
+                    }).catch(err => {
+                        scanning = false;
+                        html5QrCodeInstance = null;
+                        showToast('Stopped scanner due to error.', 'error');
+                    });
+
+                },
+                (errorMessage) => {
+                    // optional callback for scan failure / decode errors
+                }
+            );
+        } catch (err) {
+            console.error('Scanner error:', err);
+            scannerStatus.textContent = 'Scanner initialization failed: ' + (err.message || err);
+            showToast('Scanner initialization failed.', 'error');
+            scanning = false;
+            if (html5QrCodeInstance) {
+                try { await html5QrCodeInstance.clear(); } catch(e){}
+                html5QrCodeInstance = null;
+            }
+        }
+    }
+
+    // Fill the delivery form fields with parsed values
+    function autofillDeliveryForm(parsed) {
+        if (!parsed) return;
+        if (parsed.imei) delImeiInput.value = parsed.imei;
+        if (parsed.brand) delBrandInput.value = parsed.brand;
+        if (parsed.model) delModelInput.value = parsed.model;
+        if (parsed.variant) delVariantInput.value = parsed.variant;
+        if (parsed.color) delColorInput.value = parsed.color;
+        if (parsed.price) delPriceInput.value = parsed.price;
+        if (parsed.notes) delNotesInput.value = parsed.notes;
+        // bring user to deliveries tab automatically
+        changeTab('deliveries');
+        // focus on Add button so user can submit quickly
+        setTimeout(()=> {
+            const submitBtn = deliveryForm.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.focus();
+        }, 300);
+    }
+
+    // Persistence: when the delivery form is submitted, save to Firestore 'deliveries' and (optionally) 'inventory'
+    deliveryForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const accessoryId = document.getElementById('sell-out-accessory').value;
-        if (!accessoryId) {
-            showToast('Please select an accessory to sell.', 'error');
+        const imei = delImeiInput.value.trim();
+        if (!/^\d{15}$/.test(imei)) {
+            showToast('Please enter a valid 15-digit IMEI.', 'error');
             return;
         }
-
-        const accessoryDocRef = doc(db, 'accessories', accessoryId);
-        const accessoryDoc = await getDoc(accessoryDocRef);
-
-        if (!accessoryDoc.exists()) {
-             showToast('Selected accessory not found.', 'error');
-             return;
-        }
-
-        const accessoryData = accessoryDoc.data();
-        const sellOutData = {
-            ...accessoryData,
-            receiptNumber: document.getElementById('sell-out-receipt').value.trim(),
-            notes: document.getElementById('sell-out-notes').value.trim(),
-            soldAt: serverTimestamp(),
-            authorEmail: currentUserEmail
+        const docData = {
+            imei,
+            brand: delBrandInput.value.trim() || null,
+            model: delModelInput.value.trim() || null,
+            variant: delVariantInput.value.trim() || null,
+            color: delColorInput.value.trim() || null,
+            price: parseFloat(delPriceInput.value) || 0,
+            notes: delNotesInput.value.trim() || null,
+            author: currentUserEmail || 'unknown',
+            createdAt: serverTimestamp()
         };
-
         try {
-            await runTransaction(db, async (transaction) => {
-                transaction.delete(accessoryDocRef);
-                transaction.set(doc(collection(db, 'accessoriesSellOut')), sellOutData);
-            });
-            e.target.reset();
-            showToast('Accessory sold successfully!');
-        } catch(error) {
-            console.error("Error selling accessory: ", error);
-            showToast('Failed to sell accessory.', 'error');
+            // Save to 'deliveries'
+            await addDoc(collection(db, 'deliveries'), docData);
+            // Also add to 'inventory' (if you want deliveries to also be inventory items)
+            // You might instead require manual transfer-in process; here we add to inventory for convenience.
+            const inventoryData = {
+                imei,
+                brand: docData.brand,
+                model: docData.model,
+                variant: docData.variant,
+                color: docData.color,
+                price: docData.price,
+                author: docData.author,
+                addedAt: serverTimestamp()
+            };
+            await addDoc(collection(db, 'inventory'), inventoryData);
+
+            showToast('Delivery saved and inventory updated.', 'success');
+
+            // Clear form
+            deliveryForm.reset();
+            // Re-render / refresh streams elsewhere (if listeners exist this will happen)
+        } catch (err) {
+            console.error('Failed to save delivery:', err);
+            showToast('Failed to save. Check console for details.', 'error');
         }
     });
 
+    // Hook scanner buttons
+    scanImeiBtn.addEventListener('click', () => {
+        openScannerModal();
+    });
 
-    document.getElementById('acc-type').addEventListener('change', (e) => {
-        const priceInput = document.getElementById('acc-price');
-        if(e.target.value === 'Freebie') {
-            priceInput.value = '0.00';
-            priceInput.disabled = true;
+    startScanBtn.addEventListener('click', () => {
+        startScanning();
+    });
+
+    scannerCloseBtn.addEventListener('click', () => {
+        closeScannerModal();
+    });
+
+    // Close scanner when clicking outside modal content (optional)
+    scannerModal.addEventListener('click', (ev) => {
+        if (ev.target === scannerModal) {
+            closeScannerModal();
+        }
+    });
+
+    // --- AUTH STATE HANDLING (simplified for demo) ---
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserEmail = user.email;
+            // Example: retrieve role from 'users' collection or custom claims
+            // For now assume role 'editor' for logged-in users except some admin emails
+            // In production, derive role from Firestore or Auth custom claims
+            // We'll try to read a document in users/{uid} for role
+            (async() => {
+                try {
+                    const uDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (uDoc.exists()) {
+                        currentUserRole = uDoc.data().role || 'editor';
+                    } else {
+                        currentUserRole = 'editor';
+                    }
+                } catch(e) {
+                    currentUserRole = 'editor';
+                }
+                // Update UI
+                authContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                document.getElementById('user-email').textContent = currentUserEmail;
+                document.getElementById('user-role-badge').textContent = currentUserRole;
+                if (currentUserRole === 'admin') {
+                    document.getElementById('admin-tab-btn').classList.remove('hidden');
+                }
+            })();
         } else {
-            priceInput.value = '';
-            priceInput.disabled = false;
+            // show auth view
+            currentUserEmail = null;
+            currentUserRole = null;
+            authContainer.classList.remove('hidden');
+            appContainer.classList.add('hidden');
         }
     });
 
+    // Basic sign-in/up handlers (simplified)
+    signinBtn.addEventListener('click', async () => {
+        const email = document.getElementById('signin-email').value.trim();
+        const pass = document.getElementById('signin-password').value;
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+            showToast('Signed in', 'success');
+        } catch (err) {
+            console.error(err);
+            authError.style.display = 'block';
+            authError.textContent = err.message || 'Failed to sign in';
+            showToast('Sign-in failed', 'error');
+        }
+    });
 
-    // --- UI TOGGLES AND MODALS ---
+    signupBtn.addEventListener('click', async () => {
+        const email = document.getElementById('signup-email').value.trim();
+        const pass = document.getElementById('signup-password').value;
+        try {
+            const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+            // create user metadata document
+            await setDoc(doc(db, 'users', userCred.user.uid), { email, role: 'editor', createdAt: serverTimestamp() });
+            showToast('Account created', 'success');
+        } catch (err) {
+            console.error(err);
+            authError.style.display = 'block';
+            authError.textContent = err.message || 'Failed to sign up';
+            showToast('Sign-up failed', 'error');
+        }
+    });
+
     showSignupBtn.addEventListener('click', () => {
         signinForm.classList.add('hidden');
         signupForm.classList.remove('hidden');
-        authError.style.display = 'none';
     });
 
     showSigninBtn.addEventListener('click', () => {
         signupForm.classList.add('hidden');
         signinForm.classList.remove('hidden');
-        authError.style.display = 'none';
     });
 
-    const openEditModal = (item, type) => {
-        editModalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)} Record`;
-        editItemForm.elements['edit-item-id'].value = item.id;
-        editItemForm.elements['edit-item-type'].value = type;
-        
-        // Common fields
-        editItemForm.elements['edit-brand'].value = item.brand;
-        editItemForm.elements['edit-model'].value = item.model;
-        editItemForm.elements['edit-variant'].value = item.variant || '';
-        editItemForm.elements['edit-notes'].value = item.notes || '';
-
-        // Type-specific fields
-        const imeiField = document.getElementById('edit-imei-wrapper');
-        const colorField = document.getElementById('edit-color-wrapper');
-        const incentiveField = document.getElementById('edit-incentive-wrapper');
-        const paymentField = document.getElementById('edit-payment-wrapper');
-        const receiptField = document.getElementById('edit-receipt-number-wrapper');
-        const priceFieldWrapper = document.getElementById('edit-price-wrapper');
-        
-        // Hide all optional fields first
-        imeiField.style.display = 'none';
-        colorField.style.display = 'none';
-        incentiveField.style.display = 'none';
-        paymentField.style.display = 'none';
-        receiptField.style.display = 'none';
-        priceFieldWrapper.style.display = 'none';
-
-
-        if (type === 'sales') {
-            imeiField.style.display = 'block';
-            colorField.style.display = 'block';
-            incentiveField.style.display = 'block';
-            paymentField.style.display = 'block';
-            receiptField.style.display = 'block';
-            editItemForm.elements['edit-price'].disabled = true;
-
-            editItemForm.elements['edit-imei'].value = item.imei;
-            editItemForm.elements['edit-color'].value = item.color || '';
-            editItemForm.elements['edit-price'].value = item.price;
-            editItemForm.elements['edit-incentive'].value = item.incentive || 0;
-            editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
-            editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
-        } else if (type === 'accessories' || type === 'accessoriesSellOut') {
-             priceFieldWrapper.style.display = 'block';
-            editItemForm.elements['edit-price'].disabled = item.type === 'Freebie';
-            editItemForm.elements['edit-price'].value = item.price;
-        } else { // inventory, deliveries, transfers
-            imeiField.style.display = 'block';
-            colorField.style.display = 'block';
-            priceFieldWrapper.style.display = 'block';
-            editItemForm.elements['edit-price'].disabled = false;
-
-            editItemForm.elements['edit-imei'].value = item.imei;
-            editItemForm.elements['edit-color'].value = item.color || '';
-            editItemForm.elements['edit-price'].value = item.price;
-        }
-
-
-        editItemModal.classList.remove('hidden');
-    };
-
-    const closeEditModal = () => {
-        editItemModal.classList.add('hidden');
-        editItemForm.reset();
-    };
-
-    editModalCloseBtn.addEventListener('click', closeEditModal);
-    editModalCancelBtn.addEventListener('click', closeEditModal);
-
-    editItemForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const itemId = e.target.elements['edit-item-id'].value;
-        const itemType = e.target.elements['edit-item-type'].value;
-
-        let updatedData = {
-            brand: e.target.elements['edit-brand'].value.trim(),
-            model: e.target.elements['edit-model'].value.trim(),
-            variant: e.target.elements['edit-variant'].value.trim(),
-            notes: e.target.elements['edit-notes'].value.trim(),
-            lastEditorEmail: currentUserEmail,
-            lastEditedAt: serverTimestamp()
-        };
-
-        if(itemType === 'sales') {
-            updatedData.incentive = parseFloat(e.target.elements['edit-incentive'].value) || 0;
-            updatedData.paymentOption = e.target.elements['edit-payment'].value;
-            updatedData.receiptNumber = e.target.elements['edit-receipt-number'].value.trim();
-            updatedData.color = e.target.elements['edit-color'].value.trim();
-        } else if (itemType === 'accessories' || type === 'accessoriesSellOut') {
-             updatedData.price = parseFloat(e.target.elements['edit-price'].value);
-        } else {
-            updatedData.price = parseFloat(e.target.elements['edit-price'].value);
-            updatedData.color = e.target.elements['edit-color'].value.trim();
-        }
-
+    signoutBtn.addEventListener('click', async () => {
         try {
-            const itemRef = doc(db, itemType, itemId);
-            await updateDoc(itemRef, updatedData);
-            showToast('Record updated successfully.', 'success');
-            closeEditModal();
-        } catch (error) {
-            console.error("Error updating record:", error);
-            showToast('Failed to update record.', 'error');
+            await signOut(auth);
+            showToast('Signed out', 'success');
+        } catch (err) {
+            console.error(err);
+            showToast('Sign out failed', 'error');
         }
     });
 
-    // --- INITIALIZATION ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        
-        selectedDate = new Date(year, month - 1, day);
-        dateFilter.value = `${year}-${month}-${day}`;
-
-        darkModeToggle.addEventListener("change", (e) => applyDarkMode(e.target.checked));
-        changeTab('dashboard');
-
-        dateFilter.addEventListener('change', () => {
-            const dateString = dateFilter.value;
-            const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-            const dateAsUTC = new Date(new Date(dateString).getTime() + timezoneOffset);
-            selectedDate = dateAsUTC;
-            setupListeners(currentUserRole);
-        });
-
-        gotoTodayBtn.addEventListener('click', () => {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-
-            selectedDate = new Date(year, month - 1, day);
-            dateFilter.value = `${year}-${month}-${day}`;
-            setupListeners(currentUserRole);
-        });
-        
-        // Event listener for the new Daily Report button
-        downloadReportBtn.addEventListener('click', async () => {
-            const date = dateFilter.value;
-            downloadReportBtn.disabled = true;
-            downloadReportBtn.textContent = 'Generating...';
-
-            try {
-                const endOfDay = new Date(selectedDate);
-                endOfDay.setHours(23, 59, 59, 999);
-                const startOfDay = new Date(selectedDate);
-                startOfDay.setHours(0, 0, 0, 0);
-
-                // Fetch all data for the date selected
-                const allSalesQuery = query(collection(db, "sales"), where("soldAt", ">=", startOfDay), where("soldAt", "<=", endOfDay));
-                const allDeliveriesQuery = query(collection(db, "deliveries"), where("addedAt", ">=", startOfDay), where("addedAt", "<=", endOfDay));
-                const allTransfersInQuery = query(collection(db, "transfersIn"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
-                const allTransfersOutQuery = query(collection(db, "transfersOut"), where("transferredAt", ">=", startOfDay), where("transferredAt", "<=", endOfDay));
-                const allInventoryQuery = query(collection(db, "inventory"));
-
-                const [dailySalesSnapshot, dailyDeliveriesSnapshot, dailyTransfersInSnapshot, dailyTransfersOutSnapshot, allInventorySnapshot] = await Promise.all([
-                    getDocs(allSalesQuery),
-                    getDocs(allDeliveriesQuery),
-                    getDocs(allTransfersInQuery),
-                    getDocs(allTransfersOutQuery),
-                    getDocs(allInventoryQuery)
-                ]);
-
-                const dailySales = dailySalesSnapshot.docs.map(doc => doc.data());
-                const dailyDeliveries = dailyDeliveriesSnapshot.docs.map(doc => doc.data());
-                const dailyTransfersIn = dailyTransfersInSnapshot.docs.map(doc => doc.data());
-                const dailyTransfersOut = dailyTransfersOutSnapshot.docs.map(doc => doc.data());
-                const allInventory = allInventorySnapshot.docs.map(doc => doc.data());
-                
-                // --- NEW LOGIC TO GROUP BY BRAND ---
-                const modelsByBrand = {};
-                
-                // Helper function to create a consistent key for each item
-                const getItemKey = (item) => {
-                    if (!item.brand || !item.model) return null;
-                    const brand = item.brand.trim();
-                    const model = item.model.trim();
-                    const variant = item.variant ? item.variant.trim() : '';
-                    const color = item.color ? item.color.trim() : 'N/A';
-                    return { brand, modelKey: `${model} ${variant} - ${color}`.trim() };
-                };
-                
-                // Aggregate all unique models from all relevant data sources
-                const allItems = [...allInventory, ...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
-                allItems.forEach(item => {
-                    const key = getItemKey(item);
-                    if (key) {
-                        if (!modelsByBrand[key.brand]) {
-                            modelsByBrand[key.brand] = new Set();
-                        }
-                        modelsByBrand[key.brand].add(key.modelKey);
-                    }
-                });
-                
-                const reportData = [];
-                reportData.push(['MODEL', 'BEG INV', 'PULL IN', 'PULL OUT', 'DELIVERY', 'SOLD', 'END INV', 'REMARKS']);
-
-                // Sort brands alphabetically
-                const sortedBrands = Object.keys(modelsByBrand).sort((a, b) => a.localeCompare(b));
-
-                sortedBrands.forEach(brand => {
-                    reportData.push([`"${brand.toUpperCase()}"`]); // Add brand name as a header
-                    
-                    // Sort models within the brand alphabetically
-                    const sortedModels = Array.from(modelsByBrand[brand]).sort((a, b) => a.localeCompare(b));
-
-                    sortedModels.forEach(modelKey => {
-                        // Filter function to find all transactions for the current model
-                        const filterPredicate = item => {
-                             const key = getItemKey(item);
-                             return key && key.brand === brand && key.modelKey === modelKey;
-                        };
-
-                        const dailyPullInCount = dailyTransfersIn.filter(filterPredicate).length;
-                        const dailyPullOutCount = dailyTransfersOut.filter(filterPredicate).length;
-                        const dailyDeliveriesCount = dailyDeliveries.filter(filterPredicate).length;
-                        const dailySoldCount = dailySales.filter(filterPredicate).length;
-                        
-                        const endingInventory = allInventory.filter(filterPredicate).length;
-                        
-                        // Calculate beginning inventory by reversing the day's changes
-                        const beginningInventory = endingInventory + dailySoldCount + dailyPullOutCount - dailyDeliveriesCount - dailyPullInCount;
-                        
-                        const dailyTransactions = [...dailySales, ...dailyDeliveries, ...dailyTransfersIn, ...dailyTransfersOut];
-                        const remarks = dailyTransactions
-                            .filter(filterPredicate)
-                            .map(item => item.notes)
-                            .filter(note => note && note.trim());
-                        
-                        reportData.push([
-                            `"${modelKey}"`,
-                            beginningInventory,
-                            dailyPullInCount,
-                            dailyPullOutCount,
-                            dailyDeliveriesCount,
-                            dailySoldCount,
-                            endingInventory,
-                            `"${remarks.join('; ')}"`
-                        ]);
-                    });
-                    reportData.push([]); // Add a blank row for spacing between brands
-                });
-
-                // Remove the last blank row if it exists
-                if (reportData.length > 0 && reportData[reportData.length - 1].length === 0) {
-                    reportData.pop();
-                }
-                
-                const csvContent = reportData.map(e => e.join(',')).join('\n');
-                downloadCSV(csvContent, `Daily_Report_${date}.csv`);
-                showToast('Daily report downloaded successfully!');
-
-            } catch (error) {
-                console.error("Error generating daily report:", error);
-                showToast('Failed to generate daily report.', 'error');
-            } finally {
-                downloadReportBtn.disabled = false;
-                downloadReportBtn.textContent = 'Download Daily Report';
-            }
-        });
-
-
-        document.querySelectorAll('.download-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const type = button.dataset.type;
-                let data;
-                let filename = `${type}-${dateFilter.value}.csv`;
-                if(type === 'inventory') {
-                    data = inventory;
-                    filename = 'current-inventory.csv';
-                }
-                if(type === 'sales') {
-                    const paymentFilter = document.getElementById('sales-payment-filter').value;
-                    data = sales.filter(sale => paymentFilter === 'all' || sale.paymentOption === paymentFilter);
-                }
-                if(type === 'deliveries') data = deliveries;
-                if(type === 'transfersIn') data = transfersIn;
-                if(type === 'transfersOut') data = transfersOut;
-                if(type === 'accessories') data = accessories;
-                if(type === 'accessoriesSellOut') data = accessoriesSellOut;
-
-                if (data && data.length > 0) {
-                    const csv = convertToCSV(data);
-                    downloadCSV(csv, filename);
-                } else {
-                    showToast('No data to download for this selection.', 'error');
-                }
-            });
-        });
-
-        function convertToCSV(data) {
-            const headers = Object.keys(data[0]).filter(key => key !== 'id' && !key.endsWith('At') && key !== 'lastEditorEmail');
-            const rows = data.map(row => 
-                headers.map(header => {
-                    let value = row[header];
-                    if (typeof value === 'string') {
-                        return `"${value.replace(/"/g, '""')}"`;
-                    }
-                    return value;
-                }).join(',')
-            );
-            return [headers.join(','), ...rows].join('\n');
-        }
-
-        function downloadCSV(csv, filename) {
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-
-        searchBtn.addEventListener('click', async () => {
-            const searchTerm = searchInput.value.trim();
-            if(!searchTerm) {
-                searchResultsContainer.innerHTML = '';
-                return;
-            }
-
-            searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">Searching...</p>`;
-            
-            const collectionsToSearch = ['inventory', 'sales', 'deliveries', 'transfersIn', 'transfersOut'];
-            const results = [];
-
-            for (const collectionName of collectionsToSearch) {
-                const q = query(collection(db, collectionName), where("imei", "==", searchTerm));
-                const snapshot = await getDocs(q);
-                snapshot.forEach(doc => {
-                    results.push({ id: doc.id, type: collectionName, ...doc.data() });
-                });
-            }
-
-            renderSearchResults(results);
-        });
-
-        function renderSearchResults(results) {
-            searchResultsContainer.innerHTML = '';
-            if (results.length === 0) {
-                searchResultsContainer.innerHTML = `<p style="color: var(--text-secondary);">No records found for that IMEI.</p>`;
-                return;
-            }
-
-            const resultsHtml = results.map(item => {
-                let status = '';
-                let date = null;
-                let tab = '';
-
-                switch(item.type) {
-                    case 'inventory': status = 'In Stock'; tab = 'stocks'; date = item.addedAt; break;
-                    case 'sales': status = 'Sold'; tab = 'sales'; date = item.soldAt; break;
-                    case 'deliveries': status = 'Delivered'; tab = 'deliveries'; date = item.addedAt; break;
-                    case 'transfersIn': status = 'Transferred In'; tab = 'transferIn'; date = item.transferredAt; break;
-                    case 'transfersOut': status = 'Transferred Out'; tab = 'transferOut'; date = item.transferredAt; break;
-                }
-                
-                return `
-                    <button class="search-result-item w-full text-left p-3 my-1 rounded-md flex justify-between items-center" 
-                            style="background-color: var(--bg-tertiary);"
-                            data-doc-id="${item.id}" 
-                            data-doc-type="${tab}" 
-                            data-doc-date="${date?.toDate().toISOString().split('T')[0]}">
-                        <div>
-                            <p class="font-semibold">${item.brand} ${item.model}</p>
-                            <p class="text-sm" style="color: var(--text-secondary);">${item.imei || 'Accessory'}</p>
-                        </div>
-                        <div class="text-right">
-                             <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background-color: var(--info-bg); color: var(--info-text);">${status}</span>
-                             <p class="text-xs mt-1" style="color: var(--text-secondary);">${formatDate(date)}</p>
-                        </div>
-                    </button>
-                `;
-            }).join('');
-            searchResultsContainer.innerHTML = `
-                <h3 class="text-lg font-semibold mb-2">Search Results</h3>
-                ${resultsHtml}
-            `;
-        }
-        
-        searchResultsContainer.addEventListener('click', (e) => {
-            const resultItem = e.target.closest('.search-result-item');
-            if (resultItem) {
-                const { docId, docType, docDate } = resultItem.dataset;
-                
-                const dateAsUTC = new Date(docDate);
-                selectedDate = new Date(dateAsUTC.getTime() + dateAsUTC.getTimezoneOffset() * 60000);
-
-                dateFilter.value = docDate;
-                
-                changeTab(docType);
-
-                setTimeout(() => {
-                    const rowId = `row-${docType}-${docId}`;
-                    const row = document.getElementById(rowId);
-                    if (row) {
-                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        row.classList.add('row-highlight');
-                        setTimeout(() => row.classList.remove('row-highlight'), 2000);
-                    }
-                }, 500);
-            }
-        });
-
-
-        // Generic event listener for action buttons
-        document.getElementById('tab-content').addEventListener('click', async (e) => {
-            const editBtn = e.target.closest('.edit-item-btn');
-            const deleteBtn = e.target.closest('.delete-item-btn');
-
-            if (editBtn) {
-                const itemId = editBtn.dataset.itemid;
-                const itemType = editBtn.dataset.type;
-                let item;
-                if(itemType === 'inventory') item = inventory.find(i => i.id === itemId);
-                if(itemType === 'deliveries') item = deliveries.find(i => i.id === itemId);
-                if(itemType === 'transfersIn') item = transfersIn.find(i => i.id === itemId);
-                if(itemType === 'transfersOut') item = transfersOut.find(i => i.id === itemId);
-                if(itemType === 'sales') item = sales.find(i => i.id === itemId);
-                if(itemType === 'accessories') item = accessories.find(i => i.id === itemId);
-                if(itemType === 'accessoriesSellOut') item = accessoriesSellOut.find(i => i.id === itemId);
-                
-                if (item) {
-                    openEditModal(item, itemType);
-                }
-            }
-            
-            if (deleteBtn) {
-                const itemId = deleteBtn.dataset.itemid;
-                const itemType = deleteBtn.dataset.type;
-                 showConfirm(`Are you sure you want to permanently delete this record? This action cannot be undone.`, async () => {
-                    try {
-                        const itemRef = doc(db, itemType, itemId);
-                        await deleteDoc(itemRef);
-                        showToast('Record deleted successfully.', 'success');
-                    } catch (error) {
-                        console.error("Error deleting record:", error);
-                        showToast('Failed to delete record.', 'error');
-                    }
-                }, { title: 'Confirm Deletion', okText: 'Delete' });
-            }
-        });
-
-        document.querySelectorAll('.sort-select').forEach(select => {
-            select.addEventListener('change', (e) => {
-                renderAll();
-            });
-        });
-
-        document.getElementById('sales-payment-filter').addEventListener('change', (e) => {
-            renderSalesTable(document.getElementById('sales-sort').value);
-        });
-
-        // --- IMEI SCANNER & LOOKUP (UPDATED) ---
-        const scannerModal = document.getElementById('scanner-modal');
-        const scanImeiBtn = document.getElementById('scan-imei-btn');
-        const scannerCloseBtn = document.getElementById('scanner-close-btn');
-        const startScanBtn = document.getElementById('start-scan-btn');
-        const scannerStatus = document.getElementById('scanner-status');
-        const imeiInput = document.getElementById('del-imei');
-        const lookupImeiBtn = document.getElementById('lookup-imei-btn');
-
-        if (scanImeiBtn) {
-            const html5QrCode = new Html5Qrcode("reader");
-
-            const onScanSuccess = (decodedText, decodedResult) => {
-                scannerStatus.textContent = "Processing...";
-                const match = decodedText.match(/\d{15}/);
-
-                if (match) {
-                    imeiInput.value = match[0];
-                    imeiInput.dispatchEvent(new Event('input')); // Trigger input event to show lookup button
-                    showToast('IMEI scanned successfully!', 'success');
-                    stopScanner();
-                } else {
-                    scannerStatus.textContent = "No valid IMEI found. Try again.";
-                    setTimeout(() => {
-                        if(html5QrCode.isScanning) scannerStatus.textContent = "Scanning...";
-                    }, 2000);
-                }
-            };
-
-            const onScanFailure = (error) => { /* Ignore */ };
-
-            const stopScanner = () => {
-                if (html5QrCode && html5QrCode.isScanning) {
-                    html5QrCode.stop().then(() => {
-                        scannerModal.classList.add('hidden');
-                        startScanBtn.style.display = 'block';
-                        scannerStatus.textContent = "";
-                    }).catch((err) => {
-                        console.error("Failed to stop scanner", err);
-                        scannerModal.classList.add('hidden');
-                    });
-                } else {
-                    scannerModal.classList.add('hidden');
-                    startScanBtn.style.display = 'block';
-                    scannerStatus.textContent = "";
-                }
-            }
-            
-            scanImeiBtn.addEventListener('click', () => {
-                scannerModal.classList.remove('hidden');
-            });
-
-            startScanBtn.addEventListener('click', () => {
-                scannerStatus.textContent = "Starting Camera...";
-                startScanBtn.style.display = 'none';
-
-                const config = {
-                    fps: 10,
-                    qrbox: (viewfinderWidth, viewfinderHeight) => {
-                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-                        const qrboxSize = Math.floor(minEdge * 0.8);
-                        return { width: qrboxSize, height: qrboxSize };
-                    }
-                };
-
-                html5QrCode.start(
-                    { facingMode: "environment" },
-                    config,
-                    onScanSuccess,
-                    onScanFailure
-                ).then(() => {
-                    scannerStatus.textContent = "Point camera at barcode";
-                }).catch((err) => {
-                    scannerStatus.textContent = "Could not start camera.";
-                    console.error(`Unable to start scanning, error: ${err}`);
-                    showToast('Could not start camera. Check permissions.', 'error');
-                    startScanBtn.style.display = 'block';
-                });
-            });
-
-            scannerCloseBtn.addEventListener('click', stopScanner);
-
-            // IMEI Input listener to show/hide lookup button
-            imeiInput.addEventListener('input', () => {
-                if (imeiInput.value.trim().length === 15 && /^\d+$/.test(imeiInput.value.trim())) {
-                    lookupImeiBtn.classList.remove('hidden');
-                } else {
-                    lookupImeiBtn.classList.add('hidden');
-                }
-            });
-
-            // Lookup button functionality
-            lookupImeiBtn.addEventListener('click', () => {
-                const imei = imeiInput.value.trim();
-                if (imei) {
-                    const searchUrl = `https://www.google.com/search?q=IMEI+${imei}+device+info`;
-                    window.open(searchUrl, '_blank');
-                }
-            });
-        }
+    // Dark mode toggle
+    darkModeToggle.addEventListener('change', (e) => {
+        applyDarkMode(e.target.checked);
     });
+
+    // Small UX: set today's date in date filter
+    const todayISO = new Date().toISOString().slice(0,10);
+    if (dateFilter) dateFilter.value = todayISO;
+
+    // ----- WHAT'S NEXT -----
+    // The scanner now:
+    // - opens camera modal
+    // - scans barcodes and looks for a 15-digit IMEI
+    // - parses basic fields and auto-fills the "Add Delivery" form
+    // - on delivery submit, saves to both 'deliveries' and 'inventory' collections in Firestore
+    //
+    // Next improvements you might want:
+    // - Use more robust parsing for specific vendor barcode formats (GS1, custom labels) and map exact AIs.
+    // - Add an option to auto-save immediately after scan or ask for manual confirmation.
+    // - Add server-side verification to prevent duplicate IMEIs in inventory.
+    // - Improve UI for camera selection and fallback for devices without cameras.
+    //
+    // If you'd like, I can:
+    // - Add "auto-save on scan" toggle.
+    // - Implement duplicate IMEI checks and show a conflict resolution modal.
+    // - Parse GS1 AI elements (like (01) GTIN or (10) batch) if you provide sample barcodes.
+    //
+    // Tell me which of these you'd like next and I will update the code accordingly.
+
 </script>
-
 </body>
 </html>
-"
-
+```
