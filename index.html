@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Sales & Inventory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Barcode Scanner Library -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -205,9 +203,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
-                    <path d="M3 7h18M3 12h18M3 17h18" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                 <label class="switch">
                     <input type="checkbox" id="darkModeToggle">
                     <span class="slider"></span>
@@ -232,16 +228,16 @@
             <!-- Tabs -->
             <div style="border-color: var(--border-primary);" class="border-b mb-6">
                 <nav id="tabs-nav" class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
-                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-active" data-tab="dashboard">Dashboard</button>
-                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="deliveries">Deliveries</button>
-                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="stocks">Stocks</button>
-                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="sales">Sales</button>
-                    <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="accessories">Accessories</button>
-                    <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="accessoriesSellOut">Accessories Sell Out</button>
-                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="transferOut">Transfer Out</button>
-                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="transferIn">Transfer In</button>
-                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="stockLevel">Stock Level</button>
-                    <button id="admin-tab-btn" onclick="changeTab('admin')" class="tab hidden whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="admin">Admin</button>
+                    <button onclick="changeTab('dashboard')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500 tab-active" data-tab="dashboard">Dashboard</button>
+                    <button onclick="changeTab('deliveries')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="deliveries">Deliveries</button>
+                    <button onclick="changeTab('stocks')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stocks">Stocks</button>
+                    <button onclick="changeTab('sales')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="sales">Sales</button>
+                    <button onclick="changeTab('accessories')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessories">Accessories</button>
+                    <button onclick="changeTab('accessoriesSellOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="accessoriesSellOut">Accessories Sell Out</button>
+                    <button onclick="changeTab('transferOut')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferOut">Transfer Out</button>
+                    <button onclick="changeTab('transferIn')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="transferIn">Transfer In</button>
+                    <button onclick="changeTab('stockLevel')" class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="stockLevel">Stock Level</button>
+                    <button id="admin-tab-btn" onclick="changeTab('admin')" class="tab hidden whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm hover:text-blue-500 hover:border-blue-500" data-tab="admin">Admin Tools</button>
                 </nav>
             </div>
 
@@ -286,24 +282,14 @@
                         <button class="download-btn text-sm font-semibold py-2 px-4 rounded-md" data-type="deliveries" style="background-color: var(--bg-tertiary);">Download CSV</button>
                     </div>
                     <form id="delivery-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="relative flex items-center">
-                            <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md pr-24" maxlength="15" required>
-                            <div class="absolute inset-y-0 right-0 flex items-center">
-                                <button type="button" id="lookup-imei-btn" class="px-2 text-sm font-semibold hidden" style="color: var(--accent-primary);" title="Look up IMEI details">Lookup</button>
-                                <button type="button" id="scan-imei-btn" class="flex items-center px-3 h-full rounded-r-md" style="background-color: var(--accent-primary); color: white;" title="Scan IMEI with Camera">
-                                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 10-3 0M3.75 18H7.5"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
+                        <input type="text" id="del-imei" placeholder="15-Digit IMEI" class="form-input w-full p-2 border rounded-md" maxlength="15" required>
                         <input type="text" id="del-brand" placeholder="Brand" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-model" placeholder="Model" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-variant" placeholder="Variant (e.g., 128GB)" class="form-input w-full p-2 border rounded-md">
                         <input type="text" id="del-color" placeholder="Color" class="form-input w-full p-2 border rounded-md">
                         <input type="number" id="del-price" placeholder="Price" class="form-input w-full p-2 border rounded-md" required>
                         <input type="text" id="del-notes" placeholder="Notes" class="form-input md:col-span-2 lg:col-span-1 w-full p-2 border rounded-md">
-                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Deliveries</button>
+                        <button type="submit" style="background-color: var(--accent-primary);" class="md:col-span-2 lg:col-span-3 text-white font-semibold py-2 px-4 rounded-md transition-colors">Add to Stock</button>
                     </form>
                     <div class="flex flex-wrap justify-between items-center mt-8 mb-4 gap-4">
                         <h3 class="text-lg font-semibold" id="deliveries-title">Today's Deliveries</h3>
@@ -637,7 +623,7 @@
         </div>
         
         <!-- Toast Notification -->
-        <div id="toast" class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50">
+        <div id="toast" class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
             <span id="toast-message"></span>
         </div>
     </div>
@@ -726,19 +712,6 @@
                      <button type="submit" class="py-2 px-4 rounded-md font-semibold text-white w-32" style="background-color: var(--success);">Save Changes</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Scanner Modal -->
-    <div id="scanner-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4">
-        <div style="background-color: var(--bg-secondary);" class="rounded-lg shadow-lg p-6 w-full max-w-md text-center relative">
-            <h3 class="text-lg font-bold mb-4">Scan IMEI Barcode</h3>
-            <div class="w-full rounded-md overflow-hidden bg-gray-200" style="aspect-ratio: 1/1;">
-                 <div id="reader"></div>
-            </div>
-            <p id="scanner-status" class="mt-2 text-sm" style="color: var(--text-secondary); min-height: 1.25rem;"></p>
-            <button id="start-scan-btn" class="mt-2 py-2 px-4 rounded-md font-semibold w-full text-white" style="background-color: var(--accent-primary);">Start Scanning</button>
-            <button id="scanner-close-btn" class="mt-2 py-2 px-4 rounded-md font-semibold w-full" style="background-color: var(--bg-tertiary); color: var(--text-primary);">Cancel</button>
         </div>
     </div>
 
@@ -1743,11 +1716,8 @@
         
         try {
             await runTransaction(db, async (transaction) => {
-                const invDoc = doc(collection(db, 'inventory'));
-                transaction.set(invDoc, newItem);
-                
-                const delDoc = doc(collection(db, 'deliveries'));
-                transaction.set(delDoc, newItem);
+                transaction.set(doc(collection(db, 'inventory')), newItem);
+                transaction.set(doc(collection(db, 'deliveries')), newItem);
             });
             e.target.reset();
             showToast('Item added to stock successfully!');
@@ -2016,7 +1986,7 @@
             editItemForm.elements['edit-incentive'].value = item.incentive || 0;
             editItemForm.elements['edit-payment'].value = item.paymentOption || 'Cash';
             editItemForm.elements['edit-receipt-number'].value = item.receiptNumber || '';
-        } else if (type === 'accessories' || itemType === 'accessoriesSellOut') {
+        } else if (type === 'accessories' || type === 'accessoriesSellOut') {
              priceFieldWrapper.style.display = 'block';
             editItemForm.elements['edit-price'].disabled = item.type === 'Freebie';
             editItemForm.elements['edit-price'].value = item.price;
